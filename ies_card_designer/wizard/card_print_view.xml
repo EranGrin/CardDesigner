@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="ies_card_print_wizard">
+        <field name="name">ies_card_print_wizard</field>
+        <field name="model">card.print.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Print Card">
+                <sheet>
+                    <group>
+                        <field name="model" invisible="1"/>
+                        <field name="template_id" domain="[('model_id', '=', model )]"/>
+                        <field name="printers" string="Select Printer"/>
+                    </group>
+                    <field name="body"/>
+                </sheet>
+                <footer>
+                    <button string="Print" name="print_card"
+                            type="object" default_focus="1" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+</odoo>

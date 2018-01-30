@@ -1,0 +1,80 @@
+// lessc@1.4.2
+
+// ============================
+// Mass Mailing "Theme Default"
+// ============================
+
+// ===== Default Theme palette =====
+@o_mm_def_color_alpha: #ffffff;
+@o_mm_def_color_beta: #ffffff;
+@o_mm_def_color_gamma: #706482;
+@o_mm_def_color_delta: #464646;
+@o_mm_def_color_epsilon: darken(@o_mm_def_color_gamma, 5%);
+@o_mm_def_color_zeta: #706482;
+@o_mm_def_color_eta: #87a6b5;
+
+// ===== Default Theme variables =====
+@o_mm_def_body_width    : 400px;
+@o_mm_def_body_height   : 500px;
+@o_mm_def_body_bobile   : 480px;
+@o_mm_def_b_radius      : 2px;
+
+@o_mm_def_font          : -apple-system, "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+@o_mm_def_text_color    : @o_mm_def_color_delta;
+
+@o_mm_def_btn_bg        : @o_mm_def_color_gamma;
+@o_mm_def_btn_text      : @o_mm_def_color_beta;
+
+// ===== Editor =====
+#web_editor_inside_iframe {
+    #wrapwrap > main #editable_area {
+        background-color: transparent;
+    }
+}
+
+// ===== Colors =====
+.bg-beta {
+    background-color: @o_mm_def_color_zeta;
+    color:  @o_mm_def_color_beta;
+}
+.text-beta {
+    color: @o_mm_def_color_zeta;
+}
+.bg-delta {
+    background-color: @o_mm_def_color_eta;
+}
+.bg-gray-lighter {
+    background-color: @o_mm_def_color_alpha;
+}
+
+
+// ===== Layout =====
+.o_layout {
+    overflow: hidden;
+    width: 94%;
+    background-color: @o_mm_def_color_alpha;
+    padding: 24px 3%;
+
+    // Forces on <p/> and <hx/> elements as several mail clients does not
+    // correctly inherit font properties
+    &, p {
+        font-size: 14px; // force bootstrap default
+    }
+    &, p, h1, h2, h3, h4, h5, h6 {
+        font-family: @o_mm_def_font;
+        color: lighten(@o_mm_def_text_color, 20%);
+    }
+
+
+        > .o_designer_wrapper {
+            width: 100%;
+            border-collapse: separate; // Allow the first and last td to have the
+                                       // same width
+            .o_designer_wrapper_td {
+                width: @o_mm_def_body_width;
+                border: 1px solid darken(@o_mm_def_color_alpha, 2%);
+                background-color: @o_mm_def_color_beta;
+            }
+        }
+
+}
