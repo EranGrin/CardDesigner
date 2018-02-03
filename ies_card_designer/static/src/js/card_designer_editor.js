@@ -189,7 +189,23 @@ snippets_editor.Class.include({
         var $body = $(document.body);
         var $snippets = this.$(".oe_snippet");
         var $snippets_menu = this.$el.find("#snippets_menu");
-
+        var $snippets_change_size = this.$el.find("#input_snippets_template_size");
+        $snippets_change_size.on('change', function (e) {
+            e.preventDefault();
+            var value = '';
+            var width = 0;
+            var height = 0;
+            if ($('.o_mail_wrapper_td').length) {
+                if (this.value){
+                    value = this.value.replace('(', '').replace(')', '').split(", ");
+                    width = parseInt(value[0]);
+                    height = parseInt(value[1]);
+                    $('.o_mail_wrapper_td').css({"width": width, "height": height});
+                } else{
+                    $('.o_mail_wrapper_td').removeAttr('style');
+                }
+            }
+        });
         /**
          * Create theme selection screen and check if it must be forced opened.
          * Reforce it opened if the last snippet is removed.

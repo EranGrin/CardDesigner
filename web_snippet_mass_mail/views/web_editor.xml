@@ -13,16 +13,18 @@
             </field>
         </record>
 
+        <menuitem name="Cards Setting" id="ies_design_menu_setting" parent="ies_card_designer.ies_design_menu"/>
+
         <record model="ir.actions.act_window" id="action_view_template_size">
-            <field name="name">Template Size</field>
+            <field name="name">Card Size</field>
             <field name="res_model">template.size</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="template_size_view_form" />
         </record>
 
-        <menuitem name="Template Size" id="menu_view_template_size"
-            parent="mass_mailing.menu_mass_mailing_configuration" sequence="3"
+        <menuitem name="Card Size" id="menu_view_template_size"
+            parent="ies_design_menu_setting" sequence="3"
             action="action_view_template_size"/>
 
         <record id="custome_image_snippets_view_tree" model="ir.ui.view">
@@ -71,7 +73,7 @@
         </record>
 
         <menuitem name="Image Snippets" id="menu_view_custome_image_snippets"
-            parent="mass_mailing.menu_mass_mailing_configuration" sequence="3"
+            parent="ies_design_menu_setting" sequence="3"
             action="action_view_custome_image_snippets"/>
 
     </data>
