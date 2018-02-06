@@ -2,18 +2,18 @@
 <odoo>
 <!-- Snippets & Themes Menu -->
 <template id="card_designer_snippets" inherit_id="web_editor.snippets" primary="True">
-    <!-- <xpath expr="//h2[@id='snippets_menu']" position="replace">
+    <xpath expr="//h2[@id='snippets_menu']" position="replace">
         <h2 id="snippets_menu">Card Templates</h2>
-    </xpath> -->
+    </xpath>
     <xpath expr="//div[@id='o_scroll']" position="replace">
         <div id="o_scroll">
-            <!-- <div id="email_designer_themes">
+            <div id="email_designer_themes">
                 <div data-name="default"
-                     data-img="/ies_card_designer/static/src/img/theme_imgs/default_thumb"
+                     data-img="/ies_card_designer/static/src/img/theme_imgs/cr79_thumb"
                      data-images-info='{"logo": {"format": "png"}, "all": {"module": "ies_card_designer"}}'>
                     <t t-call="ies_card_designer.theme_default_template"/>
                 </div>
-                <div data-name="cr79"
+                <!--<div data-name="cr79"
                      data-img="/ies_card_designer/static/src/img/theme_imgs/cr79_thumb"
                      data-images-info='{"logo": {"format": "png"}, "all": {"module": "ies_card_designer"}}'>
                     <t t-call="ies_card_designer.theme_cr79_template"/>
@@ -27,8 +27,8 @@
                      data-img="/ies_card_designer/static/src/img/theme_imgs/cr100_thumb"
                      data-images-info='{"logo": {"format": "png"}, "all": {"module": "ies_card_designer"}}'>
                     <t t-call="ies_card_designer.theme_cr100_template"/>
-                </div>
-            </div> -->
+                </div>-->
+            </div> 
 
             <div id="ies_template_snippets" class="o_panel">
                 <div class="o_panel_header">
