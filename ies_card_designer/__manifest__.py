@@ -24,7 +24,7 @@
     },
 
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'data/sequence.xml',
         'views/card_options.xml',
         'views/card_designer_template.xml',

@@ -5,21 +5,18 @@
 from odoo.tools.safe_eval import safe_eval
 
 import babel
-import base64
 import copy
 import datetime
 import dateutil.relativedelta as relativedelta
 import logging
-import lxml
-import urlparse
 
 from urllib import urlencode, quote as quote
 
 from odoo import _, api, fields, models, tools
-from odoo import report as odoo_report
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
+
 
 def format_date(env, date, pattern=False):
     if not date:
@@ -77,7 +74,7 @@ try:
         # dateutil.relativedelta is an old-style class and cannot be directly
         # instanciated wihtin a jinja2 expression, so a lambda "proxy" is
         # is needed, apparently.
-        'relativedelta': lambda *a, **kw : relativedelta.relativedelta(*a, **kw),
+        'relativedelta': lambda *a, **kw: relativedelta.relativedelta(*a, **kw),
     })
     mako_safe_template_env = copy.copy(mako_template_env)
     mako_safe_template_env.autoescape = False
@@ -131,7 +128,6 @@ class CardTemplate(models.Model):
                                       readonly=True,
                                       help="Sidebar button to open "
                                            "the sidebar action.")
-
 
     @api.depends('card_model')
     def get_card_model_id(self):

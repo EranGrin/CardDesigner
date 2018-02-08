@@ -2,9 +2,17 @@
 <odoo>
 
     <template id="s_mail_block_partner_image_text" name="Text - Image">
-        <div class="o_mail_block_text_image">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles">
+        <section class="o_mail_block_text_image">
+            <div style="width:250%;">
+                <div class="card">
+                    <img t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' t-attf-style="background: url(/web/image?model=custome.image.snippets&amp;field=sample_image&amp;id=#{image_snippets_id.id}) no-repeat center;background-size: 100%;height:235px;width:100%;max-width:250px;"/>
+                  <!-- <img src="/ies_card_designer/static/src/img/theme_imgs/img_avatar.png" alt="Avatar" style="width:100%"  />-->
+                  <div class="container">
+                    <h3><b>${object.name}</b></h3> 
+                    <p>${object.job_id.name}</p> 
+                  </div>
+                </div>
+                <!-- <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles">
                     <tbody>
                         <tr>
                             <td style="width:100px;vertical-align:middle;text-align:center;" class="o_mail_col_mvo_mail_col_mv o_mail_h_padding o_mail_v_padding">
@@ -15,9 +23,9 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
             </div>
-        </div>
+        </section>
     </template>
 
     <template id="card_designer_snippets" inherit_id="ies_card_designer.card_designer_snippets" >
@@ -39,7 +47,7 @@
                         <i class="fa fa-plus"/> <t t-esc="image_snippets_id.name" /> Content
                     </div>
                     <div class="o_panel_body">
-                        <t t-snippet="web_snippet_mass_mail.s_mail_block_partner_image_text" t-thumbnail="/mass_mailing/static/src/img/blocks/block_image_text.png"/>
+                        <t t-snippet="web_snippet_mass_mail.s_mail_block_partner_image_text" t-thumbnail="/web_snippet_mass_mail/static/src/img/block_profile.png"/>
                     </div>
                 </div>
             </t>

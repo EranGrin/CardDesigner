@@ -8,7 +8,6 @@ from odoo.addons.web_editor.controllers.main import Web_Editor
 
 class Web_Editor(Web_Editor):
 
-
     @http.route('/card_designer/field/card_template', type='http', auth="user")
     def card_designer_FieldTextHtmlEmailTemplate(self, model=None, res_id=None, field=None, callback=None, **kwargs):
         kwargs['snippets'] = '/card_designer/snippets'
