@@ -123,7 +123,7 @@ snippets_editor.Class.include({
             // centered fixed-width content column on all mail clients
             var $new_wrapper = $('<div/>', {class: 'o_designer_wrapper'});
             var $new_wrapper_content = $("<div/>", {class: 'o_mail_no_resize o_designer_wrapper_td oe_structure fixed_heightx',
-            style:'height:315px; overflow: hidden; margin-left: auto;margin-right: auto;max-width:250px;width:250px;'});
+            style:'height:315px; overflow: hidden; margin-left: auto;margin-right: auto;width:250px;'});
             $new_wrapper.append($('<div/>', {class:'fixed_height'}).append(
                 $new_wrapper_content,
             ));

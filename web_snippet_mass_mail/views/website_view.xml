@@ -5,7 +5,7 @@
         <section class="o_mail_block_text_image">
             <div style="width:250%;">
                 <div class="card">
-                    <img t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' t-attf-style="background: url(/web/image?model=custome.image.snippets&amp;field=sample_image&amp;id=#{image_snippets_id.id}) no-repeat center;background-size: 100%;height:235px;width:100%;max-width:250px;"/>
+                    <img t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' t-attf-style="background: url(/web/image?model=custome.image.snippets&amp;field=sample_image&amp;id=#{image_snippets_id.id}) no-repeat center; height:235px;"/>
                   <!-- <img src="/ies_card_designer/static/src/img/theme_imgs/img_avatar.png" alt="Avatar" style="width:100%"  />-->
                   <div class="container">
                     <h3><b>${object.name}</b></h3> 
