@@ -3,13 +3,13 @@
 
 from odoo import http
 from odoo.http import request
-from odoo.addons.ies_card_designer.controllers.web_editor import Web_Editor
+from odoo.addons.card_design.controllers.web_editor import Web_Editor
 
 
 class Web_Editor(Web_Editor):
 
-    @http.route(['/card_designer/snippets'], type='json', auth="user", website=True)
-    def card_designer_snippets(self):
+    @http.route(['/card_design/snippets'], type='json', auth="user", website=True)
+    def card_design_snippets(self):
         sizes = request.env['template.size'].sudo().search([])
         image_snippets_ids = request.env['custome.image.snippets'].sudo().search([])
         values = {
@@ -17,4 +17,4 @@ class Web_Editor(Web_Editor):
             'sizes': sizes,
             'image_snippets_ids': image_snippets_ids
         }
-        return request.env.ref('ies_card_designer.card_designer_snippets').render(values)
+        return request.env.ref('card_design.email_designer_snippets').render(values)

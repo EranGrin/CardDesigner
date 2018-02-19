@@ -7,10 +7,8 @@ var rte = require('web_editor.rte');
 var web_editor = require('web_editor.editor');
 var options = require('web_editor.snippets.options');
 var snippets_editor = require('web_editor.snippet.editor');
-
 var $editable_area = $("#editable_area");
 var odoo_top = window.top.odoo;
-
 
 
 snippets_editor.Class.include({
@@ -27,19 +25,23 @@ snippets_editor.Class.include({
         var selected_theme = false;
         var theme_params = {
             'className': "o_default_theme",
-            'img': "/ies_card_designer/static/src/img/theme_imgs/default_thumb",
+            'img': "/card_design/static/src/img/theme_imgs/default_thumb",
             'name': "default",
             'template': ""
         };
 
+        var first_choice;
+
+        if ($('.o_designer_wrapper_td').length){
+            first_choice = false;
+        }
         switch_theme(theme_params);
         $body.removeClass("o_force_mail_theme_choice");
         switch_images(theme_params, $snippets);
         selected_theme = theme_params;
         // Notify form view
         odoo_top[window.callback+"_downup"]($editable_area.addClass("o_dirty").html());
-
-
+        
         var $snippets_change_size = this.$el.find("#input_snippets_template_size");
         $snippets_change_size.on('change', function (e) {
             e.preventDefault();
@@ -68,12 +70,8 @@ snippets_editor.Class.include({
                 }
             }
         });
-
-        var first_choice;
-        
         $body.addClass(selected_theme.className);
         switch_images(selected_theme, $snippets);
-
         return ret;
 
         function check_if_must_force_theme_choice() {
@@ -123,7 +121,7 @@ snippets_editor.Class.include({
             // centered fixed-width content column on all mail clients
             var $new_wrapper = $('<div/>', {class: 'o_designer_wrapper'});
             var $new_wrapper_content = $("<div/>", {class: 'o_mail_no_resize o_designer_wrapper_td oe_structure fixed_heightx',
-            style:'height:315px; overflow: hidden; margin-left: auto;margin-right: auto;width:250px;'});
+            style:'height:400px; overflow: hidden; margin-left: auto;margin-right: auto;width:400px;background:white;'});
             $new_wrapper.append($('<div/>', {class:'fixed_height'}).append(
                 $new_wrapper_content,
             ));

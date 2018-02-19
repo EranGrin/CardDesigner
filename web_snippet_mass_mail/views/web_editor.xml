@@ -13,7 +13,7 @@
             </field>
         </record>
 
-        <menuitem name="Cards Setting" id="ies_design_menu_setting" parent="ies_card_designer.ies_design_menu"/>
+        <menuitem name="Cards Setting" id="ies_design_menu_setting" parent="card_design.card_design_menu"/>
 
         <record model="ir.actions.act_window" id="action_view_template_size">
             <field name="name">Card Size</field>

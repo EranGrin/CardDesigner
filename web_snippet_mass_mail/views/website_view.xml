@@ -5,31 +5,19 @@
         <section class="o_mail_block_text_image">
             <div style="width:250%;">
                 <div class="card">
-                    <img t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' t-attf-style="background: url(/web/image?model=custome.image.snippets&amp;field=sample_image&amp;id=#{image_snippets_id.id}) no-repeat center; height:235px;"/>
-                  <!-- <img src="/ies_card_designer/static/src/img/theme_imgs/img_avatar.png" alt="Avatar" style="width:100%"  />-->
+                    <img t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' t-attf-style="background: url(/web/image?model=custome.image.snippets&amp;field=sample_image&amp;id=#{image_snippets_id.id}) no-repeat center;height:150px;margin-left:15%;"/>
                   <div class="container">
                     <h3><b>${object.name}</b></h3> 
                     <p>${object.job_id.name}</p> 
                   </div>
                 </div>
-                <!-- <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles">
-                    <tbody>
-                        <tr>
-                            <td style="width:100px;vertical-align:middle;text-align:center;" class="o_mail_col_mvo_mail_col_mv o_mail_h_padding o_mail_v_padding">
-                                <h3 style="font-size:17px"><span>${object.name}</span></h3>
-                            </td>
-                            <td style="width:300px;text-align:center;vertical-align:middle" class="o_mail_img_container o_mail_h_padding o_mail_v_padding">
-                                <img id="o_mail_block_partner_image_text_field" class='center-block' t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' t-attf-style="background: url(/web/image?model=custome.image.snippets&amp;field=sample_image&amp;id=#{image_snippets_id.id}) no-repeat center;background-size: 40%; height:130px;"/>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> -->
             </div>
         </section>
     </template>
 
-    <template id="card_designer_snippets" inherit_id="ies_card_designer.card_designer_snippets" >
-         <xpath expr="//h2[@id='snippets_menu']" position="after">
+    <template id="email_designer_snippets" inherit_id="card_design.email_designer_snippets" >
+        <!-- <xpath expr="//h4[@id='snippets_template_size']" position="replace" />  -->
+        <xpath expr="//h2[@id='snippets_menu']" position="after">
             <h4 id="snippets_template_size" class="text-center" style="color:white;">Change Size</h4>
             <select id="input_snippets_template_size" class="form-control oe_view_list" style="margin-bottom:10px; width: 80% !important;margin-left: 8%; ">
                 <option value=""> Default </option>
@@ -56,7 +44,7 @@
 
     <template id="assets_editor" inherit_id="web_editor.assets_editor">
         <xpath expr="//link[last()]" position="after">
-            <script type="text/javascript" src="/web_snippet_mass_mail/static/src/js/mass_mailing_editor_size.js"></script>
+            <script type="text/javascript" src="/web_snippet_mass_mail/static/src/js/card_design_editor_size.js"></script>
         </xpath>
     </template>
 

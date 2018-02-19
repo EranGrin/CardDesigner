@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import fields, models, _
-# from odoo import http
-# from odoo.http import request
-# from odoo.addons.mass_mailing.controllers.web_editor import Web_Editor
 
 
 class template_size(models.Model):
