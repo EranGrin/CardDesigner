@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem name="Design" id="card_design_menu"/>
+
+    <record model="ir.ui.view" id="card_design_template_tree_view">
+        <field name="name">card.design.template.tree.view</field>
+        <field name="model">card.template</field>
+        <field name="arch" type="xml">
+            <tree string="Card Template">
+                <field name="name"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="card_desgin_template_form_view">
+        <field name="name">card.design.template.form.view</field>
+        <field name="model">card.template</field>
+        <field name="arch" type="xml">
+            <form string="Card Template">
+                <header>
+                    <button name="generate_cards" type="object" string="Generate Cards"></button>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="open_cards"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-clone">
+                            <field string="Cards" name="card_count" widget="statinfo"/>
+                        </button>
+                        <button name="toggle_active"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                   options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name"
+                               string="Template Name"/>
+                        <h1>
+                            <field name="name" placeholder="Template Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <label for="card_model" string="Selected Recods"/>
+                        <div>
+                            <div>
+                                <field name="card_model" widget="radio" options="{'horizontal': true}"/>
+
+                            </div>
+                        </div>
+                        <label for="card_model" string="Print Position"/>
+                        <div>
+                            <div>
+                                <field name="position" widget="radio" options="{'horizontal': true}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <notebook>
+                        <page string="Template Design" name="body">
+                            <field name="body_html" widget="html_frame"
+                                   options="{'editor_url': '/card_design/field/card_template'}"/>
+                        </page>
+                        <page string="Info" name="info">
+                            <group>
+                                <field name="ref_ir_act_window_id" readonly="1"/>
+                                <field name="ref_ir_value_id" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="card_desgin_template_action">
+        <field name="name">Card Template</field>
+        <field name="res_model">card.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Cards" id="card_design_menu_child" parent="card_design_menu"/>
+    <menuitem name="Card Templates" id="card_design_template_menu" parent="card_design_menu_child"
+              action="card_desgin_template_action"/>
+
+
+    <record model="ir.ui.view" id="card_card_design_tree_view">
+        <field name="name">card.card.design.tree.view</field>
+        <field name="model">card.card</field>
+        <field name="arch" type="xml">
+            <tree string="Card" create="false" edit="false">
+                <field name="name"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="card_card_design_form_view">
+        <field name="name">card.card.design.form.view</field>
+        <field name="model">card.card</field>
+        <field name="arch" type="xml">
+            <form string="Card">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <div name="options">
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                    <notebook>
+                        <page string="Body" name="body">
+                            <field name="data" widget="image"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="card_card_design_action">
+        <field name="name">Cards</field>
+        <field name="res_model">card.card</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Cards" id="card_card_desgin_menu" parent="card_design_menu_child" action="card_card_design_action"/>
+
+
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_card_template,access_card_template,model_card_template,,1,1,1,1
+access_card_card,access_card_card,model_card_card,,1,1,1,1
