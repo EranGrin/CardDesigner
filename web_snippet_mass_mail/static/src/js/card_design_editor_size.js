@@ -35,7 +35,9 @@ snippets_editor.Class.include({
         if ($('.o_designer_wrapper_td').length){
             first_choice = false;
         }
-        switch_theme(theme_params);
+        else{
+            switch_theme(theme_params);
+        }
         $body.removeClass("o_force_mail_theme_choice");
         switch_images(theme_params, $snippets);
         selected_theme = theme_params;
@@ -70,6 +72,7 @@ snippets_editor.Class.include({
                 }
             }
         });
+
         $body.addClass(selected_theme.className);
         switch_images(selected_theme, $snippets);
         return ret;

@@ -8,9 +8,10 @@
             <form string="Print Card">
                 <sheet>
                     <group>
-                        <field name="model" invisible="1"/>
-                        <field name="template_id" domain="[('model_id', '=', model )]"/>
-                        <field name="printers" string="Select Printer"/>
+                        <field name="model" invisible="1" />
+                        <field name="template_id" domain="[('model_id', '=', model )]" />
+                        <field name="position" widget="radio" options="{'horizontal': true}" />
+                        <field name="printers" string="Select Printer" />
                     </group>
                     <field name="body"/>
                 </sheet>

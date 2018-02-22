@@ -8,13 +8,19 @@ from odoo.addons.web_editor.controllers.main import Web_Editor
 class Web_Editor(Web_Editor):
 
     @http.route(["/website_card_design/field/popup_content"], type='http', auth="user")
-    def card_desig_FieldTextHtmlPopupTemplate(self, model=None, res_id=None, field=None, callback=None, **kwargs):
+    def card_design_FieldTextHtmlPopupTemplate(self, model=None, res_id=None, field=None, callback=None, **kwargs):
         kwargs['snippets'] = '/website/snippets'
         kwargs['template'] = 'card_design.FieldTextHtmlPopupContent'
         return self.FieldTextHtml(model, res_id, field, callback, **kwargs)
 
     @http.route('/card_design/field/card_template', type='http', auth="user")
-    def card_desig_FieldTextHtmlEmailTemplate(self, model=None, res_id=None, field=None, callback=None, **kwargs):
+    def card_design_FieldTextHtmlEmailTemplate(self, model=None, res_id=None, field=None, callback=None, **kwargs):
+        kwargs['snippets'] = '/card_design/snippets'
+        kwargs['template'] = 'card_design.FieldTextHtmlInline'
+        return self.FieldTextHtmlInline(model, res_id, field, callback, **kwargs)
+
+    @http.route('/card_design/field/card_template_back', type='http', auth="user")
+    def card_design_back_FieldTextHtmlEmailTemplate(self, model=None, res_id=None, field=None, callback=None, **kwargs):
         kwargs['snippets'] = '/card_design/snippets'
         kwargs['template'] = 'card_design.FieldTextHtmlInline'
         return self.FieldTextHtmlInline(model, res_id, field, callback, **kwargs)

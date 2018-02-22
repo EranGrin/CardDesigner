@@ -31,6 +31,9 @@ class CardPrintWizard(models.TransientModel):
     )
     printers = fields.Selection([('A', "Printer A"), ('B', "Printer B")], "Printers")
     model = fields.Many2one('ir.model', default=_get_model)
+    position = fields.Selection([
+        ('f', 'Front'), ('b', 'Back')
+    ], "Position", default='f')
     body = fields.Html("Card Body")
 
     @api.onchange('template_id')
@@ -38,17 +41,33 @@ class CardPrintWizard(models.TransientModel):
         model = self._context.get('active_model')
         res_ids = self._context.get('active_ids')
         if len(res_ids) == 1:
-            template = self.env['card.template'].render_template(
-                self.template_id.body_html, model, res_ids
-            )
-            self.body = template.get(res_ids[0])
+            if self.template_id.front_side:
+                template = self.env['card.template'].render_template(
+                    self.template_id.body_html, model, res_ids
+                )
+                self.body = template.get(res_ids[0])
+
+    @api.onchange('position')
+    def _onchange_position(self):
+        model = self._context.get('active_model')
+        res_ids = self._context.get('active_ids')
+        if len(res_ids) == 1:
+            if self.template_id.front_side:
+                if self.position != 'f':
+                    template = self.env['card.template'].render_template(
+                        self.template_id.back_body_html, model, res_ids
+                    )
+                else:
+                    template = self.env['card.template'].render_template(
+                        self.template_id.body_html, model, res_ids
+                    )
+                self.body = template.get(res_ids[0])
 
     @api.multi
     def print_card(self):
         for rec in self:
             import urlparse
             template_body = rec.body
-            print "template_body", template_body
             soup = BeautifulSoup(template_body, 'html.parser')
 
             # converts relative image urls to absolute url for img tag
@@ -59,7 +78,6 @@ class CardPrintWizard(models.TransientModel):
 
             # converts relative backgroung-image sytle urls to absolute url for section tag
             soup = BeautifulSoup(template_body, 'html.parser')
-            print dir(soup)
             section_list = soup.find_all('section')
 
             for section in section_list:

@@ -51,20 +51,35 @@
                         <div>
                             <div>
                                 <field name="card_model" widget="radio" options="{'horizontal': true}"/>
-
                             </div>
                         </div>
-                        <label for="card_model" string="Print Position"/>
+                        <!-- <label for="card_model" string="Print Position"/>
                         <div>
                             <div>
                                 <field name="position" widget="radio" options="{'horizontal': true}"/>
                             </div>
-                        </div>
+                        </div> -->
+                    </group>
+                    <group>
+                        <group>
+                            <field name="front_side" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="back_side" />
+                        </group>
                     </group>
                     <notebook>
-                        <page string="Template Design" name="body">
+                        <page string="Front Template Design" name="body"
+                            attrs="{'invisible': [('front_side', '=', False)]}"
+                            >
                             <field name="body_html" widget="html_frame"
                                    options="{'editor_url': '/card_design/field/card_template'}"/>
+                        </page>
+                        <page string="Back Template Design" name="back_body"
+                            attrs="{'invisible': [('back_side', '=', False)]}">
+                            <field name="back_body_html" widget="html_frame"
+                                options="{'editor_url': '/card_design/field/card_template_back'}"
+                            />
                         </page>
                         <page string="Info" name="info">
                             <group>
@@ -79,7 +94,6 @@
         </field>
     </record>
 
-
     <record model="ir.actions.act_window" id="card_desgin_template_action">
         <field name="name">Card Template</field>
         <field name="res_model">card.template</field>
@@ -88,8 +102,7 @@
 
     <menuitem name="Cards" id="card_design_menu_child" parent="card_design_menu"/>
     <menuitem name="Card Templates" id="card_design_template_menu" parent="card_design_menu_child"
-              action="card_desgin_template_action"/>
-
+        action="card_desgin_template_action"/>
 
     <record model="ir.ui.view" id="card_card_design_tree_view">
         <field name="name">card.card.design.tree.view</field>
@@ -126,7 +139,6 @@
                         </page>
                     </notebook>
                 </sheet>
-
             </form>
         </field>
     </record>

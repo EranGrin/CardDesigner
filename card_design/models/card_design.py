@@ -105,6 +105,7 @@ class CardTemplate(models.Model):
 
     name = fields.Char("Name", required=1)
     body_html = fields.Html(string='Body', sanitize_attributes=False)
+    back_body_html = fields.Html(string='Back Body', sanitize_attributes=False)
     active = fields.Boolean('Active', default=True)
     card_model = fields.Selection(
         selection=_get_card_designer_model, string='Model', required=True,
@@ -114,6 +115,8 @@ class CardTemplate(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('approved', 'Approved')], 'State', default='draft')
     card_ids = fields.One2many('card.card', 'template_id', "Cards")
     card_count = fields.Integer('Count', compute="_get_cards")
+    front_side = fields.Boolean('Front Side', default=True)
+    back_side = fields.Boolean('Back Side')
     position = fields.Selection([('f', 'Front'), ('b', 'Back')], "Position", default='f')
     default = fields.Boolean('Default')
     ref_ir_act_window_id = fields.Many2one(
