@@ -1,58 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<template id="snippet_options">
-    <t t-call="web_editor.snippet_options"/>
-    <t t-raw="0"/>
+    <template id="borderpicker" name="Border-Picker">
+        <borderpicker>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-flask">
+                <button data-border="dotted">Dashed</button>
+                <button data-border="dashed">Dashed</button>
+                <button data-border="solid">Solid</button>
+                <button data-border="double">Double</button>
+                <button data-border="groove">Groove</button>
+            </div>
+        </borderpicker>
+    </template>
 
-    <div data-js="width-x"
-        data-selector="img, .mv, .col_mv, td:not(.o_mail_no_resize), th">
-    </div>
+    <template id="bordersizepicker" name="Border-Size-Picker">
+        <borderpicker>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-database">
+                <button data-border-width="width-2px">2px</button>
+                <button data-border-width="width-3px">3px</button>
+                <button data-border-width="width-4px">4px</button>
+                <button data-border-width="width-5px">5px</button>
+                <button data-border-width="width-6px">6px</button>
+            </div>
+        </borderpicker>
+    </template>
 
-    <div data-js="table_item" data-selector="td, th"/>
+    <template id="snippet_options">
+        <t t-call="web_editor.snippet_options"/>
+        <t t-raw="0"/>
 
-    <div data-js="table_row"
-        data-selector="tr:has(> .row), tr:has(> .col_mv)"
-        data-drop-near="tr:has(> .row), tr:has(> .col_mv)">
-    </div>
+        <div data-js="width-x"
+            data-selector="img, .mv, .col_mv, td:not(.o_mail_no_resize), th">
+        </div>
 
-    <div data-js="table_column"
-        data-selector=".col>td, .col>th"
-        data-drop-near=".col>td, .col>th">
-    </div>
+        <div data-js="table_item" data-selector="td, th"/>
 
-    <div data-js="table_column_mv"
-        data-selector=".col_mv, td, th"
-        data-drop-near=".col_mv, td, th">
-    </div>
+        <div data-js="table_row"
+            data-selector="tr:has(> .row), tr:has(> .col_mv)"
+            data-drop-near="tr:has(> .row), tr:has(> .col_mv)">
+        </div>
 
-    <div data-js="content"
-        data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div, .oe_snippet_body"
-        data-drop-near="[data-oe-field='body_html']:not(:has(.o_layout)) > *, .oe_structure > *"
-        data-drop-in="[data-oe-field='body_html']:not(:has(.o_layout)), .oe_structure">
-    </div>
+        <div data-js="table_column"
+            data-selector=".col>td, .col>th"
+            data-drop-near=".col>td, .col>th">
+        </div>
 
-    <div data-js="resize"
-        data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div">
-    </div>
+        <div data-js="table_column_mv"
+            data-selector=".col_mv, td, th"
+            data-drop-near=".col_mv, td, th">
+        </div>
 
-    <div data-js="margin-y"
-        data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div, td:not(.o_mail_no_resize), th">
-    </div>
+        <div data-js="content"
+            data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div, .oe_snippet_body"
+            data-drop-near="[data-oe-field='body_html']:not(:has(.o_layout)) > *, .oe_structure > *"
+            data-drop-in="[data-oe-field='body_html']:not(:has(.o_layout)), .oe_structure">
+        </div>
 
-    <div data-js="colorpicker"
-        data-selector="
-            [data-oe-field='body_html'] > div:not(.o_layout):not(.o_mail_no_colorpicker),
-            [data-oe-field='body_html'] .oe_structure > div:not(.o_mail_no_colorpicker),
-            td, th
-        ">
-        <li class="dropdown-submenu">
-            <a tabindex="-1" href="#"><i class="fa fa-eyedropper"/>Background Color</a>
-            <ul class="dropdown-menu">
-                <li></li>
-            </ul>
-        </li>
-    </div>
-</template>
+        <div data-js="resize"
+            data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div">
+        </div>
+
+        <div data-js="margin-y"
+            data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div, td:not(.o_mail_no_resize), th">
+        </div>
+
+        <div data-js="colorpicker"
+            data-selector="
+                [data-oe-field='body_html'] > div:not(.o_layout):not(.o_mail_no_colorpicker),
+                [data-oe-field='body_html'] .oe_structure > div:not(.o_mail_no_colorpicker),
+                td, th
+            ">
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="#"><i class="fa fa-eyedropper"/>Background Color</a>
+                <ul class="dropdown-menu">
+                    <li></li>
+                </ul>
+            </li>
+        </div>
+
+        <div data-js="borderpicker"
+            data-selector="
+                [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='body_html'] .oe_structure > div,
+                td, th
+            ">
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="#"><i class="fa fa-eyedropper"/>Border</a>
+                <ul class="dropdown-menu">
+                    <li></li>
+                </ul>
+            </li>
+        </div>
+
+        <div data-js="bordersizepicker"
+            data-selector="
+                [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='body_html'] .oe_structure > div,
+                td, th
+            ">
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="#"><i class="fa fa-eyedropper"/>Border Size</a>
+                <ul class="dropdown-menu">
+                    <li></li>
+                </ul>
+            </li>
+        </div>
+    </template>
 
 </odoo>

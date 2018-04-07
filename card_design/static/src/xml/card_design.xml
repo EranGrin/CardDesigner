@@ -14,4 +14,55 @@
             </li>
         </div>
     </div>
+
+    <div t-name="web_editor.snippet.option.borderpicker" class="borderpicker">
+        <div class="note-palette-title">Border</div>
+        <div class="btn-group palette-reset">
+            <div class="note-border-reset" data-event="foreborder" data-value="inherit" title="None">
+                <i class="fa fa-ban"/>
+            </div>
+        </div>
+        <div class="o_borderpicker_sections">
+            <ul class="nav nav-pills o_borderpicker_section_menu"/>
+            <div class="tab-content o_borderpicker_section_tabs"/>
+        </div>
+    </div>
+
+    <div t-name="web_editor.snippet.option.bordersizepicker" class="bordersizepicker">
+        <div class="note-palette-title">Border Size</div>
+        <div class="btn-group palette-reset">
+            <div class="note-border-reset" data-event="foreborder" data-value="inherit" title="None">
+                <i class="fa fa-ban"/>
+            </div>
+        </div>
+        <div class="o_borderpicker_sections">
+            <ul class="nav nav-pills o_borderpicker_section_menu"/>
+            <div class="tab-content o_borderpicker_section_tabs"/>
+        </div>
+    </div>
+
+    <template id="card_design.borderpicker" name="Border-Picker">
+        <borderpicker>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-flask">
+                <button data-border="dotted">Dashed</button>
+                <button data-border="dashed">Dashed</button>
+                <button data-border="solid">Solid</button>
+                <button data-border="double">Double</button>
+                <button data-border="groove">Groove</button>
+            </div>
+        </borderpicker>
+    </template>
+
+    <template id="card_design.bordersizepicker" name="Border-Size-Picker">
+        <bordersizepicker>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-database">
+                <button data-border-width="width-2px">2px</button>
+                <button data-border-width="width-3px">3px</button>
+                <button data-border-width="width-4px">4px</button>
+                <button data-border-width="width-5px">5px</button>
+                <button data-border-width="width-6px">6px</button>
+            </div>
+        </bordersizepicker>
+    </template>
+
 </templates>

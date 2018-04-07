@@ -19,6 +19,7 @@
                     <i class="fa fa-angle-double-up"/> Headers
                 </div>
                 <div class="o_panel_body">
+                    <t t-snippet="card_design.s_card_block_display_blocker" t-thumbnail="/card_design/static/src/img/blocks/block_header_social.png"/>
                     <t t-snippet="card_design.s_card_block_header_social" t-thumbnail="/card_design/static/src/img/blocks/block_header_social.png"/>
                     <t t-snippet="card_design.s_card_block_header_text_social" t-thumbnail="/card_design/static/src/img/blocks/block_header_text_social.png"/>
                     <t t-snippet="card_design.s_card_block_header_logo" t-thumbnail="/card_design/static/src/img/blocks/block_header_logo.png"/>
@@ -69,6 +70,29 @@
     <xpath expr="//div[@id='snippet_options']" position="inside">
         <t t-call="card_design.snippet_options"/>
     </xpath>
+</template>
+
+<template id="s_card_block_display_blocker" name="Profile Template">
+        <div class="o_mail_block_footer_separator ">
+            <div class="o_mail_snippet_general">
+                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles o_mail_h_padding ">
+                    <tr>
+                        <td>
+                            <div id="front-page">
+                                <div class="arrow-downn">
+                                    <img src="/card_design/static/src/img/assets/profile-img.jpg" class="profile-img"/>
+                                </div>
+                                <p class="Ecode">Employee Code : ECS0989</p>
+                                <img src="/card_design/static/src/img/assets/profile-img.jpg" class="profile-img"/>
+                                <h1 class="Name"> Mani Varman G</h1>
+                                <h3 class="Post">Graphics Designer</h3>
+                                <img src="/card_design/static/src/img/assets/logo-1.png" class="company-logo"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+    </div>
 </template>
 
 <!-- Snippet Templates -->
