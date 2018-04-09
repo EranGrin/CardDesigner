@@ -1105,3 +1105,213 @@ img.Com-logo {
 }
 
 // done
+
+
+
+.note-editor {
+    .bordercolorpicker .o_colorpicker_section > button {
+        display: none;
+        &[data-border-color="alpha"], &[data-borer-color="beta"], &[data-border-color="gamma"], &[data-border-color="delta"], &[data-border-color="epsilon"],
+        &[data-border-color="white"], &[data-border-color="gray-lighter"], &[data-border-color="gray-light"], &[data-border-color="gray"], &[data-border-color="gray-dark"], &[data-border-color="gray-darker"], &[data-border-color="black"],
+        &[data-border-color="primary"], &[data-border-color="success"], &[data-border-color="info"], &[data-border-color="warning"], &[data-border-color="danger"] {
+            display: block;
+        }
+    }
+}
+
+table.bordercolorpicker {
+    width: 100%;
+    td {
+        padding: 0 2px 2px 0;
+        > button {
+            width: 100%;
+            border: 1px solid black;
+            padding: 0;
+            &::after {
+                content: "A";
+                font-weight: bold;
+                vertical-align: sub;
+            }
+        }
+    }
+}
+.bordercolorpicker {
+    background-color: @o-we-color-dark!important;
+
+    .o_colorpicker_sections {
+        border: 1px solid darken(@o-we-color-dark, 12%);
+        border-width: 1px 0 0;
+        font-size: 14px;
+
+        .o_colorpicker_section_menu {
+            width: 50px;
+            height: 100%;
+            float: left;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-align: center;
+
+            > li {
+                display: block;
+                float: none;
+                margin: 0;
+                background-color: transparent;
+                > a {
+                    display: block;
+                    padding: 5px 10px!important;
+                    border-radius: 0;
+                    background-color: transparent;
+                    color: darken(@o-we-color-text-light, 10%);
+                    > i.fa {
+                        font-size: 20px;
+                    }
+
+                    &:focus, &:active, &:focus:active {
+                        outline: none;
+                    }
+                }
+                &:hover, &.active {
+                    > a {
+                        color: white;
+                    }
+                }
+                &.active > a {
+                    background-color: @o-we-tab-active-bg!important;
+                }
+            }
+        }
+        .o_colorpicker_section_tabs {
+            width: 200px;
+            height: 100%;
+            margin-left: 50px;
+            .tab-pane {
+                padding: 5px 10px;
+                background-color: @o-we-tab-active-bg;
+            }
+            &.o_unique_palette {
+                margin-left: 0;
+            }
+        }
+    }
+    .o_colorpicker_section {
+        &:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        > button {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 30px;
+            border: 1px solid @o-we-color-dark;
+            border-radius: 3px;
+            margin: 0 0 5px;
+            padding: 0 20px;
+            line-height: 28px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: left;
+           
+            &:hover, &.selected {
+                box-shadow: 0px 0px 2px 2px @o-we-color-light;
+            }
+
+            &:after {
+                content: "";
+                width: 25px;
+                text-align: center;
+                font-size: 13px;
+                line-height: 28px;
+                font-weight: normal;
+            }
+            &.selected:after {
+                content: "\f00c";
+                font-family: "FontAwesome";
+                color: @brand-success;
+            }
+
+            &[data-event="foreColor"] {
+                background-color: @o-we-color-normal;
+                &:after {
+                    background-color: fade(white, 30%);
+                }
+            }
+
+            &.o_small {
+                float: left;
+                width: auto;
+                min-width: 27px;
+                padding: 0;
+                margin-right: 5px;
+            }
+
+            &.o_btn_transparent::before {
+                background-color: transparent;
+            }
+        }
+    }
+    .note-palette-title {
+        padding: 10px 0px 10px 10px;
+        color: @o-we-color-text-light;
+        font-weight: bold;
+    }
+    .palette-reset {
+        margin: 0;
+        padding: 5px 10px 0;
+        .note-color-reset {
+            font-size: 20px!important;
+            color: desaturate(fade(@o-we-color-danger, 60%), 40%);
+            margin: 1px 0 0;
+            padding: 0;
+            cursor: pointer;
+            &:hover {
+                background: transparent!important;
+                color: @o-we-color-danger;
+            }
+        }
+    }
+}
+
+@border-color-alpha: #1cc1a9;
+@border-color-beta: #875A7B;
+@border-color-gamma: #BA3C3D;
+@border-color-delta: #0D6759;
+@border-color-epsilon: #0B2E59;
+
+//Greyscale transparent colours
+@border-color-black-25: fade(black, 25%);
+@border-color-black-50: fade(black, 50%);
+@border-color-black-75: fade(black, 75%);
+@border-color-white-25: fade(white, 25%);
+@border-color-white-50: fade(white, 50%);
+@border-color-white-75: fade(white, 75%);
+
+.o-create-border-color-classes(@class_name, @border-color, @complementary: contrast(@border-color, #FFF, 60%), @content-color: @border-color) {
+    .bg-@{class_name} {
+        border-color: @border-color;
+    }
+}
+
+@colorpicker-img-path: "/card_design/static/src/lib/bootstrap-colorpicker/";
+
+.colorpicker-element {
+    @colorpicker-width: 170px;
+    @colorpicker-height: 118px;
+
+    .colorpicker-inline {
+        min-width: initial;
+        display: block;
+        margin-top: 3px !important;
+    }
+    .colorpicker-saturation {
+        width: @colorpicker-height;
+        height: @colorpicker-height;
+    }
+    .colorpicker-hue, .colorpicker-alpha {
+        width: (@colorpicker-width - @colorpicker-height) / 2;
+        height: @colorpicker-height;
+    }
+}

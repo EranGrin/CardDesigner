@@ -25,6 +25,17 @@
         </borderpicker>
     </template>
 
+    <template id="bordercolorpicker" name="Boder-Color-Picker">
+        <colorpicker>
+            <div
+                class="o_colorpicker_section"
+                data-name="custom_color"
+                data-icon-class="fa fa-code">
+                <input type="text" class="form-control" />
+            </div>
+        </colorpicker>
+    </template>
+
     <template id="snippet_options">
         <t t-call="web_editor.snippet_options"/>
         <t t-raw="0"/>
@@ -100,6 +111,20 @@
             ">
             <li class="dropdown-submenu">
                 <a tabindex="-1" href="#"><i class="fa fa-eyedropper"/>Border Size</a>
+                <ul class="dropdown-menu">
+                    <li></li>
+                </ul>
+            </li>
+        </div>
+
+        <div data-js="bordercolorpicker"
+            data-selector="
+                [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='body_html'] .oe_structure > div,
+                td, th
+            ">
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="#"><i class="fa fa-eyedropper"/>Border Color</a>
                 <ul class="dropdown-menu">
                     <li></li>
                 </ul>

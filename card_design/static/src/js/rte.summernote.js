@@ -21,6 +21,14 @@ odoo.define('card_design.rte.summernote', function (require) {
     ajax.jsonRpc('/web/dataset/call', 'call', {
         'model': 'ir.ui.view',
         'method': 'read_template',
+        'args': ['card_design.bordercolorpicker', base.get_context()]
+    }).done(function (data) {
+        QWeb.add_template(data);
+    });
+
+    ajax.jsonRpc('/web/dataset/call', 'call', {
+        'model': 'ir.ui.view',
+        'method': 'read_template',
         'args': ['card_design.bordersizepicker', base.get_context()]
     }).done(function (data) {
         QWeb.add_template(data);
@@ -58,9 +66,14 @@ odoo.define('card_design.rte.summernote', function (require) {
             return;
         }
 
+        if (!QWeb.has_template('web_editor.bordercolorpicker')) {
+            return;
+        }
+
         var $clpicker = $(QWeb.render('web_editor.colorpicker'));
         var $bdpicker = $(QWeb.render('card_design.borderpicker'));
         var $bdspicker = $(QWeb.render('card_design.bordersizepicker'));
+        var $bclpicker = $(QWeb.render('web_editor.bordercolorpicker'));
 
         var groups;
         if ($clpicker.is("colorpicker")) {
@@ -69,6 +82,15 @@ odoo.define('card_design.rte.summernote', function (require) {
             });
         } else {
             groups = [$clpicker.find("button").empty()];
+        }
+
+        var bclgroups;
+        if ($bclpicker.is("bordercolorpicker")) {
+            bclgroups = _.map($bclpicker.children(), function (el) {
+                return $(el).find("button").empty();
+            });
+        } else {
+            bclgroups = [$bclpicker.find("button").empty()];
         }
 
         var bdgroups;
@@ -99,6 +121,16 @@ odoo.define('card_design.rte.summernote', function (require) {
             return $row[0].outerHTML;
         }).join("") + "<h6>" + _t("Common colors") + "</h6>";
 
+        var bclhtml = "<h6>" + _t("Theme colors") + "</h6>" + _.map(bclgroups, function ($group) {
+            var $bclrow = $("<div/>", {"class": "note-color-row mb8"}).append($group);
+            var $bclafter_breaks = $bclrow.find(".o_small + :not(.o_small)");
+            if ($bclafter_breaks.length === 0) {
+                $bclafter_breaks = $bclrow.find(":nth-child(8n+9)");
+            }
+            $bclafter_breaks.addClass("o_clear");
+            return $bclrow[0].outerHTML;
+        }).join("") + "<h6>" + _t("Common colors") + "</h6>";
+
         var bdhtml = "<h6>" + _t("Theme Border") + "</h6>" + _.map(bdgroups, function ($bdgroup) {
             var $bdrow = $("<div/>", {"class": "note-border-row mb8"}).append($bdgroup);
             var $bdafter_breaks = $bdrow.find(".o_small + :not(.o_small)");
@@ -122,6 +154,9 @@ odoo.define('card_design.rte.summernote', function (require) {
         var $palettes = $container.find(".note-color .note-color-palette");
         $palettes.prepend(html);
 
+        var $bclpalettes = $container.find(".note-color .note-color-palette");
+        $bclpalettes.prepend(html);
+
         var $bdpalettes = $container.find(".note-border .note-border-palette");
         $bdpalettes.prepend(bdhtml);
 
@@ -134,6 +169,9 @@ odoo.define('card_design.rte.summernote', function (require) {
         var $fore = $palettes.last().find("button:not(.note-color-btn)").addClass("note-color-btn");
         var $bdsbg = $bdspalettes.first().find("button:not(.note-border-btn)").addClass("note-border-btn");
         var $bdsfore = $bdspalettes.last().find("button:not(.note-border-btn)").addClass("note-border-btn");
+        var $bclbg = $bclpalettes.first().find("button:not(.note-color-btn)").addClass("note-color-btn");
+        var $bclfore = $bclpalettes.last().find("button:not(.note-color-btn)").addClass("note-color-btn");
+        
 
         $bg.each(function () {
             var $el = $(this);
@@ -144,6 +182,16 @@ odoo.define('card_design.rte.summernote', function (require) {
             var $el = $(this);
             var className = 'text-' + $el.data('color');
             $el.attr('data-event', 'foreColor').attr('data-value', className).addClass('bg-' + $el.data('color'));
+        });
+        $bclbg.each(function () {
+            var $bclel = $(this);
+            var bclclassName = 'bg-' + $bclel.data('border-color');
+            $bclel.attr('data-event', 'backColor').attr('data-value', bclclassName).addClass(bclclassName);
+        });
+        $bclfore.each(function () {
+            var $bclel = $(this);
+            var bclclassName = 'text-' + $el.data('border-color');
+            $bclel.attr('data-event', 'foreColor').attr('data-value', bclclassName).addClass('bg-' + $bclel.data('border-color'));
         });
         $bdbg.each(function () {
             var $bdel = $(this);

@@ -41,6 +41,18 @@
         </div>
     </div>
 
+    <div t-name="web_editor.snippet.option.bordercolorpicker" class="bordercolorpicker">
+        <div class="note-palette-title">Border Color</div>
+        <div class="btn-group palette-reset">
+            <div class="note-color-reset" data-event="foreColor" data-value="inherit" title="None">
+            </div>
+        </div>
+        <div class="o_colorpicker_sections">
+            <ul class="nav nav-pills o_colorpicker_section_menu"/>
+            <div class="tab-content o_colorpicker_section_tabs"/>
+        </div>
+    </div>
+
     <template id="card_design.borderpicker" name="Border-Picker">
         <borderpicker>
             <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-flask">
@@ -63,6 +75,17 @@
                 <button data-border-width="width-6px">6px</button>
             </div>
         </bordersizepicker>
+    </template>
+
+    <template id="card_design.bordercolorpicker" name="Boder-Color-Picker">
+        <colorpicker>
+            <div
+                class="o_colorpicker_section"
+                data-name="custom_color"
+                data-icon-class="fa fa-code">
+                <input type="text" class="form-control" />
+            </div>
+        </colorpicker>
     </template>
 
 </templates>
