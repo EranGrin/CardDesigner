@@ -28,6 +28,19 @@
         </div>
     </div>
 
+    <div t-name="web_editor.snippet.option.borderradiuspicker" class="borderradiuspicker">
+        <div class="note-palette-title">Border Radius</div>
+        <div class="btn-group palette-reset">
+            <div class="note-border-reset" data-event="foreborder" data-value="inherit" title="None">
+                <i class="fa fa-ban"/>
+            </div>
+        </div>
+        <div class="o_borderpicker_sections">
+            <ul class="nav nav-pills o_borderpicker_section_menu"/>
+            <div class="tab-content o_borderpicker_section_tabs"/>
+        </div>
+    </div>
+
     <div t-name="web_editor.snippet.option.bordersizepicker" class="bordersizepicker">
         <div class="note-palette-title">Border Size</div>
         <div class="btn-group palette-reset">
@@ -77,6 +90,30 @@
         </bordersizepicker>
     </template>
 
+    <template id="card_design.borderradiuspicker" name="Border-Radius-Picker">
+        <borderradiuspicker>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-database"
+                style="overflow-x: hidden;height:250px;overflow-y: scroll;">
+                <button data-border-radius="radius-10">10%</button>
+                <button data-border-radius="radius-20">20%</button>
+                <button data-border-radius="radius-30">30%</button>
+                <button data-border-radius="radius-40">40%</button>
+                <button data-border-radius="radius-50">50%</button>
+                <button data-border-radius="radius-5px">5px</button>
+                <button data-border-radius="radius-10px">10px</button>
+                <button data-border-radius="radius-15px">15px</button>
+                <button data-border-radius="radius-20px">20px</button>
+                <button data-border-radius="radius-22px">22px</button>
+                <button data-border-radius="radius-24px">24px</button>
+                <button data-border-radius="radius-25px">25px</button>
+                <button data-border-radius="radius-30px">30px</button>
+                <button data-border-radius="radius-35px">35px</button>
+                <button data-border-radius="radius-40px">40px</button>
+                <button data-border-radius="radius-45px">45px</button>
+            </div>
+        </borderradiuspicker>
+    </template>
+
     <template id="card_design.bordercolorpicker" name="Boder-Color-Picker">
         <colorpicker>
             <div
@@ -87,5 +124,4 @@
             </div>
         </colorpicker>
     </template>
-
 </templates>

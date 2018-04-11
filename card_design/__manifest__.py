@@ -12,7 +12,7 @@
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
-    'version': '10.0.2018.04.07',
+    'version': '10.0.2018.04.12',
     'depends': ['hr', 'web_editor', 'mail', 'web_kanban_gauge'],
 
     'external_dependencies': {
@@ -29,7 +29,8 @@
         'views/snippets_themes_options.xml',
     ],
     'qweb': [
-        '/card_design/static/src/xml/card_design.xml'
+        '/card_design/static/src/xml/card_design.xml',
+        '/card_design/static/src/xml/colorpicker.xml'
     ],
     'application': True,
 }

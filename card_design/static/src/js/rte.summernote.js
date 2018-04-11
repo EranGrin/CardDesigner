@@ -34,6 +34,14 @@ odoo.define('card_design.rte.summernote', function (require) {
         QWeb.add_template(data);
     });
 
+    ajax.jsonRpc('/web/dataset/call', 'call', {
+        'model': 'ir.ui.view',
+        'method': 'read_template',
+        'args': ['card_design.borderradiuspicker', base.get_context()]
+    }).done(function (data) {
+        QWeb.add_template(data);
+    });
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Summernote Lib (neek change to make accessible: method and object) */
 
@@ -66,6 +74,10 @@ odoo.define('card_design.rte.summernote', function (require) {
             return;
         }
 
+        if (!QWeb.has_template('card_design.borderradiuspicker')) {
+            return;
+        }
+
         if (!QWeb.has_template('web_editor.bordercolorpicker')) {
             return;
         }
@@ -74,6 +86,7 @@ odoo.define('card_design.rte.summernote', function (require) {
         var $bdpicker = $(QWeb.render('card_design.borderpicker'));
         var $bdspicker = $(QWeb.render('card_design.bordersizepicker'));
         var $bclpicker = $(QWeb.render('web_editor.bordercolorpicker'));
+        var $bdrpicker = $(QWeb.render('card_design.borderradiuspicker'));
 
         var groups;
         if ($clpicker.is("colorpicker")) {
@@ -109,6 +122,15 @@ odoo.define('card_design.rte.summernote', function (require) {
             });
         } else {
             bdsgroups = [$bdspicker.find("button").empty()];
+        }
+
+        var bdrgroups;
+        if ($bdrpicker.is("borderradiuspicker")) {
+            bdrgroups = _.map($bdrpicker.children(), function (el) {
+                return $(el).find("button").empty();
+            });
+        } else {
+            bdrgroups = [$bdrpicker.find("button").empty()];
         }
 
         var html = "<h6>" + _t("Theme colors") + "</h6>" + _.map(groups, function ($group) {
@@ -151,6 +173,16 @@ odoo.define('card_design.rte.summernote', function (require) {
             return $bdsrow[0].outerHTML;
         }).join("") + "<h6>" + _t("Common Borders") + "</h6>";
 
+        var bdrhtml = "<h6>" + _t("Theme Radius Class") + "</h6>" + _.map(bdrgroups, function ($bdrgroup) {
+            var $bdrrow = $("<div/>", {"class": "note-border-row mb8"}).append($bdrgroup);
+            var $bdrafter_breaks = $bdrrow.find(".o_small + :not(.o_small)");
+            if ($bdrafter_breaks.length === 0) {
+                $bdrafter_breaks = $bdrrow.find(":nth-child(8n+9)");
+            }
+            $bdrafter_breaks.addClass("o_clear");
+            return $bdrrow[0].outerHTML;
+        }).join("") + "<h6>" + _t("Common Borders Raidus") + "</h6>";
+
         var $palettes = $container.find(".note-color .note-color-palette");
         $palettes.prepend(html);
 
@@ -163,6 +195,9 @@ odoo.define('card_design.rte.summernote', function (require) {
         var $bdspalettes = $container.find(".note-border .note-border-palette");
         $bdspalettes.prepend(bdshtml);
 
+        var $bdrpalettes = $container.find(".note-border .note-border-palette");
+        $bdrpalettes.prepend(bdrhtml);
+
         var $bdbg = $bdpalettes.first().find("button:not(.note-border-btn)").addClass("note-border-btn");
         var $bdfore = $bdpalettes.last().find("button:not(.note-border-btn)").addClass("note-border-btn");
         var $bg = $palettes.first().find("button:not(.note-color-btn)").addClass("note-color-btn");
@@ -171,7 +206,8 @@ odoo.define('card_design.rte.summernote', function (require) {
         var $bdsfore = $bdspalettes.last().find("button:not(.note-border-btn)").addClass("note-border-btn");
         var $bclbg = $bclpalettes.first().find("button:not(.note-color-btn)").addClass("note-color-btn");
         var $bclfore = $bclpalettes.last().find("button:not(.note-color-btn)").addClass("note-color-btn");
-        
+        var $bdrbg = $bdrpalettes.first().find("button:not(.note-border-btn)").addClass("note-border-btn");
+        var $bdrfore = $bdrpalettes.last().find("button:not(.note-border-btn)").addClass("note-border-btn");
 
         $bg.each(function () {
             var $el = $(this);
@@ -212,6 +248,16 @@ odoo.define('card_design.rte.summernote', function (require) {
             var $bdsel = $(this);
             var bdsclassName = 'text-' + $bdsel.data('border-width');
             $bdsel.attr('data-event', 'foreBorder').attr('data-value', bdsclassName).addClass('bg-' + $bdsel.data('border-width'));
+        });
+        $bdrbg.each(function () {
+            var $bdrel = $(this);
+            var bdrclassName = 'bg-' + $bdrel.data('border-radius');
+            $bdrel.attr('data-event', 'backBorder').attr('data-value', bdrclassName).addClass(bdrclassName);
+        });
+        $bdrfore.each(function () {
+            var $bdrel = $(this);
+            var bdrclassName = 'text-' + $bdrel.data('border-radius');
+            $bdrel.attr('data-event', 'foreBorder').attr('data-value', bdrclassName).addClass('bg-' + $bdrel.data('border-radius'));
         });
     };
 
