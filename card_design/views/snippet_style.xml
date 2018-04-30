@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+    <template id="snippet_style_options">
+    </template>
+
+    <template id="snippets_style">
+        <div id="snippet_style_options" class="hidden">
+            <t t-call="card_design.snippet_style_options"/>
+        </div>
+    </template>
+
+</odoo>

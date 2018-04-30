@@ -9,7 +9,6 @@ odoo.define('card_design.snippets.options', function (require) {
     var base = require('web_editor.base');
     var editor = require('web_editor.editor');
     var widget = require('web_editor.widget');
-
     var qweb = core.qweb;
     var _t = core._t;
     var options = require('web_editor.snippets.options');
@@ -48,12 +47,10 @@ odoo.define('card_design.snippets.options', function (require) {
                     $sections.each(function () {
                         var $section = $(this);
                         var id = 'o_palette_' + $section.data('name') + _.uniqueId();
-
                         var $li = $('<li/>')
                                     .append($('<a/>', {href: '#' + id})
                                         .append($('<i/>', {'class': $section.data('iconClass') || '', html: $section.data('iconContent') || ''})));
                         $toggles.append($li);
-
                         $tabs.append($section.addClass('tab-pane').attr('id', id));
                     });
 

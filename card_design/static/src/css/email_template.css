@@ -8,6 +8,11 @@
     overflow: hidden !important;
 }
 
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: 0 !important;
+}
+
 .kanban_html_preview {
     pointer-events: none;
     width: 600px;

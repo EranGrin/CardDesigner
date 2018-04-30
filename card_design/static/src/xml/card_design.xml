@@ -1,5 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
+
+    <form t-name="card_design.dialog.position" style="overflow: scroll;height:530px;" action="#" class="form-horizontal">
+        <hr />
+        <strong class="text-center"> Position (px) </strong>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="title">Position</label>
+            <div class="col-sm-9">
+                <select  class="form-control" id="position" name="position">
+                    <option value="">None</option>
+                    <option value="static">Static</option>
+                    <option value="relative">Relative</option>
+                    <option value="fixed">Fixed</option>
+                    <option value="absolute">Absolute</option>
+                    <option value="sticky">Sticky</option>
+                    <option value="initial">Initial</option>
+                    <option value="inherit">Inherit</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pptop">Top</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pptop" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="ppbottom">Bottom</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="ppbottom" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="ppleft">Left</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="ppleft" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="ppright">Right</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="ppright" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="zindex">Z-Index</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="zindex" type="number"/>
+            </div>
+        </div>
+        <hr />
+        <strong class="text-center">Background Color</strong>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pbackground">Color</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pbackground" type="text"/>
+            </div>
+        </div>
+        <hr />
+        <strong class="text-center">Border</strong>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pborder">Border</label>
+            <div class="col-sm-9">
+                <select  class="form-control" id="pborder" name="pborder">
+                    <option value="">None</option>
+                    <option value="dotted">Dotted</option>
+                    <option value="dashed">Dashed</option>
+                    <option value="solid">Solid</option>
+                    <option value="double">Double</option>
+                    <option value="groove">Groove</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pbordersize">Width (px)</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pbordersize" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pbordercolor">Color</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pbordercolor" type="text"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pborderadius">Radius (%)</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pborderadius" type="number"/>
+            </div>
+        </div>
+        <hr />
+        <strong class="text-center"> Margin (px)</strong>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="mtop">Top</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="mtop" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="mright">Right</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="mright" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="mbottom">Bottom</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="mbottom" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="mleft">Left</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="mleft" type="number"/>
+            </div>
+        </div>
+        <hr />
+        <strong class="text-center"> Padding (px)</strong>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="ptop">Top</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="ptop" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pright">Right</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pright" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pbottom">Bottom</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pbottom" type="number"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="pleft">Left</label>
+            <div class="col-sm-9">
+                <input class="form-control" id="pleft" type="number"/>
+            </div>
+        </div>
+    </form>
+
     <div t-name="card_design.theme_selector" class="o_mail_theme_selector">
         <a href="#" class="btn btn-xs dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-paint-brush"/> Change Style
@@ -68,12 +217,40 @@
 
     <template id="card_design.borderpicker" name="Border-Picker">
         <borderpicker>
-            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-flask">
-                <button data-border="dotted">Dashed</button>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-square-o">
+                <button data-border="dotted">Dotted</button>
                 <button data-border="dashed">Dashed</button>
                 <button data-border="solid">Solid</button>
                 <button data-border="double">Double</button>
                 <button data-border="groove">Groove</button>
+            </div>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-square-o">
+                <button data-border="top-dotted">Top Dotted</button>
+                <button data-border="top-dashed">Top Dashed</button>
+                <button data-border="top-solid">Top Solid</button>
+                <button data-border="top-double">Top Double</button>
+                <button data-border="top-groove">Top Groove</button>
+            </div>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-square-o">
+                <button data-border="left-dotted">Left Dotted</button>
+                <button data-border="left-dashed">Left Dashed</button>
+                <button data-border="left-solid">Left Solid</button>
+                <button data-border="left-double">Left Double</button>
+                <button data-border="left-groove">Left Groove</button>
+            </div>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-square-o">
+                <button data-border="bottom-dotted">Bottom Dotted</button>
+                <button data-border="bottom-dashed">Bottom Dashed</button>
+                <button data-border="bottom-solid">Bottom Solid</button>
+                <button data-border="bottom-double">Bottom Double</button>
+                <button data-border="bottom-groove">Bottom Groove</button>
+            </div>
+            <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-square-o">
+                <button data-border="right-dotted">Right Dotted</button>
+                <button data-border="right-dashed">Right Dashed</button>
+                <button data-border="right-solid">Right Solid</button>
+                <button data-border="right-double">Right Double</button>
+                <button data-border="right-groove">Right Groove</button>
             </div>
         </borderpicker>
     </template>

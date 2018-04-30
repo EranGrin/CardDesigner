@@ -121,11 +121,13 @@
                 <tr>
                     <td width="70%" class="o_mail_h_padding o_mail_v_padding">
                         &amp;nbsp;
-                        <h3>
-                            <a t-att-href="(company_id.website) or '#'">
-                                My Company
-                            </a>
-                        </h3>
+                        <div>
+                            <h3>
+                                <a t-att-href="(company_id.website) or '#'">
+                                    My Company
+                                </a>
+                            </h3>
+                        </div>
                         &amp;nbsp;
                     </td>
                 </tr>
@@ -177,21 +179,22 @@
                 <tbody>
                     <tr>
                         <td width="100%" class="o_mail_h_padding o_mail_v_padding">
-                            <h2 class="mt0">Thank you for joining us!</h2>
-                            <p>We want to take this opportunity to welcome you to our ever-growing community!<br/></p>
-                            <p>Your platform is ready for work. It will help you reduce the costs of digital signage, attract new customers and increase sales.</p>
-                            <p>Enjoy,</p>
-                            <img src="/card_design/static/src/img/theme_default//demo/signature.png" style="width:125px; margin-top:8px;margin-bottom:-25px;" alt="Demo Signature"/>
-                            <p>
-                                <small>
-                                    <strong>Michael Fletcher</strong><br/>
-                                    <small>Community Manager</small>
-                                </small>
-                            </p>
-                            <div class="o_mail_v_padding text-center">
-                                <a href="#" class="btn btn-primary">LOGIN</a>
+                            <div>
+                                <h2 class="mt0">Thank you for joining us!</h2>
+                                <p>We want to take this opportunity to welcome you to our ever-growing community!<br/></p>
+                                <p>Your platform is ready for work. It will help you reduce the costs of digital signage, attract new customers and increase sales.</p>
+                                <p>Enjoy,</p>
+                                <img src="/card_design/static/src/img/theme_default//demo/signature.png" style="width:125px; margin-top:8px;margin-bottom:-25px;" alt="Demo Signature"/>
+                                <p>
+                                    <small>
+                                        <strong>Michael Fletcher</strong><br/>
+                                        <small>Community Manager</small>
+                                    </small>
+                                </p>
+                                <div class="o_mail_v_padding text-center">
+                                    <a href="#" class="btn btn-primary">LOGIN</a>
+                                </div>
                             </div>
-
                         </td>
                     </tr>
                 </tbody>
@@ -207,13 +210,15 @@
                 <tbody>
                     <tr>
                         <td width="100%" class="o_mail_h_padding o_mail_v_padding">
-                            <p> The open source model of Odoo has allowed us to leverage thousands of developers and
-                                business experts to build hundreds of apps in just a few years.</p>
-                            <p> With strong technical foundations, Odoo's framework is unique.
-                                It provides top notch usability that scales across all apps.</p>
-                            <p> Usability improvements made on Odoo will automatically apply to all
-                                of our fully integrated apps.</p>
-                            <p> That way, Odoo evolves much faster than any other solution.</p>
+                            <div>
+                                <p> The open source model of Odoo has allowed us to leverage thousands of developers and
+                                    business experts to build hundreds of apps in just a few years.</p>
+                                <p> With strong technical foundations, Odoo's framework is unique.
+                                    It provides top notch usability that scales across all apps.</p>
+                                <p> Usability improvements made on Odoo will automatically apply to all
+                                    of our fully integrated apps.</p>
+                                <p> That way, Odoo evolves much faster than any other solution.</p>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -230,8 +235,10 @@
                 <tbody>
                     <tr>
                         <td class="o_mail_h_padding o_mail_v_padding">
-                            <h2 class="o_mail_no_margin">Check this out!</h2>
-                            <p class="o_mail_no_margin">Apps That Help You Grow Your Business!</p>
+                            <div>
+                                <h2 class="o_mail_no_margin">Check this out!</h2>
+                                <p class="o_mail_no_margin">Apps That Help You Grow Your Business!</p>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -247,116 +254,120 @@
                 <tbody>
                     <tr>
                         <td class="o_mail_h_padding o_mail_v_padding o_mail_col_mv">
-                            <table cellspacing="0" cellpadding="0" class="o_mail_table_styles">
-                                <thead>
-                                    <tr>
-                                        <th class="bg-beta o_mail_v_padding o_mail_col_mv">
-                                            <h2 class="text-center o_mail_no_margin">DEFAULT</h2>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-gray-lighter">
-                                    <tr>
-                                        <td class="text-center o_mail_col_mv">
-                                            <p class="o_mail_display_coupon text-center" style="margin-top:10px;">$8</p>
-                                            <small>user / month (billed annually)</small>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td valign="top" class="o_mail_v_padding o_mail_col_mv">
-                                            <div class="separator"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p>Basic features</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p>Basic management</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p>No customization</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p>No support</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot class="bg-gray-lighter">
-                                    <tr>
-                                        <td valign="top" class="o_mail_v_padding o_mail_col_mv">
-                                            <div class="separator"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td valign="top" class="text-center o_mail_h_padding o_mail_col_mv" style="padding-bottom: 20px;">
-                                            <a href="#" class="btn btn-block btn-primary">More</a>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            <div>
+                                <table cellspacing="0" cellpadding="0" class="o_mail_table_styles">
+                                    <thead>
+                                        <tr>
+                                            <th class="bg-beta o_mail_v_padding o_mail_col_mv">
+                                                <h2 class="text-center o_mail_no_margin">DEFAULT</h2>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-gray-lighter">
+                                        <tr>
+                                            <td class="text-center o_mail_col_mv">
+                                                <p class="o_mail_display_coupon text-center" style="margin-top:10px;">$8</p>
+                                                <small>user / month (billed annually)</small>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" class="o_mail_v_padding o_mail_col_mv">
+                                                <div class="separator"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p>Basic features</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p>Basic management</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p>No customization</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p>No support</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="bg-gray-lighter">
+                                        <tr>
+                                            <td valign="top" class="o_mail_v_padding o_mail_col_mv">
+                                                <div class="separator"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" class="text-center o_mail_h_padding o_mail_col_mv" style="padding-bottom: 20px;">
+                                                <a href="#" class="btn btn-block btn-primary">More</a>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </td>
                         <td class="o_mail_h_padding o_mail_v_padding o_mail_col_mv">
-                            <table cellspacing="0" cellpadding="0" class="o_mail_table_styles">
-                                <thead>
-                                    <tr>
-                                        <th class="bg-beta o_mail_v_padding o_mail_col_mv">
-                                            <h2 class="text-center o_mail_no_margin">PRO</h2>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-gray-lighter">
-                                    <tr>
-                                        <td class="text-center o_mail_col_mv">
-                                            <p class="o_mail_display_coupon text-center" style="margin-top:10px;">$18</p>
-                                            <small>user / month (billed annually)</small>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td valign="top" class="o_mail_v_padding o_mail_col_mv">
-                                            <div class="separator"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p><strong>Advanced</strong> features</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p><strong>Total</strong> management</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p><strong>Fully customizable</strong></p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="o_mail_col_mv">
-                                            <p><strong>24/7 Support</strong></p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot class="bg-gray-lighter">
-                                    <tr>
-                                        <td valign="top" class="o_mail_v_padding o_mail_col_mv">
-                                            <div class="separator"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td valign="top" class="text-center o_mail_h_padding o_mail_col_mv" style="padding-bottom: 20px;">
-                                            <a href="#" class="btn btn-block btn-primary">More</a>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            <div>
+                                <table cellspacing="0" cellpadding="0" class="o_mail_table_styles">
+                                    <thead>
+                                        <tr>
+                                            <th class="bg-beta o_mail_v_padding o_mail_col_mv">
+                                                <h2 class="text-center o_mail_no_margin">PRO</h2>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-gray-lighter">
+                                        <tr>
+                                            <td class="text-center o_mail_col_mv">
+                                                <p class="o_mail_display_coupon text-center" style="margin-top:10px;">$18</p>
+                                                <small>user / month (billed annually)</small>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" class="o_mail_v_padding o_mail_col_mv">
+                                                <div class="separator"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p><strong>Advanced</strong> features</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p><strong>Total</strong> management</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p><strong>Fully customizable</strong></p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="o_mail_col_mv">
+                                                <p><strong>24/7 Support</strong></p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="bg-gray-lighter">
+                                        <tr>
+                                            <td valign="top" class="o_mail_v_padding o_mail_col_mv">
+                                                <div class="separator"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" class="text-center o_mail_h_padding o_mail_col_mv" style="padding-bottom: 20px;">
+                                                <a href="#" class="btn btn-block btn-primary">More</a>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -468,10 +479,12 @@
                             <img src="/card_design/static/src/img/theme_default/s_default_image_block_image_text.jpg" class="center-block" alt="Your Picture" />
                         </td>
                         <td style="width:270px;vertical-align:middle;text-align:center;" class="o_mail_col_mv o_mail_h_padding o_mail_v_padding">
-                            <h3>Omnichannel sales</h3>
-                            <p class="o_mail_no_margin" style="text-align:justify;">Get your inside sales (CRM) fully integrated with online sales (eCommerce), in-store sales (Point of Sale) and marketplaces like eBay and Amazon.</p>
-                            <div class="text-center" style="margin-top:15px;">
-                                <a href="#" class="btn btn-link">Read More...</a>
+                            <div>
+                                <h3>Omnichannel sales</h3>
+                                <p class="o_mail_no_margin" style="text-align:justify;">Get your inside sales (CRM) fully integrated with online sales (eCommerce), in-store sales (Point of Sale) and marketplaces like eBay and Amazon.</p>
+                                <div class="text-center" style="margin-top:15px;">
+                                    <a href="#" class="btn btn-link">Read More...</a>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -488,10 +501,12 @@
                 <tbody>
                     <tr>
                         <td style="width:270px;vertical-align:middle;text-align:center;" class="o_mail_col_mvo_mail_col_mv o_mail_h_padding o_mail_v_padding">
-                            <h3>A unique value</h3>
-                            <p class="o_mail_no_margin" style="text-align:justify;">The open source model of Odoo has allowed us to leverage thousands of developers and business experts to build hundreds of apps in just a few years.</p>
-                            <div class="text-center" style="margin-top:15px;">
-                                <a href="#" class="btn btn-link">Read More...</a>
+                            <div>
+                                <h3>A unique value</h3>
+                                <p class="o_mail_no_margin" style="text-align:justify;">The open source model of Odoo has allowed us to leverage thousands of developers and business experts to build hundreds of apps in just a few years.</p>
+                                <div class="text-center" style="margin-top:15px;">
+                                    <a href="#" class="btn btn-link">Read More...</a>
+                                </div>
                             </div>
                         </td>
                         <td style="width:270px;text-align:center;vertical-align:middle" class="o_mail_img_container o_mail_h_padding o_mail_v_padding">
@@ -516,7 +531,9 @@
                     </tr>
                     <tr>
                         <td width="100%" class="o_mail_col_mv o_mail_v_padding bg-beta">
-                            <p class="text-center">With strong technical foundations, Odoo's framework is unique. It provides <strong>top notch usability that scales across all apps</strong>.</p>
+                            <div>
+                                <p class="text-center">With strong technical foundations, Odoo's framework is unique. It provides <strong>top notch usability that scales across all apps</strong>.</p>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

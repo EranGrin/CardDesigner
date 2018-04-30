@@ -1,5 +1,13 @@
 // lessc@1.4.2
 
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: 0 !important;
+}
+
+.o_mail_no_resize {
+    position: relative !important;
+}
 
 @gray-darker:            #111; // #222
 @gray-dark:              #444;   // #333
@@ -392,6 +400,30 @@
 
 // borders
 @gray-white: #fff;
+@border-top-dotted: 1px dotted;
+@border-top-dashed: 1px dashed;
+@border-top-solid: 1px solid;
+@border-top-double: 1px double;
+@border-top-groove: 1px groove;
+
+@border-left-dotted: 1px dotted;
+@border-left-dashed: 1px dashed;
+@border-left-solid: 1px solid;
+@border-left-double: 1px double;
+@border-left-groove: 1px groove;
+
+@border-right-dotted: 1px dotted;
+@border-right-dashed: 1px dashed;
+@border-right-solid: 1px solid;
+@border-right-double: 1px double;
+@border-right-groove: 1px groove;
+
+@border-bottom-dotted: 1px dotted;
+@border-bottom-dashed: 1px dashed;
+@border-bottom-solid: 1px solid;
+@border-bottom-double: 1px double;
+@border-bottom-groove: 1px groove;
+
 @border-dotted: 1px dotted;
 @border-dashed: 1px dashed;
 @border-solid: 1px solid;
@@ -435,7 +467,7 @@
 .note-editor {
     .borderpicker .o_borderpicker_section > button {
         display: none;
-        &[data-border="dotted"], &[data-border="dashed"], &[data-border="solid"], &[data-border="double"], &[data-border="groove"] {
+        &[data-border="dotted"], &[data-border="dashed"], &[data-border="solid"], &[data-border="double"], &[data-border="groove"], &[data-border="top-dotted"], &[data-border="top-dashed"], &[data-border="top-solid"], &[data-border="top-double"], &[data-border="top-groove"], &[data-border="left-dotted"], &[data-border="left-dashed"], &[data-border="left-solid"], &[data-border="left-double"], &[data-border="left-groove"], &[data-border="right-dotted"], &[data-border="right-dashed"], &[data-border="right-solid"], &[data-border="right-double"], &[data-border="right-groove"], &[data-border="bottom-dotted"], &[data-border="bottom-dashed"], &[data-border="bottom-solid"], &[data-border="bottom-double"], &[data-border="bottom-groove"] {
             display: block;
         }
     }
@@ -468,7 +500,7 @@
 
 .o-create-border-classes(@class_name, @border, @complementary: contrast(@border, #FFF, 60%), @content-border: @border) {
     .bg-@{class_name} {
-        border: @border;
+        @{class_name}: @border;
     }
     body .text-@{class_name} { // html to make the rules more important that bg-* ones
         border: @content-border;
@@ -494,11 +526,36 @@
 }
 
 // borders
-.o-create-border-classes(dotted, @border-dotted);
-.o-create-border-classes(dashed, @border-dashed);
-.o-create-border-classes(solid, @border-solid);
-.o-create-border-classes(double, @border-double);
-.o-create-border-classes(groove, @border-groove);
+.o-create-border-classes(border, @border-dotted);
+.o-create-border-classes(border, @border-dashed);
+.o-create-border-classes(border, @border-solid);
+.o-create-border-classes(border, @border-double);
+.o-create-border-classes(border, @border-groove);
+
+.o-create-border-classes(border-top, @border-top-dotted);
+.o-create-border-classes(border-top, @border-top-dashed);
+.o-create-border-classes(border-top, @border-top-solid);
+.o-create-border-classes(border-top, @border-top-double);
+.o-create-border-classes(border-top, @border-top-groove);
+
+.o-create-border-classes(border-left, @border-left-dotted);
+.o-create-border-classes(border-left, @border-left-dashed);
+.o-create-border-classes(border-left, @border-left-solid);
+.o-create-border-classes(border-left, @border-left-double);
+.o-create-border-classes(border-left, @border-left-groove);
+
+.o-create-border-classes(border-right, @border-right-dotted);
+.o-create-border-classes(border-right, @border-right-dashed);
+.o-create-border-classes(border-right, @border-right-solid);
+.o-create-border-classes(border-right, @border-right-double);
+.o-create-border-classes(border-right, @border-right-groove);
+
+.o-create-border-classes(border-bottom, @border-bottom-dotted);
+.o-create-border-classes(border-bottom, @border-bottom-dashed);
+.o-create-border-classes(border-bottom, @border-bottom-solid);
+.o-create-border-classes(border-bottom, @border-bottom-double);
+.o-create-border-classes(border-bottom, @border-bottom-groove);
+
 
 // borders
 .o-create-border-width-classes(width-2px, @border-width-2px);
@@ -1546,3 +1603,50 @@ img.Com-logo {
 }
 
 // done
+
+
+
+
+
+//snippet option position 
+
+
+img.position-static, .img.position-static, span.fa.position-static, iframe.position-static {
+    position: static;
+}
+img.position-relative, .img.position-relative, span.fa.position-relative, iframe.position-relative {
+    position: relative;
+}
+img.position-fixed, .img.position-fixed, span.fa.position-fixed, iframe.position-fixed {
+    position: fixed;
+}
+img.position-absolute, .img.position-absolute, span.fa.position-absolute, iframe.position-absolute {
+    position: absolute;
+}
+
+div.media_iframe_video {
+    &.padding-small iframe {
+        padding: 4px;
+    }
+    &.padding-medium iframe {
+        padding: 8px;
+    }
+    &.padding-large iframe {
+        padding: 16px;
+    }
+    &.padding-xl iframe {
+        padding: 32px;
+    }
+    &.position-static iframe {
+        position: static;
+    }
+    &.position-relative iframe {
+        position: relative;
+    }
+    &.position-fixed iframe {
+        position: fixed;
+    }
+    &.position-absolute iframe {
+        position: absolute;
+    }
+}

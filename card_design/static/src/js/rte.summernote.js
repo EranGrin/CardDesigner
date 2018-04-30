@@ -6,6 +6,7 @@ odoo.define('card_design.rte.summernote', function (require) {
     var base = require('web_editor.base');
     var widgets = require('web_editor.widget');
     var rte = require('web_editor.rte');
+    var card_widgets = require('card_design.widget');
 
     var QWeb = core.qweb;
     var _t = core._t;
@@ -42,21 +43,14 @@ odoo.define('card_design.rte.summernote', function (require) {
         QWeb.add_template(data);
     });
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /* Summernote Lib (neek change to make accessible: method and object) */
-
     var dom = $.summernote.core.dom;
     var range = $.summernote.core.range;
     var eventHandler = $.summernote.eventHandler;
     var renderer = $.summernote.renderer;
-    // var options = $.summernote.options;
 
     var tplButton = renderer.getTemplate().button;
     var tplIconButton = renderer.getTemplate().iconButton;
     var tplDropdown = renderer.getTemplate().dropdown;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /* update and change the popovers content, and add history button */
 
     var fn_createPalette = renderer.createPalette;
     renderer.createPalette = function ($container, options) {
@@ -259,6 +253,93 @@ odoo.define('card_design.rte.summernote', function (require) {
             var bdrclassName = 'text-' + $bdrel.data('border-radius');
             $bdrel.attr('data-event', 'foreBorder').attr('data-value', bdrclassName).addClass('bg-' + $bdrel.data('border-radius'));
         });
+    };
+
+    var fn_boutton_update = eventHandler.modules.popover.button.update;
+    eventHandler.modules.popover.button.update = function ($container, oStyle) {
+        var previous = $(".note-control-selection").data('target');
+        if (previous) {
+            $(previous).css({"-webkit-animation-play-state": "", "animation-play-state": "", "-webkit-transition": "", "transition": "", "-webkit-animation": "", "animation": ""});
+        }
+
+        fn_boutton_update.call(this, $container, oStyle);
+        $container.find('.note-color').removeClass("hidden");
+
+        if (oStyle.image) {
+            $container.find('[data-event]').parent().removeClass("active");
+            $container.find('a[data-event="position"][data-value="static"]').parent().toggleClass("active", $(oStyle.image).hasClass("position-static"));
+            $container.find('a[data-event="position"][data-value="relative"]').parent().toggleClass("active", $(oStyle.image).hasClass("position-relative"));
+            $container.find('a[data-event="position"][data-value="fixed"]').parent().toggleClass("active", $(oStyle.image).hasClass("position-fixed"));
+            $container.find('a[data-event="position"][data-value="absolute"]').parent().toggleClass("active", $(oStyle.image).hasClass("position-absolute"));
+            $container.find('a[data-event="position"][data-value="static"]').parent().toggleClass("active", !$container.find('.active a[data-event="position"]').length);
+
+            $(oStyle.image).trigger('attributes_change');
+        }
+    };
+
+    var fn_tplPopovers = renderer.tplPopovers;
+    renderer.tplPopovers = function (lang, options) {
+        var $popover = $(fn_tplPopovers.call(this, lang, options));
+        var $imagePopover = $popover.find('.note-image-popover');
+        var $linkPopover = $popover.find('.note-link-popover');
+        var $airPopover = $popover.find('.note-air-popover');
+
+        if (window === window.top) {
+            $popover.children().addClass("hidden-xs");
+        }
+
+        var $position = $('<div class="btn-group"/>');
+        $position.insertBefore($imagePopover.find('.btn-group:first'));
+        // var dropdown_content = [
+        //     '<li><a data-event="position" href="#" data-value="static">'+_t('Static')+'</a></li>',
+        //     '<li><a data-event="position" href="#" data-value="relative">'+_t('Relative')+'</a></li>',
+        //     '<li><a data-event="position" href="#" data-value="fixed">'+_t('Fixed')+'</a></li>',
+        //     '<li><a data-event="position" href="#" data-value="absolute">'+_t('Absolute')+'</a></li>',
+        // ];
+        // $(tplIconButton('fa fa-square-o', {
+        //     title: _t('Position'),
+        //     dropdown: tplDropdown(dropdown_content)
+        // })).appendTo($position);
+
+        $position.appendTo($imagePopover.find('.btn-group:first'));
+        $position.append('<button class="btn btn-default btn-sm btn-small" data-event="position_argument"><strong>' + _t('Style') + ' </strong></button>');
+
+        return $popover;
+    };
+
+    function getImgTarget ($editable) {
+        var $handle = $editable ? dom.makeLayoutInfo($editable).handle() : undefined;
+        return $(".note-control-selection", $handle).data('target');
+    }
+
+    eventHandler.modules.editor.position = function ($editable, sValue) {
+        var $target = $(getImgTarget($editable));
+        var positions = "static relative fixed absolute".split(/\s+/);
+        $editable.data('NoteHistory').recordUndo();
+        if (sValue !== undefined)
+        {
+            if (sValue.length) {
+                positions.splice(positions.indexOf(sValue),1);
+                $target.toggleClass('position-'+sValue);
+            }
+            $target.removeClass("position-" + positions.join(" position-"));
+        }
+    };
+
+    $.summernote.pluginEvents.position_argument = function (event, editor, layoutInfo, sorted) {
+        var $editable = layoutInfo.editable();
+        var $selection = layoutInfo.handle().find('.note-control-selection');
+        var media = $selection.data('target');
+        var parent_node  = media.parentNode;
+        if (parent_node.parentNode.nodeName != 'DIV'){
+            var tmp_parent_node = $.parseHTML("<div>" + parent_node.outerHTML + "</div>")[0];
+            parent_node.replaceWith(tmp_parent_node)
+            parent_node = tmp_parent_node;
+        }
+        else {
+            parent_node = media.parentNode.parentNode;
+        }
+        new card_widgets.position_argument(null, {}, $editable, parent_node).open();
     };
 
 });

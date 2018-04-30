@@ -17,6 +17,7 @@
             />
             <link rel="stylesheet" href="/card_design/static/src/lib/bootstrap-colorpicker/colorpicker.less"/>
             <script type="text/javascript" src="/card_design/static/src/lib/bootstrap-colorpicker/bootstrap-colorpicker.js"/>
+            <script type="text/javascript" src="/card_design/static/src/js/widget.js"/>
             <script type="text/javascript" src="/card_design/static/src/js/color_picker.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/snippet_option.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/rte.summernote.js"></script>
