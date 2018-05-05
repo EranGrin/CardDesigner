@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <template id="addstyle" name="Border-Picker">
+    </template>
+
+
     <template id="borderpicker" name="Border-Picker">
         <borderpicker>
             <div class="o_borderpicker_section" data-name="theme" data-icon-class="fa fa-square-o">
@@ -193,6 +197,18 @@
                 <ul class="dropdown-menu">
                     <li></li>
                 </ul>
+            </li>
+        </div>
+
+        <div data-js="addstyle"
+            data-event="position_argument"
+            data-selector="
+                [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='body_html'] .oe_structure > div,
+                td, th, td
+            ">
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="#"><i class="fa fa-eyedropper"/>More Style</a>
             </li>
         </div>
     </template>

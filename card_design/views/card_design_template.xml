@@ -21,6 +21,7 @@
             <script type="text/javascript" src="/card_design/static/src/js/color_picker.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/snippet_option.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/rte.summernote.js"></script>
+            <script type="text/javascript" src="/card_design/static/src/js/card_design_editor.js"></script>
         </xpath>
     </template>
 

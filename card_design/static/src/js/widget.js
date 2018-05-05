@@ -17,7 +17,7 @@ odoo.define('card_design.widget', function (require) {
         template: 'card_design.dialog.position',
         init: function (parent, options, $editable, media) {
             this._super(parent, _.extend({}, {
-                title: _t("Change Position"),
+                title: _t("Style"),
             }, options));
             this.$editable = $editable;
             this.media = media;
@@ -27,15 +27,18 @@ odoo.define('card_design.widget', function (require) {
             this.$modal.find('.modal-dialog').css({'right': '0px', 'position': 'fixed', 'width':'250px'})
         },
         save: function () {
-            range.createFromNode(this.media).select();
-            this.$editable.data('NoteHistory').recordUndo();
-            var alt = this.$('#alt').val();
-            var title = this.$('#title').val();
-            $(this.media).attr('alt', alt ? alt.replace(/"/g, "&quot;") : null).attr('title', title ? title.replace(/"/g, "&quot;") : null);
-            _.defer((function () {
-                click_event(this.media, "mouseup");
-            }).bind(this));
-            return this._super.apply(this, arguments);
+            var self = this;
+            var style = this.media.attributes.style ? this.media.attributes.style.value : '';
+            if (this.media.tagName !== "DIV") {
+                var media = document.createElement('div');
+                $(media).data($(this.media).data());
+                $(this.media).replaceWith(media);
+                this.media = media;
+                style = style.replace(/\s*width:[^;]+/, '');
+            }
+            $(this.media).attr("style", style);
+
+            return this.media;
         },
         renderElement: function() {
             this._super();
@@ -60,9 +63,32 @@ odoo.define('card_design.widget', function (require) {
                 var pleft_arg = this.$el.find('#pleft');
                 var pbottom_arg = this.$el.find('#pbottom');
                 var pright_arg = this.$el.find('#pright');
+                var overflow_arg = this.$el.find('#overflow');
+                var width_arg = this.$el.find('#width');
+                var height_arg = this.$el.find('#height');
+                var ptborder_arg = this.$el.find('#ptborder');
+                var plborder_arg = this.$el.find('#plborder');
+                var pbborder_arg = this.$el.find('#pbborder');
+                var prborder_arg = this.$el.find('#prborder');
+
+                if (width_arg) {
+                    if (this.media.style.width) {
+                        width_arg.val(this.media.style.width);
+                    }
+                }
+                if (height_arg) {
+                    if (this.media.style.height) {
+                        height_arg.val(this.media.style.height);
+                    }
+                }
                 if (background_arg) {
                     if (this.media.style.backgroundColor) {
                         background_arg.val(this.media.style.backgroundColor);
+                    }
+                }
+                if (overflow_arg) {
+                    if (this.media.style.overflow) {
+                        overflow_arg.val(this.media.style.overflow);
                     }
                 }
                 if (position_arg) {
@@ -98,6 +124,26 @@ odoo.define('card_design.widget', function (require) {
                 if (pborder_arg) {
                     if (this.media.style.borderStyle) {
                         pborder_arg.val(this.media.style.borderStyle);
+                    }
+                }
+                if (ptborder_arg) {
+                    if (this.media.style.borderTop) {
+                        ptborder_arg.val(this.media.style.borderTop);
+                    }
+                }
+                if (plborder_arg) {
+                    if (this.media.style.borderLeft) {
+                        plborder_arg.val(this.media.style.borderLeft);
+                    }
+                }
+                if (pbborder_arg) {
+                    if (this.media.style.borderBottom) {
+                        pbborder_arg.val(this.media.style.borderBottom);
+                    }
+                }
+                if (prborder_arg) {
+                    if (this.media.style.borderRight) {
+                        prborder_arg.val(this.media.style.borderRight);
                     }
                 }
                 if (pbordersize_arg) {
@@ -156,6 +202,18 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             }
+            this.$el.on('change', '#overflow', function (e) {
+                if (self.media) {
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.overflow = e.target.value;
+                        }
+                        else {
+                            self.media.style.overflow = "";
+                        }
+                    }
+                }
+            });
             this.$el.on('change', '#position', function (e) {
                 if (self.media) {
                     if (self.media.style) {
@@ -240,6 +298,54 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
+            this.$el.on('change', '#ptborder', function (e) {
+                if (self.media) {
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.borderTop = e.target.value;
+                        }
+                        else {
+                            self.media.style.borderTop = "";
+                        }
+                    }
+                }
+            });
+            this.$el.on('change', '#plborder', function (e) {
+                if (self.media) {
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.borderLeft = e.target.value;
+                        }
+                        else {
+                            self.media.style.borderLeft = "";
+                        }
+                    }
+                }
+            });
+            this.$el.on('change', '#prborder', function (e) {
+                if (self.media) {
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.borderRight = e.target.value;
+                        }
+                        else {
+                            self.media.style.borderRight = "";
+                        }
+                    }
+                }
+            });
+            this.$el.on('change', '#pbborder', function (e) {
+                if (self.media) {
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.borderBottom = e.target.value;
+                        }
+                        else {
+                            self.media.style.borderBottom = "";
+                        }
+                    }
+                }
+            });
             this.$el.on('change', '#pbordersize', function (e) {
                 if (self.media) {
                     if (self.media.style) {
@@ -248,6 +354,30 @@ odoo.define('card_design.widget', function (require) {
                         }
                         else {
                             self.media.style.borderWidth = "";
+                        }
+                    }
+                }
+            });
+            this.$el.on('change', '#width', function (e) {
+                if (self.media) {
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.width = e.target.value + 'px';
+                        }
+                        else {
+                            self.media.style.width = "";
+                        }
+                    }
+                }
+            });
+            this.$el.on('change', '#height', function (e) {
+                if (self.media) {
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.height = e.target.value + 'px';
+                        }
+                        else {
+                            self.media.style.height = "";
                         }
                     }
                 }

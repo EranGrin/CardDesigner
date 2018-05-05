@@ -7,7 +7,7 @@ var rte = require('web_editor.rte');
 var web_editor = require('web_editor.editor');
 var options = require('web_editor.snippets.options');
 var snippets_editor = require('web_editor.snippet.editor');
-
+var card_widgets = require('card_design.widget');
 var $editable_area = $("#editable_area");
 var odoo_top = window.top.odoo;
 
@@ -360,6 +360,43 @@ snippets_editor.Class.include({
         }
     },
 });
+
+snippets_editor.Editor.include({
+    init: function (BuildingBlock, dom) {
+        this.buildingBlock = BuildingBlock;
+        this.$target = $(dom);
+        this.$overlay = this.$target.data('overlay');
+
+        // Initialize parent button
+        this.init_parent_options();
+
+        // Load overlay options content
+        this.load_style_options();
+
+        // Initialize move/clone/remove buttons
+        if (!this.$target.parent().is(':o_editable')) {
+            this.$overlay.find('.oe_snippet_move, .oe_snippet_clone, .oe_snippet_remove, .oe_snippet_more_style').remove();
+        } else {
+            this.$overlay.on('click', '.oe_snippet_clone', _.bind(this.on_clone, this));
+            this.$overlay.on('click', '.oe_snippet_remove', _.bind(this.on_remove, this));
+            this.$overlay.on('click', '.oe_snippet_more_style', _.bind(this.on_more_style, this));
+            this._drag_and_drop();
+        }
+    },
+    on_more_style: function (event) {
+        var $media = this.$target[0];
+        if ($media.parentNode.nodeName != 'DIV'){
+            var tmp_media = $.parseHTML("<div>" + $media.outerHTML + "</div>")[0];
+            $media.replaceWith(tmp_media)
+            $media = tmp_media;
+        }
+        else{
+            $media = $media.parentNode;
+        }
+        new card_widgets.position_argument(null, {}, this.buildingBlock.$editable, $media).open();
+    },
+});
+
 
 var callback = window ? window["callback"] : undefined;
 odoo_top[callback+"_updown"] = function (value, fields_values, field_name) {

@@ -288,30 +288,14 @@ odoo.define('card_design.rte.summernote', function (require) {
             $popover.children().addClass("hidden-xs");
         }
 
-        var $position = $('<div class="btn-group"/>');
-        $position.insertBefore($imagePopover.find('.btn-group:first'));
-        // var dropdown_content = [
-        //     '<li><a data-event="position" href="#" data-value="static">'+_t('Static')+'</a></li>',
-        //     '<li><a data-event="position" href="#" data-value="relative">'+_t('Relative')+'</a></li>',
-        //     '<li><a data-event="position" href="#" data-value="fixed">'+_t('Fixed')+'</a></li>',
-        //     '<li><a data-event="position" href="#" data-value="absolute">'+_t('Absolute')+'</a></li>',
-        // ];
-        // $(tplIconButton('fa fa-square-o', {
-        //     title: _t('Position'),
-        //     dropdown: tplDropdown(dropdown_content)
-        // })).appendTo($position);
-
-        $position.appendTo($imagePopover.find('.btn-group:first'));
-        $position.append('<button class="btn btn-default btn-sm btn-small" data-event="position_argument"><strong>' + _t('Style') + ' </strong></button>');
-
         return $popover;
     };
+
 
     function getImgTarget ($editable) {
         var $handle = $editable ? dom.makeLayoutInfo($editable).handle() : undefined;
         return $(".note-control-selection", $handle).data('target');
     }
-
     eventHandler.modules.editor.position = function ($editable, sValue) {
         var $target = $(getImgTarget($editable));
         var positions = "static relative fixed absolute".split(/\s+/);
@@ -330,16 +314,30 @@ odoo.define('card_design.rte.summernote', function (require) {
         var $editable = layoutInfo.editable();
         var $selection = layoutInfo.handle().find('.note-control-selection');
         var media = $selection.data('target');
-        var parent_node  = media.parentNode;
-        if (parent_node.parentNode.nodeName != 'DIV'){
-            var tmp_parent_node = $.parseHTML("<div>" + parent_node.outerHTML + "</div>")[0];
-            parent_node.replaceWith(tmp_parent_node)
-            parent_node = tmp_parent_node;
+        if (media) {
+            var parent_node  = media.parentNode;
+            if (parent_node.parentNode.nodeName != 'DIV'){
+                var tmp_parent_node = $.parseHTML("<div>" + parent_node.outerHTML + "</div>")[0];
+                parent_node.replaceWith(tmp_parent_node)
+                parent_node = tmp_parent_node;
+            }
+            else {
+                parent_node = media.parentNode.parentNode;
+            }
+            new card_widgets.position_argument(null, {}, $editable, parent_node).open();
         }
         else {
-            parent_node = media.parentNode.parentNode;
+            var parent_node = window.getSelection().anchorNode.parentElement.parentNode;
+            if (parent_node.nodeName != 'DIV'){
+                var tmp_parent_node = $.parseHTML("<div>" + parent_node.outerHTML + "</div>")[0];
+                parent_node.replaceWith(tmp_parent_node)
+                parent_node = tmp_parent_node;
+            }
+            else if (parent_node.nodeName == 'DIV' && parent_node.id == 'wrapwrap') {
+                return
+            }
+            new card_widgets.position_argument(null, {}, $editable, parent_node).open();
         }
-        new card_widgets.position_argument(null, {}, $editable, parent_node).open();
     };
 
 });
