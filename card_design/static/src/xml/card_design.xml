@@ -3,7 +3,12 @@
 
     <form t-name="card_design.dialog.position" style="overflow: scroll;height:530px;" action="#" class="form-horizontal">
         <hr />
-        <strong class="text-center"> Position (px) </strong>
+        <strong class="text-center" style="float: left; margin-right: 10px;"> Position </strong>
+        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="pstyle" name="pstyle">
+            <option value="px">px</option>
+            <option value="em">em</option>
+            <option value="%">%</option>
+        </select>
         <hr />
         <div class="form-group">
             <label class="col-sm-3 control-label" for="title">Position</label>
@@ -60,7 +65,12 @@
             </div>
         </div>
         <hr />
-        <strong class="text-center">Size (px)</strong>
+        <strong class="text-center" style="float:left; margin-right: 10px;">Size (px)</strong>
+        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="sstyle" name="sstyle">
+            <option value="px">px</option>
+            <option value="em">em</option>
+            <option value="%">%</option>
+        </select>
         <hr />
         <div class="form-group">
             <label class="col-sm-3 control-label" for="width">Width</label>
@@ -176,7 +186,12 @@
             </div>
         </div>
         <hr />
-        <strong class="text-center"> Margin (px)</strong>
+        <strong class="text-center" style="float:left; margin-right: 10px;"> Margin </strong>
+        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="mstyle" name="mstyle">
+            <option value="px">px</option>
+            <option value="em">em</option>
+            <option value="%">%</option>
+        </select>
         <hr />
         <div class="form-group">
             <label class="col-sm-3 control-label" for="mtop">Top</label>
@@ -203,7 +218,12 @@
             </div>
         </div>
         <hr />
-        <strong class="text-center"> Padding (px)</strong>
+        <strong class="text-center" style="float:left; margin-right: 10px;"> Padding </strong>
+        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="pdstyle" name="pdstyle">
+            <option value="px">px</option>
+            <option value="em">em</option>
+            <option value="%">%</option>
+        </select>
         <hr />
         <div class="form-group">
             <label class="col-sm-3 control-label" for="ptop">Top</label>

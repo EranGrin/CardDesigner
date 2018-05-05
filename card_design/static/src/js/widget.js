@@ -70,15 +70,26 @@ odoo.define('card_design.widget', function (require) {
                 var plborder_arg = this.$el.find('#plborder');
                 var pbborder_arg = this.$el.find('#pbborder');
                 var prborder_arg = this.$el.find('#prborder');
-
+                var mstyle_arg = this.$el.find('#mstyle');
+                var pstyle_arg = this.$el.find('#pstyle');
+                var sstyle_arg = this.$el.find('#sstyle');
+                var pdstyle_arg = this.$el.find('#pdstyle');
                 if (width_arg) {
                     if (this.media.style.width) {
-                        width_arg.val(this.media.style.width);
+                        var demo = this.media.style.width
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        width_arg.val(value);
+                        sstyle_arg.val(style_top[1]);
                     }
                 }
                 if (height_arg) {
                     if (this.media.style.height) {
-                        height_arg.val(this.media.style.height);
+                        var demo = this.media.style.height
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        height_arg.val(value);
+                        sstyle_arg.val(style_top[1]);
                     }
                 }
                 if (background_arg) {
@@ -98,22 +109,38 @@ odoo.define('card_design.widget', function (require) {
                 }
                 if (pptop_arg) {
                     if (this.media.style.top) {
-                        pptop_arg.val(parseInt(this.media.style.top.split('px')[0]));
+                        var demo = this.media.style.top
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        pptop_arg.val(value);
+                        pstyle_arg.val(style_top[1]);
                     }
                 }
                 if (ppleft_arg) {
                     if (this.media.style.left) {
-                        ppleft_arg.val(parseInt(this.media.style.left.split('px')[0]));
+                        var demo = this.media.style.left
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        ppleft_arg.val(value);
+                        pstyle_arg.val(style_top[1]);
                     }
                 }
                 if (ppbottom_arg) {
                     if (this.media.style.bottom) {
-                        ppbottom_arg.val(parseInt(this.media.style.bottom.split('px')[0]));
+                        var demo = this.media.style.bottom
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        ppbottom_arg.val(value);
+                        pstyle_arg.val(style_top[1]);
                     }
                 }
                 if (ppright_arg) {
                     if (this.media.style.right) {
-                        ppright_arg.val(parseInt(this.media.style.right.split('px')[0]));
+                        var demo = this.media.style.right
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        ppright_arg.val(value);
+                        pstyle_arg.val(style_top[1]);
                     }
                 }
                 if (zindex_arg) {
@@ -148,7 +175,7 @@ odoo.define('card_design.widget', function (require) {
                 }
                 if (pbordersize_arg) {
                     if (this.media.style.borderWidth) {
-                        pbordersize_arg.val(parseInt(this.media.style.borderWidth.split('px')[0]));
+                        pbordersize_arg.val(this.media.style.borderWidth);
                     }
                 }
                 if (pbordercolor_arg) {
@@ -163,42 +190,74 @@ odoo.define('card_design.widget', function (require) {
                 }
                 if (mtop_arg) {
                     if (this.media.style.marginTop) {
-                        mtop_arg.val(parseInt(this.media.style.marginTop.split('px')[0]));
+                        var demo = this.media.style.marginTop
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        mtop_arg.val(value);
+                        mstyle_arg.val(style_top[1]);
                     }
                 }
                 if (mleft_arg) {
                     if (this.media.style.marginLeft) {
-                        mleft_arg.val(parseInt(this.media.style.marginLeft.split('px')[0]));
+                        var demo = this.media.style.marginLeft
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        mleft_arg.val(value);
+                        mstyle_arg.val(style_top[1]);
                     }
                 }
                 if (mright_arg) {
                     if (this.media.style.marginRight) {
-                        mright_arg.val(parseInt(this.media.style.marginRight.split('px')[0]));
+                        var demo = this.media.style.marginRight
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        mright_arg.val(value);
+                        mstyle_arg.val(style_top[1]);
                     }
                 }
                 if (mbottom_arg) {
                     if (this.media.style.marginBottom) {
-                        mbottom_arg.val(parseInt(this.media.style.marginBottom.split('px')[0]));
+                        var demo = this.media.style.marginBottom
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        mbottom_arg.val(value);
+                        mstyle_arg.val(style_top[1]);
                     }
                 }
                 if (ptop_arg) {
                     if (this.media.style.paddingTop) {
-                        ptop_arg.val(parseInt(this.media.style.paddingTop.split('px')[0]));
+                        var demo = this.media.style.paddingTop
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        ptop_arg.val(value);
+                        pdstyle_arg.val(style_top[1]);
                     }
                 }
                 if (pleft_arg) {
                     if (this.media.style.paddingLeft) {
-                        pleft_arg.val(parseInt(this.media.style.paddingLeft.split('px')[0]));
+                        var demo = this.media.style.paddingLeft
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        pleft_arg.val(value);
+                        pdstyle_arg.val(style_top[1]);
                     }
                 }
                 if (pright_arg) {
                     if (this.media.style.paddingRight) {
-                        pright_arg.val(parseInt(this.media.style.paddingRight.split('px')[0]));
+                        var demo = this.media.style.paddingRight
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        pright_arg.val(value);
+                        pdstyle_arg.val(style_top[1]);
                     }
                 }
                 if (pbottom_arg) {
                     if (this.media.style.paddingBottom) {
-                        pbottom_arg.val(parseInt(this.media.style.paddingBottom.split('px')[0]));
+                        var demo = this.media.style.paddingBottom
+                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                        var style_top = demo.split(value)
+                        pbottom_arg.val(value);
+                        pdstyle_arg.val(style_top[1]);
                     }
                 }
             }
@@ -226,52 +285,56 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
-            this.$el.on('change', '#pptop', function (e) {
+            this.$el.on('change', '#pptop, #pstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.top = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.top = "";
-                        }
-                    }
+                    self.change_style(e, self, "pstyle", "pptop", "top")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.top = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.top = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#ppleft', function (e) {
+            this.$el.on('change', '#ppleft, #pstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.left = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.left = "";
-                        }
-                    }
+                    self.change_style(e, self, "pstyle", "ppleft", "left")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.left = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.left = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#ppbottom', function (e) {
+            this.$el.on('change', '#ppbottom, #pstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.bottom = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.bottom = "";
-                        }
-                    }
+                    self.change_style(e, self, "pstyle", "ppbottom", "bottom")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.bottom = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.bottom = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#ppright', function (e) {
+            this.$el.on('change', '#ppright, #pstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.right = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.right = "";
-                        }
-                    }
+                    self.change_style(e, self, "pstyle", "ppright", "right")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.right = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.right = "";
+                    //     }
+                    // }
                 }
             });
             this.$el.on('change', '#zindex', function (e) {
@@ -358,28 +421,30 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
-            this.$el.on('change', '#width', function (e) {
+            this.$el.on('change', '#width, #sstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.width = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.width = "";
-                        }
-                    }
+                    self.change_style(e, self, "sstyle", "width", "width")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.width = e.target.value;
+                    //     }
+                    //     else {
+                    //         self.media.style.width = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#height', function (e) {
+            this.$el.on('change', '#height, #sstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.height = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.height = "";
-                        }
-                    }
+                    self.change_style(e, self, "sstyle", "height", "height")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.height = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.height = "";
+                    //     }
+                    // }
                 }
             });
             this.$background_custom = this.$el.find('#pbackground');
@@ -430,103 +495,175 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
-            this.$el.on('change', '#mtop', function (e) {
+            this.$el.on('change', '#mtop, #mstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.marginTop = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.marginTop = "";
-                        }
-                    }
+                    self.change_style(e, self, "mstyle", "mtop", "margin-top")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                            
+                    //         // if (e.target.id == "mtop") {
+                    //         //     if (e.target.value) {
+                    //         //         var value = parseInt(self.media.style.marginTop)
+                    //         //         if (value) {
+                    //         //             var style_top = self.media.style.marginTop.split(value)
+                    //         //             self.media.style.marginTop = e.target.value + style_top[1];
+                    //         //         }
+                    //         //         else{
+                    //         //              self.media.style.marginTop = e.target.value + 'px';
+                    //         //         }
+                    //         //     }
+                    //         // }
+                    //         // else {
+                    //         //     if (e.target.id == "mstyle") {
+                    //         //         if (e.target.value) {
+                    //         //             var value = parseInt(self.media.style.marginTop)
+                    //         //             if (value) {
+                    //         //                 var style_top = self.media.style.marginTop.split(value)
+                    //         //                 self.media.style.marginTop = value + e.target.value;
+                    //         //             }
+                    //         //             else{
+                    //         //                 self.media.style.marginTop = 1 + e.target.value;
+                    //         //             }
+                    //         //         }
+                    //         //     }
+                    //         // }
+                    //     }
+                    //     else {
+                    //         self.media.style.marginTop = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#mleft', function (e) {
+            this.$el.on('change', '#mleft, #mstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.marginLeft = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.marginLeft = "";
-                        }
-                    }
+                    self.change_style(e, self, "mstyle", "mleft", "margin-left")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.marginLeft = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.marginLeft = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#mright', function (e) {
+            this.$el.on('change', '#mright, #mstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.marginRight = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.marginRight = "";
-                        }
-                    }
+                    self.change_style(e, self, "mstyle", "mright", "margin-right")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.marginRight = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.marginRight = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#mbottom', function (e) {
+            this.$el.on('change', '#mbottom, #mstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.marginBottom = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.marginBottom = "";
-                        }
-                    }
+                    self.change_style(e, self, "mstyle", "mbottom", "margin-bottom")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.marginBottom = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.marginBottom = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#ptop', function (e) {
+            this.$el.on('change', '#ptop, #pdstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.paddingTop = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.paddingTop = "";
-                        }
-                    }
+                    self.change_style(e, self, "pdstyle", "ptop", "padding-top")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.paddingTop = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.paddingTop = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#pleft', function (e) {
+            this.$el.on('change', '#pleft, #pdstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.paddingLeft = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.paddingLeft = "";
-                        }
-                    }
+                    self.change_style(e, self, "pdstyle", "pleft", "padding-left")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.paddingLeft = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.paddingLeft = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#pright', function (e) {
+            this.$el.on('change', '#pright, #pdstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.paddingRight = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.paddingRight = "";
-                        }
-                    }
+                    self.change_style(e, self, "pdstyle", "pright", "padding-right")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.paddingRight = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.paddingRight = "";
+                    //     }
+                    // }
                 }
             });
-            this.$el.on('change', '#pbottom', function (e) {
+            this.$el.on('change', '#pbottom, #pdstyle', function (e) {
                 if (self.media) {
-                    if (self.media.style) {
-                        if (e.target.value) {
-                            self.media.style.paddingBottom = e.target.value + 'px';
-                        }
-                        else {
-                            self.media.style.paddingBottom = "";
-                        }
-                    }
+                    self.change_style(e, self, "pdstyle", "pbottom", "padding-bottom")
+                    // if (self.media.style) {
+                    //     if (e.target.value) {
+                    //         self.media.style.paddingBottom = e.target.value + 'px';
+                    //     }
+                    //     else {
+                    //         self.media.style.paddingBottom = "";
+                    //     }
+                    // }
                 }
             });
             return this
+        },
+
+        change_style: function (e, self, style_target, value_target, style_name) {
+            if (self.media) {
+                if (self.media.style) {
+                    if (e.target.value) {
+                        if (e.target.id == value_target) {
+                            if (e.target.value) {
+                                var value = parseInt(self.media.style.getPropertyValue(style_name))
+                                if (value) {
+                                    var style_top = self.media.style.getPropertyValue(style_name).split(value)
+                                    self.media.style.setProperty(style_name, e.target.value + style_top[1], null)
+                                }
+                                else{
+                                    self.media.style.setProperty(style_name, e.target.value + 'px', null)
+                                }
+                            }
+                        }
+                        else {
+                            if (e.target.id == style_target) {
+                                if (e.target.value) {
+                                    var value = parseInt(self.media.style.getPropertyValue(style_name))
+                                    if (value) {
+                                        var style_top = self.media.style.getPropertyValue(style_name).split(value)
+                                        self.media.style.setProperty(style_name, value + e.target.value, null)
+                                    }
+                                    else{
+                                        self.media.style.setProperty(style_name, 1 + e.target.value, null)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        self.media.style.removeProperty(style_name);
+                    }
+                }
+            }
         },
         custom_abort_event_border: function (event) {
             // HACK Avoid dropdown disappearing when picking colors
