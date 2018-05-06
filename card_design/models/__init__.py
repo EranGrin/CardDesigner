@@ -1,3 +1,4 @@
 # -*- coding: utf-8 -*-
-
-import card_design
+# Part of Inceptus ERP Solutions Pvt.ltd.
+# See LICENSE file for copyright and licensing details.
+from . import card_design

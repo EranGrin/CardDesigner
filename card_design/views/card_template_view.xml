@@ -101,7 +101,10 @@
     </record>
 
     <menuitem name="Cards" id="card_design_menu_child" parent="card_design_menu"/>
-    <menuitem name="Card Templates" id="card_design_template_menu" parent="card_design_menu_child"
+
+    <menuitem name="Card Templates"
+        id="card_design_template_menu"
+        parent="card_design_menu_child"
         action="card_desgin_template_action"/>
 
     <record model="ir.ui.view" id="card_card_design_tree_view">
@@ -143,7 +146,6 @@
         </field>
     </record>
 
-
     <record model="ir.actions.act_window" id="card_card_design_action">
         <field name="name">Cards</field>
         <field name="res_model">card.card</field>
@@ -151,6 +153,5 @@
     </record>
 
     <menuitem name="Cards" id="card_card_desgin_menu" parent="card_design_menu_child" action="card_card_design_action"/>
-
 
 </odoo>

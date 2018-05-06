@@ -12,7 +12,7 @@
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
-    'version': '10.0.2018.05.05.1',
+    'version': '10.0.2018.05.06.1',
     'depends': ['hr', 'web_editor', 'mail', 'web_kanban_gauge'],
     'external_dependencies': {
         'python': ['imgkit'],

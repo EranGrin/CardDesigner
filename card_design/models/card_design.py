@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # See LICENSE file for copyright and licensing details.
-
-from odoo.tools.safe_eval import safe_eval
-
 import babel
 import copy
 import datetime
 import dateutil.relativedelta as relativedelta
-import logging
-
 from urllib import urlencode, quote as quote
-
+from odoo.tools.safe_eval import safe_eval
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
-
+import logging
 _logger = logging.getLogger(__name__)
 
 

@@ -1,7 +1,6 @@
 odoo.define('card_design.snippets.options', function (require) {
     'use strict';
 
-
     var ajax = require('web.ajax');
     var Class = require('web.Class');
     var core = require('web.core');

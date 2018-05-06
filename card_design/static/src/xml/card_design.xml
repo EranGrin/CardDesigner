@@ -6,7 +6,6 @@
         <strong class="text-center" style="float: left; margin-right: 10px;"> Position </strong>
         <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="pstyle" name="pstyle">
             <option value="px">px</option>
-            <option value="em">em</option>
             <option value="%">%</option>
         </select>
         <hr />

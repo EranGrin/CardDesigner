@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # See LICENSE file for copyright and licensing details.
-
 from odoo import models, fields, api
 import imgkit
 from bs4 import BeautifulSoup

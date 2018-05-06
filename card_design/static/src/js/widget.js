@@ -11,8 +11,8 @@ odoo.define('card_design.widget', function (require) {
     var QWeb = core.qweb;
     var range = $.summernote.core.range;
     var dom = $.summernote.core.dom;
-
     var _t = core._t;
+
     var position_argument = Dialog.extend({
         template: 'card_design.dialog.position',
         init: function (parent, options, $editable, media) {
@@ -288,53 +288,21 @@ odoo.define('card_design.widget', function (require) {
             this.$el.on('change', '#pptop, #pstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pstyle", "pptop", "top")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.top = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.top = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#ppleft, #pstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pstyle", "ppleft", "left")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.left = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.left = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#ppbottom, #pstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pstyle", "ppbottom", "bottom")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.bottom = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.bottom = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#ppright, #pstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pstyle", "ppright", "right")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.right = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.right = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#zindex', function (e) {
@@ -424,27 +392,11 @@ odoo.define('card_design.widget', function (require) {
             this.$el.on('change', '#width, #sstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "sstyle", "width", "width")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.width = e.target.value;
-                    //     }
-                    //     else {
-                    //         self.media.style.width = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#height, #sstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "sstyle", "height", "height")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.height = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.height = "";
-                    //     }
-                    // }
                 }
             });
             this.$background_custom = this.$el.find('#pbackground');
@@ -498,170 +450,77 @@ odoo.define('card_design.widget', function (require) {
             this.$el.on('change', '#mtop, #mstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "mstyle", "mtop", "margin-top")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                            
-                    //         // if (e.target.id == "mtop") {
-                    //         //     if (e.target.value) {
-                    //         //         var value = parseInt(self.media.style.marginTop)
-                    //         //         if (value) {
-                    //         //             var style_top = self.media.style.marginTop.split(value)
-                    //         //             self.media.style.marginTop = e.target.value + style_top[1];
-                    //         //         }
-                    //         //         else{
-                    //         //              self.media.style.marginTop = e.target.value + 'px';
-                    //         //         }
-                    //         //     }
-                    //         // }
-                    //         // else {
-                    //         //     if (e.target.id == "mstyle") {
-                    //         //         if (e.target.value) {
-                    //         //             var value = parseInt(self.media.style.marginTop)
-                    //         //             if (value) {
-                    //         //                 var style_top = self.media.style.marginTop.split(value)
-                    //         //                 self.media.style.marginTop = value + e.target.value;
-                    //         //             }
-                    //         //             else{
-                    //         //                 self.media.style.marginTop = 1 + e.target.value;
-                    //         //             }
-                    //         //         }
-                    //         //     }
-                    //         // }
-                    //     }
-                    //     else {
-                    //         self.media.style.marginTop = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#mleft, #mstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "mstyle", "mleft", "margin-left")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.marginLeft = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.marginLeft = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#mright, #mstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "mstyle", "mright", "margin-right")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.marginRight = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.marginRight = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#mbottom, #mstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "mstyle", "mbottom", "margin-bottom")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.marginBottom = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.marginBottom = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#ptop, #pdstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pdstyle", "ptop", "padding-top")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.paddingTop = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.paddingTop = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#pleft, #pdstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pdstyle", "pleft", "padding-left")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.paddingLeft = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.paddingLeft = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#pright, #pdstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pdstyle", "pright", "padding-right")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.paddingRight = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.paddingRight = "";
-                    //     }
-                    // }
                 }
             });
             this.$el.on('change', '#pbottom, #pdstyle', function (e) {
                 if (self.media) {
                     self.change_style(e, self, "pdstyle", "pbottom", "padding-bottom")
-                    // if (self.media.style) {
-                    //     if (e.target.value) {
-                    //         self.media.style.paddingBottom = e.target.value + 'px';
-                    //     }
-                    //     else {
-                    //         self.media.style.paddingBottom = "";
-                    //     }
-                    // }
                 }
             });
             return this
         },
-
         change_style: function (e, self, style_target, value_target, style_name) {
-            if (self.media) {
-                if (self.media.style) {
-                    if (e.target.value) {
-                        if (e.target.id == value_target) {
-                            if (e.target.value) {
-                                var value = parseInt(self.media.style.getPropertyValue(style_name))
-                                if (value) {
-                                    var style_top = self.media.style.getPropertyValue(style_name).split(value)
-                                    self.media.style.setProperty(style_name, e.target.value + style_top[1], null)
-                                }
-                                else{
-                                    self.media.style.setProperty(style_name, e.target.value + 'px', null)
-                                }
+            if (self.media && self.media.style) {
+                if (e.target.value) {
+                    if (e.target.id == value_target) {
+                        if (e.target.value) {
+                            var value = parseInt(self.media.style.getPropertyValue(style_name))
+                            if (value) {
+                                var style_top = self.media.style.getPropertyValue(style_name).split(value)
+                                self.media.style.setProperty(style_name, e.target.value + style_top[1], null)
                             }
-                        }
-                        else {
-                            if (e.target.id == style_target) {
-                                if (e.target.value) {
-                                    var value = parseInt(self.media.style.getPropertyValue(style_name))
-                                    if (value) {
-                                        var style_top = self.media.style.getPropertyValue(style_name).split(value)
-                                        self.media.style.setProperty(style_name, value + e.target.value, null)
-                                    }
-                                    else{
-                                        self.media.style.setProperty(style_name, 1 + e.target.value, null)
-                                    }
-                                }
+                            else{
+                                self.media.style.setProperty(style_name, e.target.value + self.$el.find('#pstyle').val(), null)
                             }
                         }
                     }
                     else {
-                        self.media.style.removeProperty(style_name);
+                        if (e.target.id == style_target) {
+                            if (e.target.value) {
+                                var value = parseInt(self.media.style.getPropertyValue(style_name))
+                                if (value) {
+                                    var style_top = self.media.style.getPropertyValue(style_name).split(value)
+                                    self.media.style.setProperty(style_name, value + e.target.value, null)
+                                }
+                                // else{
+                                //     self.media.style.setProperty(style_name, 1 + e.target.value, null)
+                                // }
+                            }
+                        }
                     }
+                }
+                else {
+                    self.media.style.removeProperty(style_name);
                 }
             }
         },
