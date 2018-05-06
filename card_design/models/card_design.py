@@ -177,8 +177,6 @@ class CardTemplate(models.Model):
     def generate_cards(self):
         for rec in self:
             card_vals = []
-            import pdb
-            pdb.set_trace()
             if self.record_domain:
                 domain = safe_eval(rec.record_domain)
                 model_record_ids = self.env[rec.card_model].search(domain).ids
