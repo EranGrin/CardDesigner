@@ -727,23 +727,26 @@ table.borderpicker {
         }
     }
     .note-palette-title {
-        padding: 0px 0px 0px 0px;
+        padding: 5px 0px 0px 10px;
         color: @o-we-color-text-light;
         font-weight: bold;
+        float: left;
+        margin-left: 10px;
+        margin-right: 10px;
     }
     .palette-reset {
         margin: 0;
         padding: 0px 0px 0;
-        .note-color-reset {
+        .note-border-reset {
             font-size: 20px!important;
             color: desaturate(fade(@o-we-color-danger, 60%), 40%);
             margin: 1px 0 0;
             padding: 0;
             cursor: pointer;
-            &:hover {
-                background: transparent!important;
-                color: @o-we-color-danger;
-            }
+        }
+        .note-border-reset:hover {
+            background: transparent!important;
+            color: @o-we-color-danger;
         }
     }
 }
@@ -884,24 +887,23 @@ table.bordersizepicker {
         }
     }
     .note-palette-title {
-        padding: 0px 0px 0px 0px;
+        padding: 5px 0px 0px 10px;
         color: @o-we-color-text-light;
         font-weight: bold;
+        float: left;
+        margin-left: 10px;
+        margin-right: 10px;
     }
-    .palette-reset {
-        margin: 0;
-        padding: 0px 0px 0;
-        .note-color-reset {
-            font-size: 20px!important;
-            color: desaturate(fade(@o-we-color-danger, 60%), 40%);
-            margin: 1px 0 0;
-            padding: 0;
-            cursor: pointer;
-            &:hover {
-                background: transparent!important;
-                color: @o-we-color-danger;
-            }
-        }
+    .note-border-reset {
+        font-size: 20px!important;
+        color: desaturate(fade(@o-we-color-danger, 60%), 40%);
+        margin: 1px 0 0;
+        padding: 0;
+        cursor: pointer;
+    }
+    .note-border-reset:hover {
+        background: transparent!important;
+        color: @o-we-color-danger;
     }
 }
 
@@ -1040,23 +1042,26 @@ table.borderradiuspicker {
         }
     }
     .note-palette-title {
-        padding: 0px 0px 0px 0px;
+        padding: 5px 0px 0px 10px;
         color: @o-we-color-text-light;
         font-weight: bold;
+        float: left;
+        margin-left: 10px;
+        margin-right: 10px;
     }
     .palette-reset {
         margin: 0;
         padding: 0px 0px 0;
-        .note-color-reset {
+        .note-border-reset {
             font-size: 20px!important;
             color: desaturate(fade(@o-we-color-danger, 60%), 40%);
             margin: 1px 0 0;
             padding: 0;
             cursor: pointer;
-            &:hover {
-                background: transparent!important;
-                color: @o-we-color-danger;
-            }
+        }
+        .note-border-reset:hover {
+            background: transparent!important;
+            color: @o-we-color-danger;
         }
     }
 }
@@ -1211,14 +1216,14 @@ table.bordercolorpicker {
         }
     }
     .note-palette-title {
-        padding: 10px 0px 10px 10px;
+        padding: 10px 0px 0px 11px;
         color: @o-we-color-text-light;
         font-weight: bold;
     }
     .palette-reset {
         margin: 0;
         padding: 5px 10px 0;
-        .note-color-reset {
+        .note-border-reset {
             font-size: 20px!important;
             color: desaturate(fade(@o-we-color-danger, 60%), 40%);
             margin: 1px 0 0;
@@ -1228,7 +1233,30 @@ table.bordercolorpicker {
                 background: transparent!important;
                 color: @o-we-color-danger;
             }
+            .note-border-reset:hover {
+                background: transparent!important;
+                color: @o-we-color-danger;
+            }
         }
+    }
+    .note-border-reset {
+        font-size: 20px!important;
+        color: desaturate(fade(@o-we-color-danger, 60%), 40%);
+        margin: 1px 0 0;
+        padding: 0;
+        cursor: pointer;
+        &:hover {
+            background: transparent!important;
+            color: @o-we-color-danger;
+        }
+        .note-border-reset:hover {
+            background: transparent!important;
+            color: @o-we-color-danger;
+        }
+    }
+    .note-border-reset:hover {
+        background: transparent!important;
+        color: @o-we-color-danger;
     }
 }
 
@@ -1604,10 +1632,6 @@ img.Com-logo {
 
 // done
 
-
-
-
-
 //snippet option position 
 
 
@@ -1649,4 +1673,17 @@ div.media_iframe_video {
     &.position-absolute iframe {
         position: absolute;
     }
+}
+
+.note-border-reset {
+    font-size: 20px!important;
+    color: rgba(192, 126, 136, 0.6);
+    margin: 1px 0 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.note-border-reset:hover {
+    background: transparent !important;
+    color: @o-we-color-danger;
 }

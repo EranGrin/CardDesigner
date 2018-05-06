@@ -305,8 +305,3 @@ class Card(models.Model):
     data = fields.Binary("Card")
     state = fields.Selection([('d', 'Draft'), ('p', 'Printed'), ('rp', 'Reprinted')], 'State', default='d')
     template_id = fields.Many2one('card.template', "Card Template")
-
-
-class Employee(models.Model):
-    _inherit = 'hr.employee'
-    _card_designer = _('Employee')
