@@ -2,21 +2,33 @@
 <odoo>
 
     <template id="s_mail_block_partner_image_text" name="Text - Image">
-        <section class="o_mail_block_text_image">
-            <div style="width:250%;">
-                <div class="card">
-                    <img t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' t-attf-style="background: url(/web/image?model=custome.image.snippets&amp;field=sample_image&amp;id=#{image_snippets_id.id}) no-repeat center;height:150px;margin-left:15%;"/>
-                  <div class="container">
-                    <h3><b>${object.name}</b></h3> 
-                    <p>${object.job_id.name}</p> 
-                  </div>
-                </div>
+        <div class="o_mail_block_image">
+            <div class="o_mail_snippet_general">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_h_padding">
+                    <tbody>
+                        <tr>
+                            <td width="100%" align="center" style="text-align:center" class="">
+                                <img t-attf-src='/web/image?model=#{image_snippets_id.model_id.model}&amp;field=#{image_snippets_id.field_id.name}&amp;id=${object.id}' class="center-block" style="background: url(/web/static/src/img/placeholder.png) no-repeat center;min-width:100px;min-height:100px" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="100%" class="o_mail_col_mv o_mail_v_padding text-center">
+                                <div>
+                                    <p class="text-center">
+                                        <h3>
+                                            <b>${object.name}</b>
+                                        </h3>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </section>
+        </div>
     </template>
 
     <template id="email_designer_snippets" inherit_id="card_design.email_designer_snippets" >
-        <!-- <xpath expr="//h4[@id='snippets_template_size']" position="replace" />  -->
         <xpath expr="//h2[@id='snippets_menu']" position="after">
             <h4 id="snippets_template_size" class="text-center" style="color:white;">Change Size</h4>
             <select id="input_snippets_template_size" class="form-control oe_view_list" style="margin-bottom:10px; width: 80% !important;margin-left: 8%; ">

@@ -26,7 +26,7 @@ class CardPrintWizard(models.TransientModel):
 
     template_id = fields.Many2one(
         'card.template', 'Card Template', required=1, ondelete='cascade',
-        default=get_template
+        # default=get_template
     )
     printers = fields.Selection([('A', "Printer A"), ('B', "Printer B")], "Printers")
     model = fields.Many2one('ir.model', default=_get_model)
@@ -37,14 +37,17 @@ class CardPrintWizard(models.TransientModel):
 
     @api.onchange('template_id')
     def _preview_body(self):
-        model = self._context.get('active_model')
-        res_ids = self._context.get('active_ids')
-        if len(res_ids) == 1:
-            if self.template_id.front_side:
-                template = self.env['card.template'].render_template(
-                    self.template_id.body_html, model, res_ids
-                )
-                self.body = template.get(res_ids[0])
+        if self.template_id:
+            model = self._context.get('active_model')
+            res_ids = self._context.get('active_ids')
+            if len(res_ids) == 1:
+                if self.template_id.front_side:
+                    body = self.template_id.body_html
+                    body = body.replace('background: url(/web/static/src/img/placeholder.png) no-repeat center;', '')
+                    template = self.env['card.template'].render_template(
+                        body, model, res_ids
+                    )
+                    self.body = template.get(res_ids[0])
 
     @api.onchange('position')
     def _onchange_position(self):

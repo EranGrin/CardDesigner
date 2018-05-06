@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Card Design Partner Image Snippets',
-    "version": "10.0.2018.19.1.0",
+    "version": "10.0.2018.05.06.1",
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'web',

@@ -106,6 +106,7 @@ class CardTemplate(models.Model):
         selection=_get_card_designer_model, string='Model', required=True,
         default=_get_default_model
     )
+    record_domain = fields.Char(string='Domain', default="[]")
     model_id = fields.Many2one('ir.model', string='Model', compute="get_card_model_id")
     state = fields.Selection([('draft', 'Draft'), ('approved', 'Approved')], 'State', default='draft')
     card_ids = fields.One2many('card.card', 'template_id', "Cards")
@@ -176,6 +177,8 @@ class CardTemplate(models.Model):
     def generate_cards(self):
         for rec in self:
             card_vals = []
+            import pdb
+            pdb.set_trace()
             if self.record_domain:
                 domain = safe_eval(rec.record_domain)
                 model_record_ids = self.env[rec.card_model].search(domain).ids
