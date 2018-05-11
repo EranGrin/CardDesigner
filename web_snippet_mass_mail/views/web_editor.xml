@@ -45,17 +45,13 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <field name="sample_image" widget='image'
-                            class="oe_avatar"
-                            options='{"preview_image": "sample_image"}'
-                        />
                         <group>
                             <group>
                                 <field name="name" required="1"/>
-                            </group>
-                            <group>
                                 <field name="model_id" required="1" options="{'no_create_edit': True, 'create': false, 'create_edit': false}"/>
                                 <field name="field_id" required="1" domain="[('ttype', '=', 'binary'),('model_id', '=', model_id)]" options="{'no_create_edit': True, 'create': false, 'create_edit': false}"/>
+                            </group>
+                            <group>
                             </group>
                         </group>
                     </sheet>

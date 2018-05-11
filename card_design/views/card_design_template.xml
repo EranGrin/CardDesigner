@@ -5,6 +5,7 @@
         <xpath expr="." position="inside">
             <link rel="stylesheet" href="/card_design/static/src/less/card_design.less"/>
             <link rel="stylesheet" href="/card_design/static/src/css/email_template.css"/>
+            <link rel="stylesheet" href="/card_design/static/src/css/boxmodel.min.css"/>
             <script type="text/javascript" src="/card_design/static/src/js/card_design.js"></script>
         </xpath>
     </template>
@@ -22,6 +23,8 @@
             <script type="text/javascript" src="/card_design/static/src/js/snippet_option.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/rte.summernote.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/card_design_editor.js"></script>
+            <script type="text/javascript" src="/card_design/static/src/js/boxmodel.js"></script>
+            <!-- <script type="text/javascript" src="/card_design/static/src/js/boxmodel.min.js"></script> -->
         </xpath>
     </template>
 

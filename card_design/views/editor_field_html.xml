@@ -2,6 +2,7 @@
 <odoo>
     <template id="card_assets_mail_themes">
         <link rel="stylesheet" type="text/less" href="/card_design/static/src/less/themes/theme_default.less"/>
+        <link rel="stylesheet" href="/card_design/static/src/css/boxmodel.min.css"/>
     </template>
 
     <template id="FieldTextHtmlInline" name="Editor layout">

@@ -1,51 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
 
-    <form t-name="card_design.dialog.position" style="overflow: scroll;height:530px;" action="#" class="form-horizontal">
-        <hr />
+    <form t-name="card_design.dialog.position" action="#" class="form-horizontal">
         <strong class="text-center" style="float: left; margin-right: 10px;"> Position </strong>
         <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="pstyle" name="pstyle">
             <option value="px">px</option>
             <option value="%">%</option>
         </select>
-        <hr />
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="title">Position</label>
             <div class="col-sm-9">
-                <select  class="form-control" id="position" name="position">
-                    <option value="">None</option>
-                    <option value="static">Static</option>
-                    <option value="relative">Relative</option>
-                    <option value="fixed">Fixed</option>
-                    <option value="absolute">Absolute</option>
-                    <option value="sticky">Sticky</option>
-                    <option value="initial">Initial</option>
-                    <option value="inherit">Inherit</option>
-                </select>
+                <input type="radio" id="position" name="position" value="" /> None 
+                <input type="radio" id="position" name="position" value="static" /> Static 
+                <input type="radio" id="position" name="position" value="relative" /> Relative 
+                <input type="radio" id="position" name="position" value="fixed" /> Fixed 
+                <input type="radio" id="position" name="position" value="absolute" /> Absolute 
+                <input type="radio" id="position" name="position" value="sticky" /> Sticky 
+                <input type="radio" id="position" name="position" value="initial" /> Initial 
+                <input type="radio" id="position" name="position" value="inherit" /> Inherit 
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="pptop">Top</label>
+            <label class="col-sm-3 control-label" for="top">Top</label>
             <div class="col-sm-9">
-                <input class="form-control" id="pptop" type="number"/>
+                <input class="form-control" id="top" type="number"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="ppbottom">Bottom</label>
+            <label class="col-sm-3 control-label" for="right">Right</label>
             <div class="col-sm-9">
-                <input class="form-control" id="ppbottom" type="number"/>
+                <input class="form-control" id="right" type="number"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="ppleft">Left</label>
+            <label class="col-sm-3 control-label" for="bottom">Bottom</label>
             <div class="col-sm-9">
-                <input class="form-control" id="ppleft" type="number"/>
+                <input class="form-control" id="bottom" type="number"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="ppright">Right</label>
+            <label class="col-sm-3 control-label" for="left">Left</label>
             <div class="col-sm-9">
-                <input class="form-control" id="ppright" type="number"/>
+                <input class="form-control" id="left" type="number"/>
             </div>
         </div>
         <div class="form-group">
@@ -54,38 +49,12 @@
                 <input class="form-control" id="zindex" type="number"/>
             </div>
         </div>
-        <hr />
-        <strong class="text-center">Background Color</strong>
-        <hr />
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="pbackground">Color</label>
+            <label class="col-sm-3 control-label" for="pbackground">Background Color</label>
             <div class="col-sm-9">
                 <input class="form-control" id="pbackground" type="text"/>
             </div>
         </div>
-        <hr />
-        <strong class="text-center" style="float:left; margin-right: 10px;">Size (px)</strong>
-        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="sstyle" name="sstyle">
-            <option value="px">px</option>
-            <option value="em">em</option>
-            <option value="%">%</option>
-        </select>
-        <hr />
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="width">Width</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="width" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="height">Height</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="height" type="number"/>
-            </div>
-        </div>
-        <hr />
-        <strong class="text-center"> Overflow </strong>
-        <hr />
         <div class="form-group">
             <label class="col-sm-3 control-label" for="title">Overflow</label>
             <div class="col-sm-9">
@@ -98,9 +67,6 @@
                 </select>
             </div>
         </div>
-        <hr />
-        <strong class="text-center">Border</strong>
-        <hr />
         <div class="form-group">
             <label class="col-sm-3 control-label" for="pborder">Border</label>
             <div class="col-sm-9">
@@ -167,12 +133,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="pbordersize">Width (px)</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="pbordersize" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="col-sm-3 control-label" for="pbordercolor">Color</label>
             <div class="col-sm-9">
                 <input class="form-control" id="pbordercolor" type="text"/>
@@ -184,70 +144,7 @@
                 <input class="form-control" id="pborderadius" type="number"/>
             </div>
         </div>
-        <hr />
-        <strong class="text-center" style="float:left; margin-right: 10px;"> Margin </strong>
-        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="mstyle" name="mstyle">
-            <option value="px">px</option>
-            <option value="em">em</option>
-            <option value="%">%</option>
-        </select>
-        <hr />
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="mtop">Top</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="mtop" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="mright">Right</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="mright" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="mbottom">Bottom</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="mbottom" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="mleft">Left</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="mleft" type="number"/>
-            </div>
-        </div>
-        <hr />
-        <strong class="text-center" style="float:left; margin-right: 10px;"> Padding </strong>
-        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="pdstyle" name="pdstyle">
-            <option value="px">px</option>
-            <option value="em">em</option>
-            <option value="%">%</option>
-        </select>
-        <hr />
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="ptop">Top</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="ptop" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pright">Right</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="pright" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pbottom">Bottom</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="pbottom" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pleft">Left</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="pleft" type="number"/>
-            </div>
-        </div>
+        <div id="boxmodel-ex-3" data-name="boxmodel-ex-3" class="boxmodel-firebug-skin"></div>
     </form>
 
     <div t-name="card_design.theme_selector" class="o_mail_theme_selector">
