@@ -6,6 +6,7 @@
             <link rel="stylesheet" href="/card_design/static/src/less/card_design.less"/>
             <link rel="stylesheet" href="/card_design/static/src/css/email_template.css"/>
             <link rel="stylesheet" href="/card_design/static/src/css/boxmodel.min.css"/>
+            <link rel="stylesheet" href="/card_design/static/src/css/grapes.min.css" />
             <script type="text/javascript" src="/card_design/static/src/js/card_design.js"></script>
         </xpath>
     </template>
@@ -16,6 +17,7 @@
                 rel="stylesheet"
                 href="/card_design/static/src/less/card_design.ui.less"
             />
+            <link rel="stylesheet" href="/card_design/static/src/css/grapes.min.css" />
             <link rel="stylesheet" href="/card_design/static/src/lib/bootstrap-colorpicker/colorpicker.less"/>
             <script type="text/javascript" src="/card_design/static/src/lib/bootstrap-colorpicker/bootstrap-colorpicker.js"/>
             <script type="text/javascript" src="/card_design/static/src/js/widget.js"/>
@@ -24,6 +26,7 @@
             <script type="text/javascript" src="/card_design/static/src/js/rte.summernote.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/card_design_editor.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/boxmodel.js"></script>
+
             <!-- <script type="text/javascript" src="/card_design/static/src/js/boxmodel.min.js"></script> -->
         </xpath>
     </template>

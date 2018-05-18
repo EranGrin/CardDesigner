@@ -21,6 +21,9 @@ odoo.define('card_design.widget', function (require) {
             }, options));
             this.$editable = $editable;
             this.media = media;
+            var temp = $.parseHTML("<div style='float:letf;'width:380px;'>" + this.$modal[0].outerHTML + "</div>")[0];
+            $('#wrapwrap').css({'width': '68%'});
+            $('#wrapwrap')[0].after(temp);
             this.alt = ($(this.media).attr('alt') || "").replace(/&quot;/g, '"');
             this.title = ($(this.media).attr('title') || "").replace(/&quot;/g, '"');
             this.$modal.css({'display': 'block'})
@@ -29,8 +32,11 @@ odoo.define('card_design.widget', function (require) {
                 'position': 'fixed',
                 'width':'380px',
                 'height': '100%',
-                'overflow-y': 'auto'
-            })
+                'overflow-y': 'auto',
+                'top': '3px',
+            });
+            this.$modal.find('.modal-header').css({'color': 'white'});
+            this.$modal.find('.modal-content').css({'background-color': '#444444', 'border-radius': '0px'});
             this.$modal.find('.modal-footer > button').css({'display': 'none'});
         },
         save: function () {
@@ -374,8 +380,8 @@ odoo.define('card_design.widget', function (require) {
             //         self.change_style(e, self, "sstyle", "height", "height", '#sstyle')
             //     }
             // });
-            this.$background_custom = this.$el.find('#pbackground');
-            this.$el.find('#pbackground').colorpicker()
+            this.$background_custom = this.$el.find('#background-color');
+            this.$el.find('#background-color').colorpicker()
             this.$background_custom.on(
                 "changeColor",
                 $.proxy(this.set_inline_background_color, this)
@@ -392,8 +398,8 @@ odoo.define('card_design.widget', function (require) {
                 "click",
                 $.proxy(this.remove_inline_background_color, this)
             );
-            this.$border_custom = this.$el.find('#pbordercolor');
-            this.$el.find('#pbordercolor').colorpicker()
+            this.$border_custom = this.$el.find('#border-color');
+            this.$el.find('#border-color').colorpicker()
             this.$border_custom.on(
                 "changeColor",
                 $.proxy(this.set_inline_border_color, this)
@@ -422,6 +428,26 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
+            // this.$el.on('change', '#top, #pstyle', function (e) {
+            //     if (self.media) {
+            //         self.change_style(e, self, "pstyle", "top", "top", '#pstyle')
+            //     }
+            // });
+            // this.$el.on('change', '#left, #pstyle', function (e) {
+            //     if (self.media) {
+            //         self.change_style(e, self, "pstyle", "left", "left", '#pstyle')
+            //     }
+            // });
+            // this.$el.on('change', '#right, #pstyle', function (e) {
+            //     if (self.media) {
+            //         self.change_style(e, self, "pstyle", "right", "right", '#pstyle')
+            //     }
+            // });
+            // this.$el.on('change', '#bottom, #pstyle', function (e) {
+            //     if (self.media) {
+            //         self.change_style(e, self, "pstyle", "bottom", "bottom", '#pstyle')
+            //     }
+            // });
             this.$custom = this.$el.find("#boxmodel-ex-3").boxModel({
                 'showEnabledUnits': false,
                 'showShortcuts': false,
@@ -475,6 +501,27 @@ odoo.define('card_design.widget', function (require) {
                 self.box_change_style(self, value.context.value, sname)
             });
             return this
+        },
+        destroy: function(reason) {
+            if (this.isDestroyed()) {
+                return;
+            }
+            $('#wrapwrap').css({'width': '100%'});
+            this.trigger("closed", reason);
+
+            this._super();
+
+            $('.tooltip').remove(); //remove open tooltip if any to prevent them staying when modal has disappeared
+            this.$modal.modal('hide');
+            this.$modal.remove();
+
+            setTimeout(function () { // Keep class modal-open (deleted by bootstrap hide fnct) on body to allow scrolling inside the modal
+                var modals = $('body > .modal').filter(':visible');
+                if(modals.length) {
+                    modals.last().focus();
+                    $('body').addClass('modal-open');
+                }
+            }, 0);
         },
         box_change_style: function (self, element_value, style_name) {
             if (self.media && self.media.style) {
