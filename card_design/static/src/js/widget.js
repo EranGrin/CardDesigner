@@ -19,9 +19,12 @@ odoo.define('card_design.widget', function (require) {
             this._super(parent, _.extend({}, {
                 title: _t("Style"),
             }, options));
+
             this.$editable = $editable;
             this.media = media;
-            var temp = $.parseHTML("<div style='float:letf;'width:380px;'>" + this.$modal[0].outerHTML + "</div>")[0];
+            var temp = $.parseHTML(
+                "<div style='float:letf;'width:380px;'>" + this.$modal[0].outerHTML + "</div>"
+            )[0];
             $('#wrapwrap').css({'width': '68%'});
             $('#wrapwrap')[0].after(temp);
             this.alt = ($(this.media).attr('alt') || "").replace(/&quot;/g, '"');
@@ -35,9 +38,28 @@ odoo.define('card_design.widget', function (require) {
                 'overflow-y': 'auto',
                 'top': '3px',
             });
-            this.$modal.find('.modal-header').css({'color': 'white'});
-            this.$modal.find('.modal-content').css({'background-color': '#444444', 'border-radius': '0px'});
-            this.$modal.find('.modal-footer > button').css({'display': 'none'});
+            this.$modal.find('.modal-dialog').addClass('o_select_style_dialog');
+            this.$modal.find('.modal-header').css({
+                'color': 'white'
+            });
+            this.$modal.find('.modal-content').css({
+                'background-color': '#444444',
+                'border-radius': '0px'
+            });
+            this.$modal.find('.modal-footer > button').css({
+                'display': 'none'
+            });
+            var self = this;
+            var $win = $(document);
+            this.$modal.addClass('note-style-dialog');
+            var $box = this.$modal.find(".o_select_style_dialog");
+            $win.on("click.Bst", function(event){
+                if ($box.has(event.target).length == 0 && !$box.is(event.target)){
+                    if (event.target.className == 'modal note-style-dialog in'){
+                        self.$modal.modal('hide');
+                    }
+                }
+            });
         },
         save: function () {
             var self = this;
@@ -50,7 +72,6 @@ odoo.define('card_design.widget', function (require) {
                 style = style.replace(/\s*width:[^;]+/, '');
             }
             $(this.media).attr("style", style);
-
             return this.media;
         },
         renderElement: function() {
@@ -81,82 +102,59 @@ odoo.define('card_design.widget', function (require) {
                 } 
             };
             if (this.media.style) {
-                var position_arg = this.$el.find('#position');
-                var background_arg = this.$el.find('#pbackground')
+                var float_arg = this.$el.find('input:radio[name=option]');
+                var position_arg = this.$el.find('input:radio[name=position]');
+                var overflow_arg = this.$el.find('input[type=radio][name=overflow]');
                 var zindex_arg = this.$el.find('#zindex');
+                var pptop_arg = this.$el.find('#ptop');
+                var ppleft_arg = this.$el.find('#pleft');
+                var ppright_arg = this.$el.find('#pright');
+                var ppbottom_arg = this.$el.find('#pbottom');
+                var ptstyle_arg = this.$el.find('#ptstyle');
+                var plstyle_arg = this.$el.find('#plstyle');
+                var prstyle_arg = this.$el.find('#prstyle');
+                var pbstyle_arg = this.$el.find('#pbstyle');
+                var background_arg = this.$el.find('#background-color')
+                var pbordercolor_arg = this.$el.find('#border-color');
                 var pborder_arg = this.$el.find('#pborder');
-                var pbordersize_arg = this.$el.find('#pbordersize');
-                var pbordercolor_arg = this.$el.find('#pbordercolor');
-                var pborderadius_arg = this.$el.find('#pborderadius');
-                var overflow_arg = this.$el.find('#overflow');
-                var pptop_arg = this.$el.find('#top');
-                var ppleft_arg = this.$el.find('#left');
-                var ppright_arg = this.$el.find('#right');
-                var ppbottom_arg = this.$el.find('#bottom');
-                var pstyle_arg = this.$el.find('#pstyle');
-                var ptborder_arg = this.$el.find('#ptborder');
-                var plborder_arg = this.$el.find('#plborder');
-                var pbborder_arg = this.$el.find('#pbborder');
-                var prborder_arg = this.$el.find('#prborder');
-                if (pptop_arg) {
-                    if (this.media.style.top) {
-                        var demo = this.media.style.top
-                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                        var style_top = demo.split(value)
-                        pptop_arg.val(value);
-                        pstyle_arg.val(style_top[1]);
+                var tlradius_arg = this.$el.find('#tlradius');
+                var trradius_arg = this.$el.find('#trradius');
+                var brradius_arg = this.$el.find('#brradius');
+                var blradius_arg = this.$el.find('#blradius');
+                var tlstyle_arg = this.$el.find('#tlstyle');
+                var trstyle_arg = this.$el.find('#trstyle');
+                var blstyle_arg = this.$el.find('#blstyle');
+                var brstyle_arg = this.$el.find('#brstyle');
+
+                if (background_arg) {
+                    if (this.media.style.backgroundColor) {
+                        background_arg.val(this.media.style.backgroundColor);
                     }
                 }
-                if (ppleft_arg) {
-                    if (this.media.style.left) {
-                        var demo = this.media.style.left
-                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                        var style_top = demo.split(value)
-                        ppleft_arg.val(value);
-                        pstyle_arg.val(style_top[1]);
+                if (float_arg) {
+                    if (this.media.style.float) {
+                        this.$el.find('#float-' + this.media.style.float).prop('checked', true);
                     }
                 }
-                if (ppbottom_arg) {
-                    if (this.media.style.bottom) {
-                        var demo = this.media.style.bottom
-                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                        var style_top = demo.split(value)
-                        ppbottom_arg.val(value);
-                        pstyle_arg.val(style_top[1]);
+                if (position_arg) {
+                    if (this.media.style.position) {
+                        this.$el.find('#position-' + this.media.style.position).prop('checked', true);
                     }
                 }
-                if (ppright_arg) {
-                    if (this.media.style.right) {
-                        var demo = this.media.style.right
-                        var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                        var style_top = demo.split(value)
-                        ppright_arg.val(value);
-                        pstyle_arg.val(style_top[1]);
+                if (overflow_arg) {
+                    if (this.media.style.overflow) {
+                        this.$el.find('#overflow-' + this.media.style.overflow).prop('checked', true);
                     }
                 }
-                if (this.media.style.borderBottomWidth) {
-                    var demo = this.media.style.borderBottomWidth
-                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                    var style_top = demo.split(value)
-                    initialValues.borders.borderBottomWidth = value + style_top[1];
+                if (zindex_arg) {
+                    if (this.media.style.zIndex) {
+                        zindex_arg.val(parseInt(this.media.style.zIndex));
+                    }
                 }
-                if (this.media.style.borderTopWidth) {
-                    var demo = this.media.style.borderTopWidth
-                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                    var style_top = demo.split(value)
-                    initialValues.borders.borderTopWidth = value + style_top[1];
-                }
-                if (this.media.style.borderRightWidth) {
-                    var demo = this.media.style.borderRightWidth
-                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                    var style_top = demo.split(value)
-                    initialValues.borders.borderRightWidth = value + style_top[1];
-                }
-                if (this.media.style.borderLeftWidth) {
-                    var demo = this.media.style.borderLeftWidth
-                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
-                    var style_top = demo.split(value)
-                    initialValues.borders.borderLeftWidth = value + style_top[1];
+                if (pbordercolor_arg) {
+                    if (this.media.style.borderColor) {
+                        pbordercolor_arg.val(this.media.style.borderColor);
+                    }
                 }
                 if (this.media.style.width) {
                     var demo = this.media.style.width
@@ -170,88 +168,33 @@ odoo.define('card_design.widget', function (require) {
                     var style_top = demo.split(value)
                     initialValues.dimensions.height = value + style_top[1];
                 }
-                if (background_arg) {
-                    if (this.media.style.backgroundColor) {
-                        background_arg.val(this.media.style.backgroundColor);
-                    }
-                }
-                if (overflow_arg) {
-                    if (this.media.style.overflow) {
-                        overflow_arg.val(this.media.style.overflow);
-                    }
-                }
-                if (position_arg) {
-                    if (this.media.style.position) {
-                        position_arg.val(this.media.style.position);
-                    }
-                }
                 if (this.media.style.top) {
                     var demo = this.media.style.top
                     var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
                     var style_top = demo.split(value)
                     pptop_arg.val(value);
-                    pstyle_arg.val(style_top[1]);
+                    ptstyle_arg.val(style_top[1]);
                 }
                 if (this.media.style.left) {
                     var demo = this.media.style.left
                     var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
                     var style_top = demo.split(value)
                     ppleft_arg.val(value);
-                    pstyle_arg.val(style_top[1]);
+                    plstyle_arg.val(style_top[1]);
                 }
                 if (this.media.style.bottom) {
                     var demo = this.media.style.bottom
                     var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
                     var style_top = demo.split(value)
                     ppbottom_arg.val(value);
-                    pstyle_arg.val(style_top[1]);
+                    pbstyle_arg.val(style_top[1]);
                 }
                 if (this.media.style.right) {
                     var demo = this.media.style.right
                     var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
                     var style_top = demo.split(value)
                     ppright_arg.val(value);
-                    pstyle_arg.val(style_top[1]);
-                }
-                if (zindex_arg) {
-                    if (this.media.style.zIndex) {
-                        zindex_arg.val(parseInt(this.media.style.zIndex));
-                    }
-                }
-                if (pborder_arg) {
-                    if (this.media.style.borderStyle) {
-                        pborder_arg.val(this.media.style.borderStyle);
-                    }
-                }
-                if (ptborder_arg) {
-                    if (this.media.style.borderTop) {
-                        ptborder_arg.val(this.media.style.borderTop);
-                    }
-                }
-                if (plborder_arg) {
-                    if (this.media.style.borderLeft) {
-                        plborder_arg.val(this.media.style.borderLeft);
-                    }
-                }
-                if (pbborder_arg) {
-                    if (this.media.style.borderBottom) {
-                        pbborder_arg.val(this.media.style.borderBottom);
-                    }
-                }
-                if (prborder_arg) {
-                    if (this.media.style.borderRight) {
-                        prborder_arg.val(this.media.style.borderRight);
-                    }
-                }
-                if (pbordercolor_arg) {
-                    if (this.media.style.borderColor) {
-                        pbordercolor_arg.val(this.media.style.borderColor);
-                    }
-                }
-                if (pborderadius_arg) {
-                    if (this.media.style.borderRadius) {
-                        pborderadius_arg.val(parseInt(this.media.style.borderRadius.split('px')[0]));
-                    }
+                    prstyle_arg.val(style_top[1]);
                 }
                 if (this.media.style.marginTop) {
                     var demo = this.media.style.marginTop
@@ -301,8 +244,53 @@ odoo.define('card_design.widget', function (require) {
                     var style_top = demo.split(value)
                     initialValues.paddings.bottom = value + style_top[1];
                 }
+                if (this.media.style.borderBottomWidth) {
+                    initialValues.borders.bottom = this.media.style.borderBottomWidth;
+                }
+                if (this.media.style.borderTopWidth) {
+                    initialValues.borders.top = this.media.style.borderTopWidth
+                }
+                if (this.media.style.borderRightWidth) {
+                    initialValues.borders.right = this.media.style.borderRightWidth
+                }
+                if (this.media.style.borderLeftWidth) {
+                    initialValues.borders.left = this.media.style.borderLeftWidth
+                }
+                if (pborder_arg) {
+                    if (this.media.style.borderStyle) {
+                        pborder_arg.val(this.media.style.borderStyle);
+                    }
+                }
+                if (this.media.style.borderTopLeftRadius) {
+                    var demo = this.media.style.borderTopLeftRadius
+                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                    var style_top = demo.split(value)
+                    tlradius_arg.val(value);
+                    tlstyle_arg.val(style_top[1]);
+                }
+                if (this.media.style.borderTopRightRadius) {
+                    var demo = this.media.style.borderTopRightRadius
+                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                    var style_top = demo.split(value)
+                    trradius_arg.val(value);
+                    trstyle_arg.val(style_top[1]);
+                }
+                if (this.media.style.borderBottomLeftRadius) {
+                    var demo = this.media.style.borderBottomLeftRadius
+                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                    var style_top = demo.split(value)
+                    blradius_arg.val(value);
+                    blstyle_arg.val(style_top[1]);
+                }
+                if (this.media.style.borderBottomRightRadius) {
+                    var demo = this.media.style.borderBottomRightRadius
+                    var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
+                    var style_top = demo.split(value)
+                    brradius_arg.val(value);
+                    brstyle_arg.val(style_top[1]);
+                }
             }
-            this.$el.on('change', '#overflow', function (e) {
+            this.$el.on('change', 'input[type=radio][name=overflow]', function (e) {
                 if (self.media) {
                     if (self.media.style) {
                         if (e.target.value) {
@@ -314,7 +302,7 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
-            this.$el.on('change', '#position', function (e) {
+            this.$el.on('change', 'input[type=radio][name=position]', function (e) {
                 if (self.media) {
                     if (self.media.style) {
                         if (e.target.value) {
@@ -326,24 +314,36 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
-            this.$el.on('change', '#top, #pstyle', function (e) {
+            this.$el.on('change', 'input[type=radio][name=float]', function (e) {
                 if (self.media) {
-                    self.change_style(e, self, "pstyle", "top", "top", '#pstyle')
+                    if (self.media.style) {
+                        if (e.target.value) {
+                            self.media.style.float = e.target.value;
+                        }
+                        else {
+                            self.media.style.float = "";
+                        }
+                    }
                 }
             });
-            this.$el.on('change', '#left, #pstyle', function (e) {
+            this.$el.on('change', '#ptop, #ptstyle', function (e) {
                 if (self.media) {
-                    self.change_style(e, self, "pstyle", "left", "left", '#pstyle')
+                    self.change_style(e, self, "ptstyle", "ptop", "top", '#ptstyle')
                 }
             });
-            this.$el.on('change', '#right, #pstyle', function (e) {
+            this.$el.on('change', '#pleft, #plstyle', function (e) {
                 if (self.media) {
-                    self.change_style(e, self, "pstyle", "right", "right", '#pstyle')
+                    self.change_style(e, self, "plstyle", "pleft", "left", '#plstyle')
                 }
             });
-            this.$el.on('change', '#bottom, #pstyle', function (e) {
+            this.$el.on('change', '#pright, #prstyle', function (e) {
                 if (self.media) {
-                    self.change_style(e, self, "pstyle", "bottom", "bottom", '#pstyle')
+                    self.change_style(e, self, "prstyle", "pright", "right", '#prstyle')
+                }
+            });
+            this.$el.on('change', '#pbottom, #pbstyle', function (e) {
+                if (self.media) {
+                    self.change_style(e, self, "pbstyle", "pbottom", "bottom", '#pbstyle')
                 }
             });
             this.$el.on('change', '#zindex', function (e) {
@@ -370,16 +370,26 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
-            // this.$el.on('change', '#width, #sstyle', function (e) {
-            //     if (self.media) {
-            //         self.change_style(e, self, "sstyle", "width", "width", '#sstyle')
-            //     }
-            // });
-            // this.$el.on('change', '#height, #sstyle', function (e) {
-            //     if (self.media) {
-            //         self.change_style(e, self, "sstyle", "height", "height", '#sstyle')
-            //     }
-            // });
+            this.$el.on('change', '#tlradius, #tlstyle', function (e) {
+                if (self.media) {
+                    self.change_style(e, self, "tlstyle", "tlradius", "border-top-left-radius", '#tlstyle')
+                }
+            });
+            this.$el.on('change', '#trradius, #trstyle', function (e) {
+                if (self.media) {
+                    self.change_style(e, self, "trstyle", "trradius", "border-top-right-radius", '#trstyle')
+                }
+            });
+            this.$el.on('change', '#blradius, #blstyle', function (e) {
+                if (self.media) {
+                    self.change_style(e, self, "blstyle", "blradius", "border-bottom-left-radius", '#blstyle')
+                }
+            });
+            this.$el.on('change', '#brradius, #brstyle', function (e) {
+                if (self.media) {
+                    self.change_style(e, self, "brstyle", "brradius", "border-bottom-right-radius", '#brstyle')
+                }
+            });
             this.$background_custom = this.$el.find('#background-color');
             this.$el.find('#background-color').colorpicker()
             this.$background_custom.on(
@@ -428,26 +438,6 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
-            // this.$el.on('change', '#top, #pstyle', function (e) {
-            //     if (self.media) {
-            //         self.change_style(e, self, "pstyle", "top", "top", '#pstyle')
-            //     }
-            // });
-            // this.$el.on('change', '#left, #pstyle', function (e) {
-            //     if (self.media) {
-            //         self.change_style(e, self, "pstyle", "left", "left", '#pstyle')
-            //     }
-            // });
-            // this.$el.on('change', '#right, #pstyle', function (e) {
-            //     if (self.media) {
-            //         self.change_style(e, self, "pstyle", "right", "right", '#pstyle')
-            //     }
-            // });
-            // this.$el.on('change', '#bottom, #pstyle', function (e) {
-            //     if (self.media) {
-            //         self.change_style(e, self, "pstyle", "bottom", "bottom", '#pstyle')
-            //     }
-            // });
             this.$custom = this.$el.find("#boxmodel-ex-3").boxModel({
                 'showEnabledUnits': false,
                 'showShortcuts': false,

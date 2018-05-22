@@ -16,7 +16,7 @@
                             <div class="gjs-field gjs-field-radio">
                                 <div class="gjs-radio-items">
                                     <div class="gjs-radio-item">
-                                        <input type="radio" class="gjs-sm-radio" id="float-none" name="float" value="none" />
+                                        <input type="radio" class="gjs-sm-radio" id="float-none" name="float" value="" />
                                         <label class="gjs-radio-item-label"  for="float-none">none</label>
                                     </div>
                                     <div class="gjs-radio-item">
@@ -41,6 +41,10 @@
                         <div class="gjs-fields">
                             <div class="gjs-field gjs-field-radio">
                                 <div class="gjs-radio-items">
+                                    <div class="gjs-radio-item">
+                                        <input type="radio" class="gjs-sm-radio" id="position-none" name="position" value="" />
+                                        <label class="gjs-radio-item-label" for="position-none">none</label>
+                                    </div>
                                     <div class="gjs-radio-item">
                                         <input type="radio" class="gjs-sm-radio" id="position-static" name="position" value="static" />
                                         <label class="gjs-radio-item-label" for="position-static">static</label>
@@ -71,10 +75,10 @@
                         <div class="gjs-fields">
                             <div class="gjs-field gjs-field-integer">
                                 <span class="gjs-input-holder">
-                                <input type="number" placeholder="0" />
+                                <input type="number" id="ptop" placeholder="0" />
                                 </span>
                                 <span class="gjs-field-units">
-                                    <select class="input-unit">
+                                    <select class="input-unit" id="ptstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
                                     </select>
@@ -92,10 +96,10 @@
                         <div class="gjs-fields">
                             <div class="gjs-field gjs-field-integer">
                                 <span class="gjs-input-holder">
-                                    <input type="number" placeholder="0" />
+                                    <input type="number" placeholder="0" id="pleft"/>
                                 </span>
                                 <span class="gjs-field-units">
-                                    <select class="input-unit">
+                                    <select class="input-unit" id="plstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
                                     </select>
@@ -113,10 +117,10 @@
                         <div class="gjs-fields">
                             <div class="gjs-field gjs-field-integer">
                                 <span class="gjs-input-holder">
-                                <input type="number" placeholder="0" />
+                                <input type="number" placeholder="0" id="pright"/>
                                 </span>
                                 <span class="gjs-field-units">
-                                    <select class="input-unit">
+                                    <select class="input-unit" id="prstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
                                     </select>
@@ -134,14 +138,63 @@
                         <div class="gjs-fields">
                             <div class="gjs-field gjs-field-integer">
                                 <span class="gjs-input-holder">
-                                <input type="number" placeholder="0" />
+                                <input type="number" placeholder="0" id="pbottom"/>
                                 </span>
                                 <span class="gjs-field-units">
-                                    <select class="input-unit">
+                                    <select class="input-unit" id="pbstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
                                     </select>
                                 </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gjs-sm-position" class="gjs-sm-property gjs-sm-radio" style="display: block;">
+                        <div class="gjs-sm-label">
+                            <span class="gjs-sm-icon " title="">
+                            overflow
+                            </span>
+                            <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
+                        </div>
+                        <div class="gjs-fields">
+                            <div class="gjs-field gjs-field-radio">
+                                <div class="gjs-radio-items">
+                                    <div class="gjs-radio-item">
+                                        <input type="radio" class="gjs-sm-radio" id="overflow-none" name="overflow" value="" />
+                                        <label class="gjs-radio-item-label" for="overflow-none">none</label>
+                                    </div>
+                                    <div class="gjs-radio-item">
+                                        <input type="radio" class="gjs-sm-radio" id="overflow-auto" name="overflow" value="auto" />
+                                        <label class="gjs-radio-item-label" for="overflow-auto">auto</label>
+                                    </div>
+                                    <div class="gjs-radio-item">
+                                        <input type="radio" class="gjs-sm-radio" id="overflow-hidden" name="overflow" value="hidden" />
+                                        <label class="gjs-radio-item-label" for="overflow-hidden">hidden</label>
+                                    </div>
+                                    <div class="gjs-radio-item">
+                                        <input type="radio" class="gjs-sm-radio" id="overflow-scroll" name="overflow" value="scroll" />
+                                        <label class="gjs-radio-item-label" for="overflow-scroll">scroll</label>
+                                    </div>
+                                    <div class="gjs-radio-item">
+                                        <input type="radio" class="gjs-sm-radio" id="overflow-visible" name="overflow" value="visible" />
+                                        <label class="gjs-radio-item-label" for="overflow-visible">visible</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gjs-sm-background-color" class="gjs-sm-property gjs-sm-color" style="display: block;">
+                        <div class="gjs-sm-label">
+                            <span class="gjs-sm-icon " title="">
+                                z-index
+                            </span>
+                            <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
+                        </div>
+                        <div class="gjs-fields">
+                            <div class="gjs-field gjs-field-color">
+                                <div class="gjs-input-holder">
+                                    <input type="number" id="zindex" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -149,27 +202,6 @@
             </div>
             <div id="gjs-sm-decorations" class="gjs-sm-sector no-select" style="display: block;">
                 <div class="gjs-sm-properties">
-                    <div id="gjs-sm-border-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                        <div class="gjs-sm-label">
-                            <span class="gjs-sm-icon " title="">
-                            Border radius
-                            </span>
-                            <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
-                        </div>
-                        <div class="gjs-fields">
-                            <div class="gjs-field gjs-field-integer">
-                                <span class="gjs-input-holder">
-                                    <input type="number" placeholder="0" />
-                                </span>
-                                <span class="gjs-field-units">
-                                    <select class="input-unit">
-                                        <option selected="">px</option>
-                                        <option>%</option>
-                                    </select>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
                     <div id="gjs-sm-background-color" class="gjs-sm-property gjs-sm-color" style="display: block;">
                         <div class="gjs-sm-label">
                             <span class="gjs-sm-icon " title="">
@@ -185,107 +217,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="gjs-sm-border-radius" class="gjs-sm-property gjs-sm-composite" style="display: block;">
-                        <div class="gjs-sm-label gjs-color-warn">
-                            <span class="gjs-sm-icon " title="">
-                            Border radius
-                            </span>
-                            <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
-                        </div>
-                        <div class="gjs-fields">
-                            <div class="gjs-sm-field gjs-sm-composite">
-                                <span id="gjs-sm-input-holder">
-                                    <div class="gjs-sm-properties">
-                                        <div id="gjs-sm-border-top-left-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
-                                                <span class="gjs-sm-icon " title="">
-                                                Border top left radius
-                                                </span>
-                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
-                                            </div>
-                                            <div class="gjs-fields">
-                                                <div class="gjs-field gjs-field-integer">
-                                                    <span class="gjs-input-holder">
-                                                        <input type="number" placeholder="0" />
-                                                    </span>
-                                                    <span class="gjs-field-units">
-                                                        <select class="input-unit">
-                                                            <option selected="">px</option>
-                                                            <option>%</option>
-                                                        </select>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="gjs-sm-border-top-right-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
-                                                <span class="gjs-sm-icon " title="">
-                                                Border top right radius
-                                                </span>
-                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
-                                            </div>
-                                            <div class="gjs-fields">
-                                                <div class="gjs-field gjs-field-integer">
-                                                    <span class="gjs-input-holder">
-                                                        <input type="number" placeholder="0" />
-                                                    </span>
-                                                    <span class="gjs-field-units">
-                                                        <select class="input-unit">
-                                                            <option selected="">px</option>
-                                                            <option>%</option>
-                                                        </select>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="gjs-sm-border-bottom-left-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
-                                                <span class="gjs-sm-icon " title="">
-                                                Border bottom left radius
-                                                </span>
-                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
-                                            </div>
-                                            <div class="gjs-fields">
-                                                <div class="gjs-field gjs-field-integer">
-                                                    <span class="gjs-input-holder">
-                                                        <input type="number" placeholder="0"/>
-                                                    </span>
-                                                    <span class="gjs-field-units">
-                                                        <select class="input-unit">
-                                                            <option selected="">px</option>
-                                                            <option>%</option>
-                                                        </select>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="gjs-sm-border-bottom-right-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
-                                                <span class="gjs-sm-icon " title="">
-                                                Border bottom right radius
-                                                </span>
-                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
-                                            </div>
-                                            <div class="gjs-fields">
-                                                <div class="gjs-field gjs-field-integer">
-                                                    <span class="gjs-input-holder">
-                                                        <input type="number" placeholder="0" />
-                                                    </span>
-                                                    <span class="gjs-field-units">
-                                                        <select class="input-unit">
-                                                            <option selected="">px</option>
-                                                            <option>%</option>
-                                                        </select>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="gjs-sm-border" class="gjs-sm-property gjs-sm-composite" style="display: block;">
+                     <div id="gjs-sm-border" class="gjs-sm-property gjs-sm-composite" style="display: block;">
                         <div class="gjs-sm-label gjs-color-warn">
                             <span class="gjs-sm-icon " title="">
                             Border
@@ -296,28 +228,7 @@
                             <div class="gjs-sm-field gjs-sm-composite">
                                 <span id="gjs-sm-input-holder">
                                     <div class="gjs-sm-properties">
-                                        <div id="gjs-sm-border-width" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label">
-                                                <span class="gjs-sm-icon " title="">
-                                                Border width
-                                                </span>
-                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
-                                            </div>
-                                            <div class="gjs-fields">
-                                                <div class="gjs-field gjs-field-integer">
-                                                    <span class="gjs-input-holder">
-                                                        <input type="number" placeholder="0" />
-                                                    </span>
-                                                    <span class="gjs-field-units">
-                                                        <select class="input-unit">
-                                                            <option selected="">px</option>
-                                                            <option>em</option>
-                                                        </select>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="gjs-sm-border-style" class="gjs-sm-property gjs-sm-select" style="display: block;">
+                                        <div id="gjs-sm-border-style" class="gjs-sm-property gjs-sm-color" style="display: block;">
                                             <div class="gjs-sm-label">
                                                 <span class="gjs-sm-icon " title="">
                                                 Border style
@@ -327,7 +238,7 @@
                                             <div class="gjs-fields">
                                                 <div class="gjs-field gjs-select">
                                                     <span id="gjs-sm-input-holder">
-                                                        <select>
+                                                        <select id="pborder" name="pborder">
                                                             <option value="none">none</option>
                                                             <option value="solid">solid</option>
                                                             <option value="dotted">dotted</option>
@@ -365,21 +276,106 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div id="gjs-sm-background" class="gjs-sm-property gjs-sm-stack" style="display: block;">
-                        <div class="gjs-sm-label">
+                    <div id="gjs-sm-border-radius" class="gjs-sm-property gjs-sm-composite" style="display: block;">
+                        <div class="gjs-sm-label gjs-color-warn">
                             <span class="gjs-sm-icon " title="">
-                            Background
+                            Border radius
                             </span>
                             <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
                         </div>
                         <div class="gjs-fields">
-                            <div class="gjs-sm-field gjs-sm-stack">
-                                <div data-layers-wrapper="">
-                                    <div class="gjs-sm-layers gjs-field"></div>
-                                </div>
+                            <div class="gjs-sm-field gjs-sm-composite">
+                                <span id="gjs-sm-input-holder">
+                                    <div class="gjs-sm-properties">
+                                        <div id="gjs-sm-border-top-left-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
+                                            <div class="gjs-sm-label gjs-color-warn">
+                                                <span class="gjs-sm-icon " title="">
+                                                Border top left radius
+                                                </span>
+                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
+                                            </div>
+                                            <div class="gjs-fields">
+                                                <div class="gjs-field gjs-field-integer">
+                                                    <span class="gjs-input-holder">
+                                                        <input type="number" id="tlradius" placeholder="0" />
+                                                    </span>
+                                                    <span class="gjs-field-units">
+                                                        <select class="input-unit" id="tlstyle">
+                                                            <option selected="">px</option>
+                                                            <option>%</option>
+                                                        </select>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="gjs-sm-border-top-right-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
+                                            <div class="gjs-sm-label gjs-color-warn">
+                                                <span class="gjs-sm-icon " title="">
+                                                Border top right radius
+                                                </span>
+                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
+                                            </div>
+                                            <div class="gjs-fields">
+                                                <div class="gjs-field gjs-field-integer">
+                                                    <span class="gjs-input-holder">
+                                                        <input type="number" id="trradius" placeholder="0" />
+                                                    </span>
+                                                    <span class="gjs-field-units">
+                                                        <select class="input-unit" id="trstyle">
+                                                            <option selected="">px</option>
+                                                            <option>%</option>
+                                                        </select>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="gjs-sm-border-bottom-left-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
+                                            <div class="gjs-sm-label gjs-color-warn">
+                                                <span class="gjs-sm-icon " title="">
+                                                Border bottom left radius
+                                                </span>
+                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
+                                            </div>
+                                            <div class="gjs-fields">
+                                                <div class="gjs-field gjs-field-integer">
+                                                    <span class="gjs-input-holder">
+                                                        <input type="number" id="blradius" placeholder="0"/>
+                                                    </span>
+                                                    <span class="gjs-field-units">
+                                                        <select class="input-unit" id="blstyle">
+                                                            <option selected="">px</option>
+                                                            <option>%</option>
+                                                        </select>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="gjs-sm-border-bottom-right-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
+                                            <div class="gjs-sm-label gjs-color-warn">
+                                                <span class="gjs-sm-icon " title="">
+                                                Border bottom right radius
+                                                </span>
+                                                <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
+                                            </div>
+                                            <div class="gjs-fields">
+                                                <div class="gjs-field gjs-field-integer">
+                                                    <span class="gjs-input-holder">
+                                                        <input type="number" id="brradius" placeholder="0" />
+                                                    </span>
+                                                    <span class="gjs-field-units">
+                                                        <select class="input-unit" id="brstyle">
+                                                            <option selected="">px</option>
+                                                            <option>%</option>
+                                                        </select>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </span>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="gjs-fields" style="margin-left:5px;">
                         <div class="gjs-sm-field gjs-sm-composite">
                             <span id="gjs-sm-input-holder">
