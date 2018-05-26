@@ -60,6 +60,7 @@ odoo.define('card_design.widget', function (require) {
                     }
                 }
             });
+            $('div.oe_overlay, .o_top_cover, .ui-draggable, .oe_active').removeClass('oe_active');
         },
         save: function () {
             var self = this;

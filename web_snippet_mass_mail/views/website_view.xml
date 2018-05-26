@@ -32,7 +32,7 @@
         <xpath expr="//h2[@id='snippets_menu']" position="after">
             <h4 id="snippets_template_size" class="text-center" style="color:white;">Change Size</h4>
             <select id="input_snippets_template_size" class="form-control oe_view_list" style="margin-bottom:10px; width: 80% !important;margin-left: 8%; ">
-                <option value=""> Default </option>
+                <option value="(400, 400)"> Default </option>
                 <t t-foreach="sizes" t-as="size">
                     <option t-att-value="size.width,size.height">
                         <t t-esc="size.name" />

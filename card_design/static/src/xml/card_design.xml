@@ -81,6 +81,7 @@
                                     <select class="input-unit" id="ptstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
+                                        <option>em</option>
                                     </select>
                                 </span>
                             </div>
@@ -102,6 +103,7 @@
                                     <select class="input-unit" id="plstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
+                                        <option>em</option>
                                     </select>
                                 </span>
                             </div>
@@ -123,6 +125,7 @@
                                     <select class="input-unit" id="prstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
+                                        <option>em</option>
                                     </select>
                                 </span>
                             </div>
@@ -144,6 +147,7 @@
                                     <select class="input-unit" id="pbstyle">
                                         <option selected="">px</option>
                                         <option>%</option>
+                                        <option>em</option>
                                     </select>
                                 </span>
                             </div>
@@ -218,7 +222,7 @@
                         </div>
                     </div>
                      <div id="gjs-sm-border" class="gjs-sm-property gjs-sm-composite" style="display: block;">
-                        <div class="gjs-sm-label gjs-color-warn">
+                        <div class="gjs-sm-label">
                             <span class="gjs-sm-icon " title="">
                             Border
                             </span>
@@ -257,7 +261,7 @@
                                             </div>
                                         </div>
                                         <div id="gjs-sm-border-color" class="gjs-sm-property gjs-sm-color" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
+                                            <div class="gjs-sm-label">
                                                 <span class="gjs-sm-icon " title="">
                                                 Border color
                                                 </span>
@@ -277,8 +281,8 @@
                         </div>
                     </div>
                     <div id="gjs-sm-border-radius" class="gjs-sm-property gjs-sm-composite" style="display: block;">
-                        <div class="gjs-sm-label gjs-color-warn">
-                            <span class="gjs-sm-icon " title="">
+                        <div class="gjs-sm-label">
+                            <span class="gjs-sm-icon" title="">
                             Border radius
                             </span>
                             <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
@@ -288,9 +292,9 @@
                                 <span id="gjs-sm-input-holder">
                                     <div class="gjs-sm-properties">
                                         <div id="gjs-sm-border-top-left-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
+                                            <div class="gjs-sm-label">
                                                 <span class="gjs-sm-icon " title="">
-                                                Border top left radius
+                                                Top-Left
                                                 </span>
                                                 <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
                                             </div>
@@ -303,15 +307,16 @@
                                                         <select class="input-unit" id="tlstyle">
                                                             <option selected="">px</option>
                                                             <option>%</option>
+                                                            <option>em</option>
                                                         </select>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="gjs-sm-border-top-right-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
+                                            <div class="gjs-sm-label">
                                                 <span class="gjs-sm-icon " title="">
-                                                Border top right radius
+                                                Top-Right
                                                 </span>
                                                 <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
                                             </div>
@@ -324,15 +329,16 @@
                                                         <select class="input-unit" id="trstyle">
                                                             <option selected="">px</option>
                                                             <option>%</option>
+                                                            <option>em</option>
                                                         </select>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="gjs-sm-border-bottom-left-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
+                                            <div class="gjs-sm-label">
                                                 <span class="gjs-sm-icon " title="">
-                                                Border bottom left radius
+                                                Bottom-Left
                                                 </span>
                                                 <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
                                             </div>
@@ -345,15 +351,16 @@
                                                         <select class="input-unit" id="blstyle">
                                                             <option selected="">px</option>
                                                             <option>%</option>
+                                                            <option>em</option>
                                                         </select>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="gjs-sm-border-bottom-right-radius" class="gjs-sm-property gjs-sm-integer" style="display: block;">
-                                            <div class="gjs-sm-label gjs-color-warn">
+                                            <div class="gjs-sm-label">
                                                 <span class="gjs-sm-icon " title="">
-                                                Border bottom right radius
+                                                Bottom-Right
                                                 </span>
                                                 <b class="gjs-sm-clear" data-clear-style="" style="display: none;">⨯</b>
                                             </div>
@@ -366,6 +373,7 @@
                                                         <select class="input-unit" id="brstyle">
                                                             <option selected="">px</option>
                                                             <option>%</option>
+                                                            <option>em</option>
                                                         </select>
                                                     </span>
                                                 </div>
@@ -376,166 +384,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="gjs-fields" style="margin-left:5px;">
-                        <div class="gjs-sm-field gjs-sm-composite">
-                            <span id="gjs-sm-input-holder">
-                                <div class="gjs-sm-properties" style="padding:13px;">
-                                    <div id="boxmodel-ex-3" data-name="boxmodel-ex-3" class="boxmodel-firebug-skin"></div>
-                                </div>
-                            </span>
-                        </div>
-                    </div>
+                    <div id="boxmodel-ex-3" data-name="boxmodel-ex-3" class="boxmodel-firebug-skin" style="margin-left:4px;margin-top:10px;"></div>
                 </div>
             </div>
         </div>
-        
     </form>
-
-    <!-- <form t-name="card_design.dialog.position" action="#" class="form-horizontal">
-        <strong class="text-center" style="float: left; margin-right: 10px;"> Position </strong>
-        <select class="form-control" style="width: auto;height: 30px;margin-top: -5px;" id="pstyle" name="pstyle">
-            <option value="px">px</option>
-            <option value="%">%</option>
-        </select>
-        <div class="form-group">
-            <div class="col-sm-9">
-                <input type="radio" id="position" name="position" value="" /> None 
-                <input type="radio" id="position" name="position" value="static" /> Static 
-                <input type="radio" id="position" name="position" value="relative" /> Relative 
-                <input type="radio" id="position" name="position" value="fixed" /> Fixed 
-                <input type="radio" id="position" name="position" value="absolute" /> Absolute 
-                <input type="radio" id="position" name="position" value="sticky" /> Sticky 
-                <input type="radio" id="position" name="position" value="initial" /> Initial 
-                <input type="radio" id="position" name="position" value="inherit" /> Inherit 
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="top">Top</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="top" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="right">Right</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="right" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="bottom">Bottom</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="bottom" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="left">Left</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="left" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="zindex">Z-Index</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="zindex" type="number"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pbackground">Background Color</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="pbackground" type="text"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="title">Overflow</label>
-            <div class="col-sm-9">
-                <select  class="form-control" id="overflow" name="overflow">
-                    <option value="">None</option>
-                    <option value="auto">Auto</option>
-                    <option value="hidden">Hidden</option>
-                    <option value="scroll">Scroll</option>
-                    <option value="visible">Visible</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pborder">Border</label>
-            <div class="col-sm-9">
-                <select  class="form-control" id="pborder" name="pborder">
-                    <option value="">None</option>
-                    <option value="dotted">Dotted</option>
-                    <option value="dashed">Dashed</option>
-                    <option value="solid">Solid</option>
-                    <option value="double">Double</option>
-                    <option value="groove">Groove</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="ptborder">Border Top</label>
-            <div class="col-sm-9">
-                <select  class="form-control" id="ptborder" name="ptborder">
-                    <option value="">None</option>
-                    <option value="dotted">Dotted</option>
-                    <option value="dashed">Dashed</option>
-                    <option value="solid">Solid</option>
-                    <option value="double">Double</option>
-                    <option value="groove">Groove</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pbborder">Border Bottom</label>
-            <div class="col-sm-9">
-                <select  class="form-control" id="pbborder" name="pbborder">
-                    <option value="">None</option>
-                    <option value="dotted">Dotted</option>
-                    <option value="dashed">Dashed</option>
-                    <option value="solid">Solid</option>
-                    <option value="double">Double</option>
-                    <option value="groove">Groove</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="plborder">Border Left</label>
-            <div class="col-sm-9">
-                <select  class="form-control" id="plborder" name="plborder">
-                    <option value="">None</option>
-                    <option value="dotted">Dotted</option>
-                    <option value="dashed">Dashed</option>
-                    <option value="solid">Solid</option>
-                    <option value="double">Double</option>
-                    <option value="groove">Groove</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="ptborder">Border Right</label>
-            <div class="col-sm-9">
-                <select  class="form-control" id="prborder" name="prborder">
-                    <option value="">None</option>
-                    <option value="dotted">Dotted</option>
-                    <option value="dashed">Dashed</option>
-                    <option value="solid">Solid</option>
-                    <option value="double">Double</option>
-                    <option value="groove">Groove</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pbordercolor">Color</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="pbordercolor" type="text"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="pborderadius">Radius (%)</label>
-            <div class="col-sm-9">
-                <input class="form-control" id="pborderadius" type="number"/>
-            </div>
-        </div>
-        <div id="boxmodel-ex-3" data-name="boxmodel-ex-3" class="boxmodel-firebug-skin"></div>
-    </form> -->
 
     <div t-name="card_design.theme_selector" class="o_mail_theme_selector">
         <a href="#" class="btn btn-xs dropdown-toggle" data-toggle="dropdown">

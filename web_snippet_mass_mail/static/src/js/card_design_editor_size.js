@@ -56,7 +56,8 @@ snippets_editor.Class.include({
                     width = parseInt(value[0]);
                     height = parseInt(value[1]);
                     $('.o_designer_wrapper_td').css({
-                        "width": width, "height": height,
+                        "width": width,
+                        "height": height,
                         "overflow": "hidden",
                         "margin-left": "auto",
                         "margin-right": "auto"  
