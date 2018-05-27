@@ -42,6 +42,7 @@ odoo.define('card_design.widget', function (require) {
             this.$modal.find('.modal-header').css({
                 'color': 'white'
             });
+            this.$modal.find('.modal-header').addClass('text-center');
             this.$modal.find('.modal-content').css({
                 'background-color': '#444444',
                 'border-radius': '0px'
@@ -163,11 +164,17 @@ odoo.define('card_design.widget', function (require) {
                     var style_top = demo.split(value)
                     initialValues.dimensions.width = value + style_top[1];
                 }
+                else {
+                    initialValues.dimensions.width = this.media.clientWidth + 'px';
+                }
                 if (this.media.style.height) {
                     var demo = this.media.style.height
                     var value = parseInt(demo.replace(/[^0-9\.]/g, ''))
                     var style_top = demo.split(value)
                     initialValues.dimensions.height = value + style_top[1];
+                }
+                else {
+                    initialValues.dimensions.height = this.media.clientHeight + 'px';
                 }
                 if (this.media.style.top) {
                     var demo = this.media.style.top

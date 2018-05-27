@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <record id="view_general_configuration_form_inherit_card_design" model="ir.ui.view">
+        <field name="name">base.config.settings.form.inherit.card.design</field>
+        <field name="model">base.config.settings</field>
+        <field name="inherit_id" ref="base_setup.view_general_configuration"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='google_analytics']" position="after">
+                <group string="Card Design" name="svg_to_pdf_path">
+                    <label for="file_name" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="file_name" class="oe_inline" />
+                        </div>
+                    </div>
+                    <label for="download_path" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="download_path" class="oe_inline" />
+                        </div>
+                    </div>
+                    <label for="page_width" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="page_width" class="oe_inline" />
+                        </div>
+                    </div>
+                    <label for="page_height" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="page_height" class="oe_inline" />
+                        </div>
+                    </div>
+                    <label for="margin_top" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="margin_top" class="oe_inline" />
+                        </div>
+                    </div>
+                    <label for="margin_right" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="margin_right" class="oe_inline" />
+                        </div>
+                    </div>
+                    <label for="margin_bottom" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="margin_bottom" class="oe_inline" />
+                        </div>
+                    </div>
+                    <label for="margin_left" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="margin_left" class="oe_inline" />
+                        </div>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
     <menuitem name="Design" id="card_design_menu"/>
 
     <record model="ir.ui.view" id="card_design_template_tree_view">
@@ -20,6 +80,7 @@
         <field name="arch" type="xml">
             <form string="Card Template">
                 <header>
+                    <button name="print_pdf" type="object" string="Print PDF" class="oe_highlight"/>
                     <button name="generate_cards" type="object" string="Generate Cards"></button>
                     <field name="state" widget="statusbar"/>
                 </header>

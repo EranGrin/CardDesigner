@@ -13,11 +13,12 @@
     'website': "http://www.inceptus.io",
     'category': 'Tools',
     'version': '10.0.2018.05.26.3',
-    'depends': ['web_editor', 'mail', 'web_kanban_gauge'],
+    'depends': ['web_editor', 'mail', 'web_kanban_gauge', 'base_setup'],
     'external_dependencies': {
-        'python': ['imgkit'],
+        'python': ['imgkit', 'pdfkit'],
     },
     'data': [
+        'data/svg_data.xml',
         'wizard/card_print_view.xml',
         'views/card_design_template.xml',
         'views/card_template_view.xml',

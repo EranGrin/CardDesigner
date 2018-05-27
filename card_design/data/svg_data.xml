@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="svg_to_pdf" model="ir.config_parameter">
+        <field name="key">svg_to_pdf</field>
+        <field name="value">/tmp</field>
+    </record>
+
+    <record id="svg_page_width" model="ir.config_parameter">
+        <field name="key">svg_page_width</field>
+        <field name="value">8.26in</field>
+    </record>
+
+    <record id="svg_page_height" model="ir.config_parameter">
+        <field name="key">svg_page_height</field>
+        <field name="value">11.8in</field>
+    </record>
+
+    <record id="svg_margin_top" model="ir.config_parameter">
+        <field name="key">svg_margin_top</field>
+        <field name="value">0in</field>
+    </record>
+
+    <record id="svg_margin_right" model="ir.config_parameter">
+        <field name="key">svg_margin_right</field>
+        <field name="value">0in</field>
+    </record>
+
+    <record id="svg_margin_bottom" model="ir.config_parameter">
+        <field name="key">svg_margin_bottom</field>
+        <field name="value">0in</field>
+    </record>
+
+    <record id="svg_margin_left" model="ir.config_parameter">
+        <field name="key">svg_margin_left</field>
+        <field name="value">0in</field>
+    </record>
+
+    <record id="svg_file_name" model="ir.config_parameter">
+        <field name="key">svg_file_name</field>
+        <field name="value">Out</field>
+    </record>
+</odoo>

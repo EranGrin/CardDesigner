@@ -12,6 +12,9 @@
     </template>
 
     <template id="assets_editor" inherit_id="web_editor.assets_editor">
+        <!-- <xpath expr="script[@src='/web_editor/static/src/js/widgets.js']" position="replace">
+            <script type="text/javascript" src="/card_design/static/src/js/widgets_extended.js" />
+        </xpath> -->
         <xpath expr="//link[last()]" position="after">
             <link type="text/less"
                 rel="stylesheet"

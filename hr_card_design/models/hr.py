@@ -7,4 +7,3 @@ from odoo import _, models
 class Employee(models.Model):
     _inherit = 'hr.employee'
     _card_designer = _('Employee')
-

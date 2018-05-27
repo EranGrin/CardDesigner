@@ -9,7 +9,12 @@ from urllib import urlencode, quote as quote
 from odoo.tools.safe_eval import safe_eval
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
+import pdfkit
+from BeautifulSoup import BeautifulSoup
+import os
+from odoo.tools import ustr
 import logging
+import base64
 _logger = logging.getLogger(__name__)
 
 
@@ -129,6 +134,12 @@ class CardTemplate(models.Model):
         readonly=True,
         help="Sidebar button to open "
         "the sidebar action."
+    )
+    attachment_ids = fields.Many2many(
+        'ir.attachment',
+        string='Attachments',
+        help='Attachments are linked to a document through model / res_id and to the message '
+             'through this field.'
     )
 
     @api.depends('card_model')
@@ -292,6 +303,87 @@ class CardTemplate(models.Model):
 
         return multi_mode and results or results[res_ids[0]]
 
+    @api.multi
+    def print_pdf(self):
+        data = '''<html>'''
+        data += self.body_html
+        data += '''</html>'''
+        path = self.env.ref('card_design.svg_to_pdf').value
+        svg_page_width = self.env.ref('card_design.svg_page_width').value
+        svg_page_height = self.env.ref('card_design.svg_page_height').value
+        svg_margin_top = self.env.ref('card_design.svg_margin_top').value
+        svg_margin_right = self.env.ref('card_design.svg_margin_right').value
+        svg_margin_bottom = self.env.ref('card_design.svg_margin_bottom').value
+        svg_margin_left = self.env.ref('card_design.svg_margin_left').value
+        svg_file_name = self.env.ref('card_design.svg_file_name').value
+
+        file_path = path+"/template.html"
+
+        html_file = open(file_path, "w+")
+        data = data
+
+        soup = BeautifulSoup(data)
+        count = 0
+        for div in soup.findAll("div", {'class': 'o_mail_wrapper oe_structure'}):
+            count = count + 1
+            if count == 1:
+                div.attrs = None
+            soup = div.extract()
+
+        for d in soup.findAll("div", {"class": "o_mail_snippet_general"}):
+            d["style"] = "width: 8.25in; text-align: justify; text-rendering: geometricPrecision;"
+
+        for footer in soup.findAll("div", {"class": "o_mail_block_footer_social o_mail_footer_social_left"}):
+            footer.decompose()
+
+        for img in soup.findAll('img'):
+            if 'font_to_img' in img['src']:
+                img.attrs = None
+            elif '/web/image/' in img['src']:
+                attach_id = img['src'].split('/')[-1]
+                brow_obj = self.env['ir.attachment'].browse(int(attach_id))
+                if 'svg' in brow_obj.mimetype:
+                    img['style'] = 'vertical-align:middle;'
+                    img['height'] = float(img['height'])/1.5
+                    img['width'] = float(img['width']) + (float(img['width'])*30/100)
+                img['src'] = 'data:'+brow_obj.mimetype+';base64,' + brow_obj.datas
+            elif 'http' in img['src'] or 'https' in img['src']:
+                img['src'] = img['src']
+            else:
+                curr_path = os.path.dirname(os.path.abspath(img['src'][-1]))
+                full_path = curr_path + '/CardDesigner' + img['src']
+                image_file = open(full_path, "rb")
+                encoded_string = base64.b64encode(image_file.read())
+                img['src'] = 'data:image/png;base64,' + encoded_string
+        data = str(soup)
+
+        html_file.write(ustr(data).encode('utf-8'))
+        html_file.close()
+        options = {
+            'page-width': svg_page_width or '8.26in',
+            'page-height': svg_page_height or '11.8in',
+            'margin-top': svg_margin_top or '0in',
+            'margin-right': svg_margin_right or '0in',
+            'margin-bottom': svg_margin_bottom or '0in',
+            'margin-left': svg_margin_left or '0in',
+            'encoding': "UTF-8",
+            'no-outline': None,
+        }
+        name = svg_file_name + '.pdf'
+        pdfkit.from_file(file_path, path + '/' + svg_file_name + '.pdf', options=options)
+        data_file = open(path + '/' + svg_file_name + '.pdf', 'r')
+        datas = data_file.read()
+        self.env['ir.attachment'].create({
+            'name': name,
+            'type': 'binary',
+            'mimetype': 'application/x-pdf',
+            'datas': base64.encodestring(datas),
+            'res_model': 'card.template',
+            'res_id': self.id,
+            'datas_fname': name,
+        })
+        return True
+
 
 class Card(models.Model):
     _name = 'card.card'
@@ -306,3 +398,8 @@ class Card(models.Model):
     data = fields.Binary("Card")
     state = fields.Selection([('d', 'Draft'), ('p', 'Printed'), ('rp', 'Reprinted')], 'State', default='d')
     template_id = fields.Many2one('card.template', "Card Template")
+
+
+class respartner(models.Model):
+    _inherit = 'res.partner'
+    _card_designer = _('Partner')
