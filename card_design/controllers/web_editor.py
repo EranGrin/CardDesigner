@@ -32,9 +32,20 @@ class Web_Editor(Web_Editor):
         kwargs['template'] = 'card_design.FieldTextHtmlInline'
         return self.FieldTextHtmlInline(model, res_id, field, callback, **kwargs)
 
+    # @http.route(['/card_design/snippets'], type='json', auth="user", website=True)
+    # def card_design_snippets(self):
+    #     values = {
+    #         'company_id': request.env['res.users'].browse(request.uid).company_id
+    #     }
+    #     return request.env.ref('card_design.email_designer_snippets').render(values)
+
     @http.route(['/card_design/snippets'], type='json', auth="user", website=True)
     def card_design_snippets(self):
+        sizes = request.env['template.size'].sudo().search([])
+        image_snippets_ids = request.env['custome.image.snippets'].sudo().search([])
         values = {
-            'company_id': request.env['res.users'].browse(request.uid).company_id
+            'company_id': request.env['res.users'].browse(request.uid).company_id,
+            'sizes': sizes,
+            'image_snippets_ids': image_snippets_ids
         }
         return request.env.ref('card_design.email_designer_snippets').render(values)

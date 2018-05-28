@@ -3,3 +3,4 @@
 # See LICENSE file for copyright and licensing details.
 from . import card_design
 from . import card_design_setting
+from . import size

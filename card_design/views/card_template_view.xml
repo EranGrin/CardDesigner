@@ -215,4 +215,76 @@
 
     <menuitem name="Cards" id="card_card_desgin_menu" parent="card_design_menu_child" action="card_card_design_action"/>
 
+
+    <record id="template_size_view_form" model="ir.ui.view">
+            <field name="name">template.size.view.form</field>
+            <field name="model">template.size</field>
+            <field name="arch" type="xml">
+                <tree string="Size" editable="top">
+                    <field name="name" required="1"/>
+                    <field name="width" required="1"/>
+                    <field name="height" required="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <menuitem name="Cards Setting" id="ies_design_menu_setting" parent="card_design.card_design_menu"/>
+
+        <record model="ir.actions.act_window" id="action_view_template_size">
+            <field name="name">Card Size</field>
+            <field name="res_model">template.size</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="template_size_view_form" />
+        </record>
+
+        <menuitem name="Card Size" id="menu_view_template_size"
+            parent="ies_design_menu_setting" sequence="3"
+            action="action_view_template_size"/>
+
+        <record id="custome_image_snippets_view_tree" model="ir.ui.view">
+            <field name="name">custome.image.snippets.view.tree</field>
+            <field name="model">custome.image.snippets</field>
+            <field name="arch" type="xml">
+                <tree string="Size">
+                    <field name="name" />
+                    <field name="model_id"/>
+                    <field name="field_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="custome_image_snippets_view_form" model="ir.ui.view">
+            <field name="name">custome.image.snippets.view.form</field>
+            <field name="model">custome.image.snippets</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" required="1"/>
+                                <field name="model_id" required="1" options="{'no_create_edit': True, 'create': false, 'create_edit': false}"/>
+                                <field name="field_id" required="1" domain="[('ttype', '=', 'binary'),('model_id', '=', model_id)]" options="{'no_create_edit': True, 'create': false, 'create_edit': false}"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_view_custome_image_snippets">
+            <field name="name">Image Snippets</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">custome.image.snippets</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="custome_image_snippets_view_tree"/>
+        </record>
+
+        <menuitem name="Image Snippets" id="menu_view_custome_image_snippets"
+            parent="ies_design_menu_setting" sequence="3"
+            action="action_view_custome_image_snippets"/>
+
 </odoo>
