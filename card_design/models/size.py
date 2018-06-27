@@ -7,8 +7,17 @@ class template_size(models.Model):
     _name = 'template.size'
 
     name = fields.Char(string=_("Name"))
-    height = fields.Integer(string=_("Height (PX)"))
-    width = fields.Integer(string=_("Width (PX)"))
+    height = fields.Integer(string=_("Height"))
+    width = fields.Integer(string=_("Width"))
+    size_unit = fields.Selection([
+        ('px', 'px'),
+        ('pt', 'pt'),
+        ('em', 'em'),
+        ('cm', 'cm'),
+        ('mm', 'mm'),
+        ('%', '%'),
+        ('in', 'inches'),
+    ], string="Size Units", default='px')
 
 
 class custome_image_snippets(models.Model):

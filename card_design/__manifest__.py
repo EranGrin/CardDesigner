@@ -5,17 +5,26 @@
 {
     'name': "Card Designer",
     'summary': """
-        Card Desiner Module for Odoo""",
+        Card Designer Module for Odoo""",
     'description': """
-        Card Desiner Module for Odoo
+        Card Designer Module for Odoo
     """,
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
-    'version': '10.0.2018.05.27.1',
-    'depends': ['web_editor', 'mail', 'web_kanban_gauge', 'base_setup'],
+    'version': '10.0.2018.06.28.1',
+    'depends': [
+        'web_editor',
+        'mail',
+        'web_kanban_gauge',
+        'base_setup',
+        'report',
+        'document',
+    ],
     'external_dependencies': {
-        'python': ['imgkit', 'pdfkit'],
+        'python': [
+            'imgkit', 'weasyprint', 'PyPDF2', 'PIL'
+        ],
     },
     'data': [
         'data/svg_data.xml',

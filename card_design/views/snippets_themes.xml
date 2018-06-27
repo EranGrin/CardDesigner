@@ -2,9 +2,9 @@
 <odoo>
 
     <template id="s_mail_block_partner_image_text" name="Text - Image">
-        <div class="o_mail_block_image">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_h_padding">
+        <div class="o_mail_block_image pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_h_padding pdf_overflow">
                     <tbody>
                         <tr>
                             <td width="100%" align="center" style="text-align:center" class="">
@@ -34,9 +34,9 @@
             <h2 id="snippets_menu">Select a template</h2>
             <h4 id="snippets_template_size" class="text-center" style="color:white;">Change Size</h4>
             <select id="input_snippets_template_size" class="form-control oe_view_list" style="margin-bottom:10px; width: 80% !important;margin-left: 8%; ">
-                <option value="(400, 400)"> Default </option>
+                <option value="(400, 400, px)"> Default </option>
                 <t t-foreach="sizes" t-as="size">
-                    <option t-att-value="size.width,size.height">
+                    <option t-att-value="size.width,size.height, size.size_unit">
                         <t t-esc="size.name" />
                     </option>
                </t>
@@ -120,9 +120,9 @@
     </template>
 
     <template id="s_card_block_display_blocker" name="Profile Template">
-            <div class="o_mail_block_footer_separator ">
-                <div class="o_mail_snippet_general">
-                    <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles o_mail_h_padding ">
+            <div class="o_mail_block_footer_separator pdf_overflow">
+                <div class="o_mail_snippet_general pdf_overflow">
+                    <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles o_mail_h_padding pdf_overflow">
                         <tr>
                             <td>
                                 <div id="front-page">
@@ -144,9 +144,9 @@
 
     <!-- Snippet Templates -->
     <template id="s_card_block_header_social" name="Left Logo">
-        <div class="o_mail_block_header_social">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles">
+        <div class="o_mail_block_header_social pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" border="0" class="pdf_overflow o_mail_table_styles">
                     <tr>
                         <td width="70%"  class="o_mail_logo_container o_mail_h_padding o_mail_v_padding">
                             &amp;nbsp;
@@ -162,9 +162,9 @@
     </template>
 
     <template id="s_card_block_header_text_social" name="Left Text">
-        <div class="o_mail_block_header_text_social">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles">
+        <div class="o_mail_block_header_text_social pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" border="0" class="pdf_overflow o_mail_table_styles">
                     <tr>
                         <td width="70%" class="o_mail_h_padding o_mail_v_padding">
                             &amp;nbsp;
@@ -184,9 +184,9 @@
     </template>
 
     <template id="s_card_block_header_logo" name="Centered Logo">
-        <div class="o_mail_block_header_logo">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles o_mail_h_padding">
+        <div class="o_mail_block_header_logo pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles o_mail_h_padding pdf_overflow">
                     <tr>
                         <td width="20%"/>
                         <td valign="center" width="60%" class="text-center o_mail_v_padding">
@@ -202,9 +202,9 @@
     </template>
 
     <template id="s_card_block_banner" name="Banner">
-        <div class="o_mail_block_banner">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles">
+        <div class="o_mail_block_banner pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" border="0" class="pdf_overflow o_mail_table_styles">
                     <tbody>
                         <tr>
                             <td width="100%" valign="top" class="o_mail_full_width_padding">
@@ -220,9 +220,9 @@
     </template>
 
     <template id="s_card_block_title_text" name="Title Content">
-        <div class="o_mail_block_title_text">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles">
+        <div class="o_mail_block_title_text pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" border="0" class="pdf_overflow o_mail_table_styles">
                     <tbody>
                         <tr>
                             <td width="100%" class="o_mail_h_padding o_mail_v_padding">
@@ -251,9 +251,9 @@
     </template>
 
     <template id="s_card_block_paragraph" name="Paragraph">
-        <div class="o_mail_block_paragraph">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" border="0" class="o_mail_table_styles">
+        <div class="o_mail_block_paragraph pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" border="0" class="pdf_overflow o_mail_table_styles">
                     <tbody>
                         <tr>
                             <td width="100%" class="o_mail_h_padding o_mail_v_padding">
@@ -275,9 +275,9 @@
     </template>
 
     <template id="s_card_block_title_sub" name="Title - Subtitle">
-        <div class="o_mail_block_title_sub">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles">
+        <div class="o_mail_block_title_sub pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles pdf_overflow">
                     <tbody>
                         <tr>
                             <td class="o_mail_h_padding o_mail_v_padding">
@@ -294,9 +294,9 @@
     </template>
 
     <template id="s_card_block_comparison_table" name="Comparison">
-        <div class="o_mail_block_comparison_table">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles">
+        <div class="o_mail_block_comparison_table pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles pdf_overflow">
                     <tbody>
                         <tr>
                             <td class="o_mail_h_padding o_mail_v_padding o_mail_col_mv">
@@ -423,9 +423,9 @@
     </template>
 
     <template id="s_card_block_two_cols" name="Two Columns">
-        <div class="o_mail_block_two_cols">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_v_padding o_mail_col_table">
+        <div class="o_mail_block_two_cols pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_v_padding o_mail_col_table pdf_overflow">
                     <tbody>
                         <tr>
                             <td style="vertical-align:top;width:270px;" class="o_mail_col_mv">
@@ -465,9 +465,9 @@
     </template>
 
     <template id="s_card_block_three_cols" name="Three Columns">
-        <div class="o_mail_block_three_cols">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_v_padding o_mail_col_table">
+        <div class="o_mail_block_three_cols pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_v_padding o_mail_col_table pdf_overflow">
                     <tbody>
                         <tr>
                             <td style="vertical-align:top;width:180px;" class="o_mail_col_mv">
@@ -516,9 +516,9 @@
     </template>
 
     <template id="s_card_block_image_text" name="Image - Text">
-        <div class="o_mail_block_image_text">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles">
+        <div class="o_mail_block_image_text pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles pdf_overflow">
                     <tbody>
                         <tr>
                             <td style="width:270px;text-align:center;vertical-align:middle" class="o_mail_col_mv o_mail_img_container o_mail_h_padding o_mail_v_padding">
@@ -541,9 +541,9 @@
     </template>
 
     <template id="s_card_block_text_image" name="Text - Image">
-        <div class="o_mail_block_text_image">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles">
+        <div class="o_mail_block_text_image pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles pdf_overflow">
                     <tbody>
                         <tr>
                             <td style="width:270px;vertical-align:middle;text-align:center;" class="o_mail_col_mvo_mail_col_mv o_mail_h_padding o_mail_v_padding">
@@ -566,9 +566,9 @@
     </template>
 
     <template id="s_card_block_image" name="Image">
-        <div class="o_mail_block_image">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_h_padding">
+        <div class="o_mail_block_image pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_h_padding pdf_overflow">
                     <tbody>
                         <tr>
                             <td width="100%" align="center" style="text-align:center" class="">
@@ -589,9 +589,9 @@
     </template>
 
     <template id="s_card_block_footer_separator" name="Separator">
-        <div class="o_mail_block_footer_separator">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding">
+        <div class="o_mail_block_footer_separator pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding pdf_overflow">
                     <tbody>
                         <tr>
                             <td valign="top" style="width:100%;" class="o_mail_v_padding">
@@ -605,9 +605,9 @@
     </template>
 
     <template id="s_card_block_footer_tag_line" name="Tag Line">
-        <div class="o_mail_block_footer_tag_line o_mail_no_colorpicker">
-            <div class="o_mail_snippet_general">
-                <table class="o_mail_table_styles o_mail_full_width_padding" align="center" cellpadding="0" cellspacing="0">
+        <div class="o_mail_block_footer_tag_line o_mail_no_colorpicker pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table class="o_mail_table_styles o_mail_full_width_padding pdf_overflow" align="center" cellpadding="0" cellspacing="0">
                     <tbody>
                         <tr>
                             <td class="text-center o_mail_h_padding o_mail_v_padding bg-beta">
@@ -635,9 +635,9 @@
     </template>
 
     <template id="s_card_block_discount2" name="Promo Code">
-        <div class="o_mail_block_discount2 mb32">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_h_padding">
+        <div class="o_mail_block_discount2 mb32 pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_h_padding pdf_overflow">
                     <tbody>
                         <tr>
                             <td class="o_mail_v_padding">
@@ -674,9 +674,9 @@
     </template>
 
     <template id="s_card_block_discount1" name="Discount Offer">
-        <div class="o_mail_block_discount1">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellpadding="0" cellspacing="0" class="o_mail_table_styles">
+        <div class="o_mail_block_discount1 pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellpadding="0" cellspacing="0" class="o_mail_table_styles pdf_overflow">
                     <tbody>
                         <tr>
                             <td class="o_mail_h_padding o_mail_v_padding text-center o_mail_col_mv" width="250">
@@ -711,9 +711,9 @@
     </template>
 
     <template id="s_card_block_event" name="Event">
-        <div class="o_mail_block_event o_mail_no_colorpicker">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellpadding="0" cellspacing="0" class="o_mail_table_styles">
+        <div class="o_mail_block_event o_mail_no_colorpicker pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellpadding="0" cellspacing="0" class="o_mail_table_styles pdf_overflow">
                     <tr>
                         <td style="width:25%;min-height: 150px;vertical-align:middle;" class="o_mail_h_padding o_mail_v_padding bg-beta text-center o_mail_col_mv">
                             <h3 class="o_mail_no_margin">21 Jul</h3>
@@ -742,9 +742,9 @@
     </template>
 
     <template id="s_card_block_steps" name="Steps">
-        <div class="o_mail_block_steps o_mail_no_colorpicker">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding">
+        <div class="o_mail_block_steps o_mail_no_colorpicker pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding pdf_overflow">
                     <tbody>
                         <tr>
                             <td class="o_mail_col_mv o_mail_h_padding o_mail_v_padding">
@@ -800,9 +800,9 @@
     </template>
 
     <template id="s_card_block_footer_social" name="Footer Center">
-        <div class="o_mail_block_footer_social o_mail_footer_social_center">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding">
+        <div class="o_mail_block_footer_social o_mail_footer_social_center pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding pdf_overflow">
                     <tbody>
                         <tr>
                             <td class="o_mail_footer_links">
@@ -821,9 +821,9 @@
     </template>
 
     <template id="s_card_block_footer_social_left" name="Footer Left">
-        <div class="o_mail_block_footer_social o_mail_footer_social_left">
-            <div class="o_mail_snippet_general">
-                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding">
+        <div class="o_mail_block_footer_social o_mail_footer_social_left pdf_overflow">
+            <div class="o_mail_snippet_general pdf_overflow">
+                <table align="center" cellspacing="0" cellpadding="0" class="o_mail_table_styles o_mail_full_width_padding pdf_overflow">
                     <tbody>
                         <tr>
                             <td class="o_mail_footer_description">

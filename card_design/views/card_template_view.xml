@@ -20,42 +20,6 @@
                             <field name="download_path" class="oe_inline" />
                         </div>
                     </div>
-                    <label for="page_width" />
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <field name="page_width" class="oe_inline" />
-                        </div>
-                    </div>
-                    <label for="page_height" />
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <field name="page_height" class="oe_inline" />
-                        </div>
-                    </div>
-                    <label for="margin_top" />
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <field name="margin_top" class="oe_inline" />
-                        </div>
-                    </div>
-                    <label for="margin_right" />
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <field name="margin_right" class="oe_inline" />
-                        </div>
-                    </div>
-                    <label for="margin_bottom" />
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <field name="margin_bottom" class="oe_inline" />
-                        </div>
-                    </div>
-                    <label for="margin_left" />
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <field name="margin_left" class="oe_inline" />
-                        </div>
-                    </div>
                 </group>
             </xpath>
         </field>
@@ -114,16 +78,11 @@
                                 <field name="card_model" widget="radio" options="{'horizontal': true}"/>
                             </div>
                         </div>
-                        <!-- <label for="card_model" string="Print Position"/>
-                        <div>
-                            <div>
-                                <field name="position" widget="radio" options="{'horizontal': true}"/>
-                            </div>
-                        </div> -->
                     </group>
                     <group>
                         <group>
                             <field name="front_side" readonly="1"/>
+                            <field name="user_id" invisible="1"/>
                         </group>
                         <group>
                             <field name="back_side" />
@@ -147,6 +106,15 @@
                                 <field name="ref_ir_act_window_id" readonly="1"/>
                                 <field name="ref_ir_value_id" readonly="1"/>
                             </group>
+                        </page>
+                        <page string="Attachment" name="attachment">
+                            <field name="attachment_ids" readonly="1">
+                                <tree>
+                                    <field name="datas_fname" />
+                                    <field name="datas" />
+                                    <field name="create_date" />
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -224,6 +192,7 @@
                     <field name="name" required="1"/>
                     <field name="width" required="1"/>
                     <field name="height" required="1"/>
+                    <field name="size_unit" required="1"/>
                 </tree>
             </field>
         </record>

@@ -9,13 +9,17 @@ from urllib import urlencode, quote as quote
 from odoo.tools.safe_eval import safe_eval
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
-import pdfkit
 from BeautifulSoup import BeautifulSoup
 import os
-from odoo.tools import ustr
 import logging
 import base64
+from weasyprint import HTML, CSS
+from weasyprint.fonts import FontConfiguration
+from PyPDF2 import PdfFileWriter, PdfFileReader
 _logger = logging.getLogger(__name__)
+import re
+import cStringIO
+from PIL import Image
 
 
 def format_date(env, date, pattern=False):
@@ -135,11 +139,15 @@ class CardTemplate(models.Model):
         help="Sidebar button to open "
         "the sidebar action."
     )
-    attachment_ids = fields.Many2many(
-        'ir.attachment',
+    attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id', domain=[('res_model', '=', 'card.template')],
         string='Attachments',
         help='Attachments are linked to a document through model / res_id and to the message '
              'through this field.'
+    )
+    user_id = fields.Many2one(
+        'res.users', string='Responsible',
+        default=lambda self: self.env.user
     )
 
     @api.depends('card_model')
@@ -305,47 +313,43 @@ class CardTemplate(models.Model):
 
     @api.multi
     def print_pdf(self):
-        data = '''<html>'''
-        data += self.body_html
-        data += '''</html>'''
+        data = self.body_html
         path = self.env.ref('card_design.svg_to_pdf').value
-        svg_page_width = self.env.ref('card_design.svg_page_width').value
-        svg_page_height = self.env.ref('card_design.svg_page_height').value
-        svg_margin_top = self.env.ref('card_design.svg_margin_top').value
-        svg_margin_right = self.env.ref('card_design.svg_margin_right').value
-        svg_margin_bottom = self.env.ref('card_design.svg_margin_bottom').value
-        svg_margin_left = self.env.ref('card_design.svg_margin_left').value
         svg_file_name = self.env.ref('card_design.svg_file_name').value
-
-        file_path = path+"/template.html"
-
-        html_file = open(file_path, "w+")
-        data = data
-
         soup = BeautifulSoup(data)
         count = 0
-        for div in soup.findAll("div", {'class': 'o_mail_wrapper oe_structure'}):
+        width = '0px'
+        height = '0px'
+        for div in soup.findAll("div", {'class': 'fixed_height'}):
             count = count + 1
             if count == 1:
                 div.attrs = None
             soup = div.extract()
-
-        for d in soup.findAll("div", {"class": "o_mail_snippet_general"}):
-            d["style"] = "width: 8.25in; text-align: justify; text-rendering: geometricPrecision;"
-
-        for footer in soup.findAll("div", {"class": "o_mail_block_footer_social o_mail_footer_social_left"}):
-            footer.decompose()
-
+        attr_div = soup.findAll("div")
+        if len(attr_div) > 0:
+            style = attr_div[0].get('style').split(';')
+            style_dict = {}
+            for attr in style:
+                if len(attr.split(":")) > 1:
+                    attr_list = attr.split(":")
+                    style_dict.update({
+                        attr_list[0].strip(): attr_list[1].strip()
+                    })
+            if style_dict.get('height', False):
+                height = style_dict.get('height').strip()
+            if style_dict.get('width', False):
+                width = style_dict.get('width').strip()
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_')
         for img in soup.findAll('img'):
+            is_svg = False
             if 'font_to_img' in img['src']:
                 img.attrs = None
             elif '/web/image/' in img['src']:
                 attach_id = img['src'].split('/')[-1]
                 brow_obj = self.env['ir.attachment'].browse(int(attach_id))
                 if 'svg' in brow_obj.mimetype:
-                    img['style'] = 'vertical-align:middle;'
-                    img['height'] = float(img['height'])/1.5
-                    img['width'] = float(img['width']) + (float(img['width'])*30/100)
+                    is_svg = True
+                    # img['style'] = 'height:%spx;width:%spx' % (img['height'], img['width'])
                 img['src'] = 'data:'+brow_obj.mimetype+';base64,' + brow_obj.datas
             elif 'http' in img['src'] or 'https' in img['src']:
                 img['src'] = img['src']
@@ -355,25 +359,37 @@ class CardTemplate(models.Model):
                 image_file = open(full_path, "rb")
                 encoded_string = base64.b64encode(image_file.read())
                 img['src'] = 'data:image/png;base64,' + encoded_string
-        data = str(soup)
+            if not is_svg:
+                image_data = re.sub('^data:image/.+;base64,', '', img['src']).decode('base64')
+                im = Image.open(cStringIO.StringIO(image_data))
+                im.save(path + '/' + current_obj_name + "t.png", dpi=(600, 600))
+                with open(path + '/' + current_obj_name + "t.png", "rb") as imageFile:
+                    img['src'] = 'data:image/png;base64,' + base64.b64encode(imageFile.read())
 
-        html_file.write(ustr(data).encode('utf-8'))
-        html_file.close()
-        options = {
-            'page-width': svg_page_width or '8.26in',
-            'page-height': svg_page_height or '11.8in',
-            'margin-top': svg_margin_top or '0in',
-            'margin-right': svg_margin_right or '0in',
-            'margin-bottom': svg_margin_bottom or '0in',
-            'margin-left': svg_margin_left or '0in',
-            'encoding': "UTF-8",
-            'no-outline': None,
-        }
+        data = str(soup)
+        html = HTML(string=data)
+        font_config = FontConfiguration()
+        style = '''
+            @page { size: %s %s ; margin: -6px; overflow: hidden !important;}
+            div { overflow: hidden !important;  float: left; width: %s; margin-top:-2px;margin-left:-1px;}
+        ''' % (width, height, '100%')
+        css = CSS(string=style, font_config=font_config)
+        html.write_pdf(path + '/' + current_obj_name + svg_file_name + '.pdf', stylesheets=[css], font_config=font_config)
+        pages_to_keep = [0]
+        infile = PdfFileReader(path + '/' + current_obj_name + svg_file_name + '.pdf', 'rb')
+        output = PdfFileWriter()
+
+        for i in range(infile.getNumPages()):
+            if i in pages_to_keep:
+                p = infile.getPage(i)
+                output.addPage(p)
+
+        with open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
+            output.write(f)
         name = svg_file_name + '.pdf'
-        pdfkit.from_file(file_path, path + '/' + svg_file_name + '.pdf', options=options)
-        data_file = open(path + '/' + svg_file_name + '.pdf', 'r')
+        data_file = open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'r')
         datas = data_file.read()
-        self.env['ir.attachment'].create({
+        attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
             'mimetype': 'application/x-pdf',
@@ -382,7 +398,11 @@ class CardTemplate(models.Model):
             'res_id': self.id,
             'datas_fname': name,
         })
-        return True
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_type': 'controller',
+            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+        }
 
 
 class Card(models.Model):

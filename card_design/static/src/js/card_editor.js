@@ -53,8 +53,8 @@ snippets_editor.Class.include({
             if ($('.o_designer_wrapper_td').length) {
                 if (this.value){
                     value = this.value.replace('(', '').replace(')', '').split(", ");
-                    width = parseInt(value[0]);
-                    height = parseInt(value[1]);
+                    width = value[0] + value[2].replace('u', '').replace("'", '').replace("'", '');
+                    height = value[1] + value[2].replace('u', '').replace("'", '').replace("'", '');
                     $('.o_designer_wrapper_td').css({
                         "width": width,
                         "height": height,
@@ -64,11 +64,11 @@ snippets_editor.Class.include({
                     });
                 } else{
                     $('.o_designer_wrapper_td').css({
-                        "height": "500px",
+                        "height": "400px",
                         "overflow": "hidden",
                         "margin-left": "auto",
                         "margin-right": "auto",
-                        "width": ""
+                        "width": "400px"
                     });
                 }
             }
