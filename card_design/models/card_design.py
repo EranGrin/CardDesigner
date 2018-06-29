@@ -88,6 +88,7 @@ except ImportError:
 
 class CardTemplate(models.Model):
     _name = 'card.template'
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
 
     @api.depends('card_ids')
     def _get_cards(self):
@@ -149,6 +150,45 @@ class CardTemplate(models.Model):
         'res.users', string='Responsible',
         default=lambda self: self.env.user
     )
+
+    @api.multi
+    def action_send_email(self):
+        self.ensure_one()
+        ir_model_data = self.env['ir.model.data']
+        try:
+            template_id = ir_model_data.get_object_reference(
+                'card_design', 'email_template_card_design'
+            )[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference(
+                'mail', 'email_compose_message_wizard_form'
+            )[1]
+        except ValueError:
+            compose_form_id = False
+        ctx = dict()
+        attachment = self.pdf_generate()
+        template = self.env['mail.template'].browse(template_id)
+        template.attachment_ids = [(6, 0, [attachment.id])]
+        ctx.update({
+            'default_model': 'card.template',
+            'default_res_id': self.ids[0],
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
 
     @api.depends('card_model')
     def get_card_model_id(self):
@@ -311,15 +351,18 @@ class CardTemplate(models.Model):
 
         return multi_mode and results or results[res_ids[0]]
 
-    @api.multi
-    def print_pdf(self):
+    def pdf_generate(self):
         data = self.body_html
         path = self.env.ref('card_design.svg_to_pdf').value
         svg_file_name = self.env.ref('card_design.svg_file_name').value
+        if not svg_file_name:
+            svg_file_name = 'card_design'
         soup = BeautifulSoup(data)
         count = 0
         width = '0px'
         height = '0px'
+        if not path:
+            path = '/tmp'
         for div in soup.findAll("div", {'class': 'fixed_height'}):
             count = count + 1
             if count == 1:
@@ -398,6 +441,11 @@ class CardTemplate(models.Model):
             'res_id': self.id,
             'datas_fname': name,
         })
+        return attachment_id
+
+    @api.multi
+    def print_pdf(self):
+        attachment_id = self.pdf_generate()
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',

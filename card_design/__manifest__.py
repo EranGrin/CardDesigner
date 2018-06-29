@@ -12,7 +12,7 @@
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
-    'version': '10.0.2018.06.28.1',
+    'version': '10.0.2018.06.29.1',
     'depends': [
         'web_editor',
         'mail',
@@ -36,6 +36,7 @@
         'views/themes_templates.xml',
         'views/snippets_themes.xml',
         'views/snippets_themes_options.xml',
+        'data/card_design_emai_template.xml',
     ],
     'qweb': [
         '/card_design/static/src/xml/card_design.xml',

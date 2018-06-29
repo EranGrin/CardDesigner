@@ -37,6 +37,6 @@
 
     <record id="svg_file_name" model="ir.config_parameter">
         <field name="key">svg_file_name</field>
-        <field name="value">Out</field>
+        <field name="value">card_design</field>
     </record>
 </odoo>
