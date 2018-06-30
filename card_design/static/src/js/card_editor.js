@@ -44,35 +44,35 @@ snippets_editor.Class.include({
         // Notify form view
         odoo_top[window.callback+"_downup"]($editable_area.addClass("o_dirty").html());
         
-        var $snippets_change_size = this.$el.find("#input_snippets_template_size");
-        $snippets_change_size.on('change', function (e) {
-            e.preventDefault();
-            var value = '';
-            var width = 0;
-            var height = 0;
-            if ($('.o_designer_wrapper_td').length) {
-                if (this.value){
-                    value = this.value.replace('(', '').replace(')', '').split(", ");
-                    width = value[0] + value[2].replace('u', '').replace("'", '').replace("'", '');
-                    height = value[1] + value[2].replace('u', '').replace("'", '').replace("'", '');
-                    $('.o_designer_wrapper_td').css({
-                        "width": width,
-                        "height": height,
-                        "overflow": "hidden",
-                        "margin-left": "auto",
-                        "margin-right": "auto"  
-                    });
-                } else{
-                    $('.o_designer_wrapper_td').css({
-                        "height": "400px",
-                        "overflow": "hidden",
-                        "margin-left": "auto",
-                        "margin-right": "auto",
-                        "width": "400px"
-                    });
-                }
-            }
-        });
+        // var $snippets_change_size = this.$el.find("#input_snippets_template_size");
+        // $snippets_change_size.on('change', function (e) {
+        //     e.preventDefault();
+        //     var value = '';
+        //     var width = 0;
+        //     var height = 0;
+        //     if ($('.o_designer_wrapper_td').length) {
+        //         if (this.value){
+        //             value = this.value.replace('(', '').replace(')', '').split(", ");
+        //             width = value[0] + value[2].replace('u', '').replace("'", '').replace("'", '');
+        //             height = value[1] + value[2].replace('u', '').replace("'", '').replace("'", '');
+        //             $('.o_designer_wrapper_td').css({
+        //                 "width": width,
+        //                 "height": height,
+        //                 "overflow": "hidden",
+        //                 "margin-left": "auto",
+        //                 "margin-right": "auto"  
+        //             });
+        //         } else{
+        //             $('.o_designer_wrapper_td').css({
+        //                 "height": "400px",
+        //                 "overflow": "hidden",
+        //                 "margin-left": "auto",
+        //                 "margin-right": "auto",
+        //                 "width": "400px"
+        //             });
+        //         }
+        //     }
+        // });
 
         $body.addClass(selected_theme.className);
         switch_images(selected_theme, $snippets);
