@@ -32,8 +32,8 @@
     <template id="email_designer_snippets" inherit_id="web_editor.snippets" primary="True">
         <xpath expr="//h2[@id='snippets_menu']" position="replace">
             <h2 id="snippets_menu">Select a template</h2>
-            <h4 id="snippets_template_size" class="text-center" style="color:white;">Change Size</h4>
-            <select id="input_snippets_template_size" class="form-control oe_view_list" style="margin-bottom:10px; width: 80% !important;margin-left: 8%; ">
+            <h4 id="snippets_template_size" class="text-center" style="color:white;display:none;">Change Size</h4>
+            <select id="input_snippets_template_size" class="form-control oe_view_list" style="margin-bottom:10px; width: 80% !important;margin-left: 8%; display:none;">
                 <option value="(400, 400, px)"> Default </option>
                 <t t-foreach="sizes" t-as="size">
                     <option t-att-value="size.width,size.height, size.size_unit">

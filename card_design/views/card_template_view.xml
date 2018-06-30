@@ -46,7 +46,9 @@
                 <header>
                     <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"/>
                     <button name="print_pdf" type="object" string="Print PDF" class="oe_highlight"/>
+                    <button name="print_back_side_pdf" type="object" string="Print Back side PDF" class="oe_highlight"/>
                     <button name="generate_cards" type="object" string="Generate Cards"></button>
+                    <button name="change_template_size" type="object" string="Change Size" class="btn-primary"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -82,11 +84,12 @@
                     </group>
                     <group>
                         <group>
-                            <field name="front_side" readonly="1"/>
+                            <field name="template_size" string="Size" options="{'no_create_edit': True, 'create': false, 'create_edit': false}" />
                             <field name="user_id" invisible="1"/>
                         </group>
                         <group>
                             <field name="back_side" />
+                            <field name="front_side" invisible="1"/>
                         </group>
                     </group>
                     <notebook>

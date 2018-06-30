@@ -150,6 +150,51 @@ class CardTemplate(models.Model):
         'res.users', string='Responsible',
         default=lambda self: self.env.user
     )
+    template_size = fields.Many2one('template.size', 'Template Size')
+
+    @api .multi
+    def change_template_size(self):
+        for rec in self:
+            if rec.body_html and rec.template_size:
+                soup = BeautifulSoup(rec.body_html)
+                for div in soup.findAll("div", {'class': 'o_mail_no_resize o_designer_wrapper_td oe_structure fixed_heightx'}):
+                    if div.get('style', False):
+                        style = div.get('style').split(';')
+                        style_dict = {}
+                        for attr in style:
+                            if len(attr.split(":")) > 1:
+                                attr_list = attr.split(":")
+                                style_dict.update({
+                                    attr_list[0].strip(): attr_list[1].strip()
+                                })
+                        style_dict.update({
+                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
+                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
+                        })
+                        div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
+                    break
+                rec.body_html = str(soup)
+
+            if rec.back_body_html and rec.template_size:
+                soup = BeautifulSoup(rec.back_body_html)
+                for div in soup.findAll("div", {'class': 'o_mail_no_resize o_designer_wrapper_td oe_structure fixed_heightx'}):
+                    if div.get('style', False):
+                        style = div.get('style').split(';')
+                        style_dict = {}
+                        for attr in style:
+                            if len(attr.split(":")) > 1:
+                                attr_list = attr.split(":")
+                                style_dict.update({
+                                    attr_list[0].strip(): attr_list[1].strip()
+                                })
+                        style_dict.update({
+                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
+                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
+                        })
+                        div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
+                    break
+                rec.back_body_html = str(soup)
+        return True
 
     @api.multi
     def action_send_email(self):
@@ -168,9 +213,14 @@ class CardTemplate(models.Model):
         except ValueError:
             compose_form_id = False
         ctx = dict()
-        attachment = self.pdf_generate()
+        attachment_list = []
+        attachment = self.pdf_generate(self.body_html, 'front_side')
+        attachment_list.append(attachment.id)
+        if self.back_side:
+            attachment = self.pdf_generate(self.back_body_html, 'back_side')
+            attachment_list.append(attachment.id)
         template = self.env['mail.template'].browse(template_id)
-        template.attachment_ids = [(6, 0, [attachment.id])]
+        template.attachment_ids = [(6, 0, attachment_list)]
         ctx.update({
             'default_model': 'card.template',
             'default_res_id': self.ids[0],
@@ -351,8 +401,7 @@ class CardTemplate(models.Model):
 
         return multi_mode and results or results[res_ids[0]]
 
-    def pdf_generate(self):
-        data = self.body_html
+    def pdf_generate(self, data, side_name):
         path = self.env.ref('card_design.svg_to_pdf').value
         svg_file_name = self.env.ref('card_design.svg_file_name').value
         if not svg_file_name:
@@ -392,7 +441,6 @@ class CardTemplate(models.Model):
                 brow_obj = self.env['ir.attachment'].browse(int(attach_id))
                 if 'svg' in brow_obj.mimetype:
                     is_svg = True
-                    # img['style'] = 'height:%spx;width:%spx' % (img['height'], img['width'])
                 img['src'] = 'data:'+brow_obj.mimetype+';base64,' + brow_obj.datas
             elif 'http' in img['src'] or 'https' in img['src']:
                 img['src'] = img['src']
@@ -429,7 +477,7 @@ class CardTemplate(models.Model):
 
         with open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
             output.write(f)
-        name = svg_file_name + '.pdf'
+        name = svg_file_name + '_' + side_name + '.pdf'
         data_file = open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'r')
         datas = data_file.read()
         attachment_id = self.env['ir.attachment'].create({
@@ -445,7 +493,18 @@ class CardTemplate(models.Model):
 
     @api.multi
     def print_pdf(self):
-        attachment_id = self.pdf_generate()
+        attachment_id = self.pdf_generate(self.body_html, 'front_side')
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_type': 'controller',
+            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+        }
+
+    @api.multi
+    def print_back_side_pdf(self):
+        if not self.back_side:
+            raise UserError(_("please select backside option."))
+        attachment_id = self.pdf_generate(self.back_body_html, 'back_side')
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',

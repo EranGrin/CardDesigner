@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # See LICENSE file for copyright and licensing details.
+from . import size
 from . import card_design
 from . import card_design_setting
-from . import size
