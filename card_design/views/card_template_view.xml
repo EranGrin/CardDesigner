@@ -45,8 +45,6 @@
             <form string="Card Template">
                 <header>
                     <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"/>
-                    <button name="print_pdf" type="object" string="Print PDF" class="oe_highlight"/>
-                    <button name="print_back_side_pdf" type="object" string="Print Back side PDF" class="oe_highlight"/>
                     <button name="generate_cards" type="object" string="Generate Cards"></button>
                     <button name="change_template_size" type="object" string="Change Size" class="btn-primary"/>
                     <field name="state" widget="statusbar"/>
@@ -96,11 +94,14 @@
                         <page string="Front Template Design" name="body"
                             attrs="{'invisible': [('front_side', '=', False)]}"
                             >
+                            <button name="print_pdf" type="object" string="Export PDF"
+                                class="oe_highlight" icon="fa-file-pdf-o"/>
                             <field name="body_html" widget="html_frame"
                                    options="{'editor_url': '/card_design/field/card_template'}"/>
                         </page>
                         <page string="Back Template Design" name="back_body"
                             attrs="{'invisible': [('back_side', '=', False)]}">
+                            <button name="print_back_side_pdf" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
                             <field name="back_body_html" widget="html_frame"
                                 options="{'editor_url': '/card_design/field/card_template_back'}"
                             />
@@ -112,11 +113,14 @@
                             </group>
                         </page>
                         <page string="Attachment" name="attachment">
-                            <field name="attachment_ids" readonly="1">
-                                <tree>
-                                    <field name="datas_fname" />
-                                    <field name="datas" />
-                                    <field name="create_date" />
+                            <button name="action_selected_card_send_email" type="object" string="Send by Email" class="btn-primary" icon="fa-envelope-o"/>
+                            <field name="attachment_ids" >
+                                <tree create="false" editable="bottom">
+                                    <field name="is_select" />
+                                    <field name="datas_fname" readonly="1"/>
+                                    <field name="datas" readonly="1"/>
+                                    <field name="create_date" readonly="1"/>
+                                    <button name="action_send_email" type="object" string="Send by Email" icon="fa-envelope-o"/>
                                 </tree>
                             </field>
                         </page>

@@ -86,6 +86,52 @@ except ImportError:
     _logger.warning("jinja2 not available, templating features will not work!")
 
 
+class Irttachment(models.Model):
+    _inherit = 'ir.attachment'
+
+    is_select = fields.Boolean("Select For Email")
+
+    @api.multi
+    def action_send_email(self):
+        attachment_list = []
+        for rec in self:
+            attachment_list.append(rec.id)
+        ir_model_data = self.env['ir.model.data']
+        try:
+            template_id = ir_model_data.get_object_reference(
+                'card_design', 'email_template_card_design'
+            )[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference(
+                'mail', 'email_compose_message_wizard_form'
+            )[1]
+        except ValueError:
+            compose_form_id = False
+        ctx = dict()
+        template = self.env['mail.template'].browse(template_id)
+        template.attachment_ids = [(6, 0, attachment_list)]
+        ctx.update({
+            'default_model': 'card.template',
+            'default_res_id': self.res_id,
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
+
+
 class CardTemplate(models.Model):
     _name = 'card.template'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
@@ -197,48 +243,91 @@ class CardTemplate(models.Model):
         return True
 
     @api.multi
-    def action_send_email(self):
-        self.ensure_one()
-        ir_model_data = self.env['ir.model.data']
-        try:
-            template_id = ir_model_data.get_object_reference(
-                'card_design', 'email_template_card_design'
-            )[1]
-        except ValueError:
-            template_id = False
-        try:
-            compose_form_id = ir_model_data.get_object_reference(
-                'mail', 'email_compose_message_wizard_form'
-            )[1]
-        except ValueError:
-            compose_form_id = False
-        ctx = dict()
+    def action_selected_card_send_email(self):
         attachment_list = []
-        attachment = self.pdf_generate(self.body_html, 'front_side')
-        attachment_list.append(attachment.id)
-        if self.back_side:
-            attachment = self.pdf_generate(self.back_body_html, 'back_side')
+        if self.attachment_ids and self.attachment_ids.filtered(lambda r: r.is_select):
+            for rec in self.attachment_ids.filtered(lambda r: r.is_select):
+                attachment_list.append(rec.id)
+            ir_model_data = self.env['ir.model.data']
+            try:
+                template_id = ir_model_data.get_object_reference(
+                    'card_design', 'email_template_card_design'
+                )[1]
+            except ValueError:
+                template_id = False
+            try:
+                compose_form_id = ir_model_data.get_object_reference(
+                    'mail', 'email_compose_message_wizard_form'
+                )[1]
+            except ValueError:
+                compose_form_id = False
+            ctx = dict()
+            template = self.env['mail.template'].browse(template_id)
+            template.attachment_ids = [(6, 0, attachment_list)]
+            ctx.update({
+                'default_model': 'card.template',
+                'default_res_id': self.ids[0],
+                'default_use_template': bool(template_id),
+                'default_template_id': template_id,
+                'default_composition_mode': 'comment',
+                'mark_so_as_sent': True,
+            })
+            return {
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'mail.compose.message',
+                'views': [(compose_form_id, 'form')],
+                'view_id': compose_form_id,
+                'target': 'new',
+                'context': ctx,
+            }
+        else:
+            raise UserError(_("Please select attachment "))
+
+        @api.multi
+        def action_send_email(self):
+            self.ensure_one()
+            ir_model_data = self.env['ir.model.data']
+            try:
+                template_id = ir_model_data.get_object_reference(
+                    'card_design', 'email_template_card_design'
+                )[1]
+            except ValueError:
+                template_id = False
+            try:
+                compose_form_id = ir_model_data.get_object_reference(
+                    'mail', 'email_compose_message_wizard_form'
+                )[1]
+            except ValueError:
+                compose_form_id = False
+            ctx = dict()
+            attachment_list = []
+            attachment = self.pdf_generate(self.body_html, 'front_side')
             attachment_list.append(attachment.id)
-        template = self.env['mail.template'].browse(template_id)
-        template.attachment_ids = [(6, 0, attachment_list)]
-        ctx.update({
-            'default_model': 'card.template',
-            'default_res_id': self.ids[0],
-            'default_use_template': bool(template_id),
-            'default_template_id': template_id,
-            'default_composition_mode': 'comment',
-            'mark_so_as_sent': True,
-        })
-        return {
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'mail.compose.message',
-            'views': [(compose_form_id, 'form')],
-            'view_id': compose_form_id,
-            'target': 'new',
-            'context': ctx,
-        }
+            if self.back_side:
+                attachment = self.pdf_generate(self.back_body_html, 'back_side')
+                attachment_list.append(attachment.id)
+            template = self.env['mail.template'].browse(template_id)
+            template.attachment_ids = [(6, 0, attachment_list)]
+            ctx.update({
+                'default_model': 'card.template',
+                'default_res_id': self.ids[0],
+                'default_use_template': bool(template_id),
+                'default_template_id': template_id,
+                'default_composition_mode': 'comment',
+                'mark_so_as_sent': True,
+            })
+            return {
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'mail.compose.message',
+                'views': [(compose_form_id, 'form')],
+                'view_id': compose_form_id,
+                'target': 'new',
+                'context': ctx,
+            }
 
     @api.depends('card_model')
     def get_card_model_id(self):
