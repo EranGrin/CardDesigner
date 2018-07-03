@@ -45,6 +45,8 @@
             <form string="Card Template">
                 <header>
                     <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"/>
+                    <button name="print_both_side" type="object" string="Export PDF"
+                                class="oe_highlight" icon="fa-file-pdf-o"/>
                     <button name="generate_cards" type="object" string="Generate Cards"></button>
                     <button name="change_template_size" type="object" string="Change Size" class="btn-primary"/>
                     <field name="state" widget="statusbar"/>
@@ -94,14 +96,14 @@
                         <page string="Front Template Design" name="body"
                             attrs="{'invisible': [('front_side', '=', False)]}"
                             >
-                            <button name="print_pdf" type="object" string="Export PDF"
+                            <button name="print_front_side" type="object" string="Export PDF"
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
                             <field name="body_html" widget="html_frame"
                                    options="{'editor_url': '/card_design/field/card_template'}"/>
                         </page>
                         <page string="Back Template Design" name="back_body"
                             attrs="{'invisible': [('back_side', '=', False)]}">
-                            <button name="print_back_side_pdf" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
+                            <button name="print_back_side" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
                             <field name="back_body_html" widget="html_frame"
                                 options="{'editor_url': '/card_design/field/card_template_back'}"
                             />

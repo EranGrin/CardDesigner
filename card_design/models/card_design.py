@@ -15,7 +15,7 @@ import logging
 import base64
 from weasyprint import HTML, CSS
 from weasyprint.fonts import FontConfiguration
-from PyPDF2 import PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
 _logger = logging.getLogger(__name__)
 import re
 import cStringIO
@@ -566,7 +566,7 @@ class CardTemplate(models.Model):
 
         with open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
             output.write(f)
-        name = svg_file_name + '_' + side_name + '.pdf'
+        name = side_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.pdf'
         data_file = open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'r')
         datas = data_file.read()
         attachment_id = self.env['ir.attachment'].create({
@@ -581,8 +581,10 @@ class CardTemplate(models.Model):
         return attachment_id
 
     @api.multi
-    def print_pdf(self):
-        attachment_id = self.pdf_generate(self.body_html, 'front_side')
+    def print_pdf(self, file_name):
+        if not file_name:
+            file_name = ''
+        attachment_id = self.pdf_generate(self.body_html, (file_name + '_front_side'))
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',
@@ -590,14 +592,110 @@ class CardTemplate(models.Model):
         }
 
     @api.multi
-    def print_back_side_pdf(self):
+    def print_back_side_pdf(self, file_name):
         if not self.back_side:
-            raise UserError(_("please select backside option."))
-        attachment_id = self.pdf_generate(self.back_body_html, 'back_side')
+            raise UserError(_("please select back side option."))
+        if not file_name:
+            file_name = ''
+        attachment_id = self.pdf_generate(self.back_body_html, (file_name + '_back_side'))
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',
             'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+        }
+
+    @api.multi
+    def print_both_side_pdf(self, file_name):
+        path = self.env.ref('card_design.svg_to_pdf').value
+        svg_file_name = self.env.ref('card_design.svg_file_name').value
+        if not svg_file_name:
+            svg_file_name = 'card_design'
+        if not path:
+            path = '/tmp'
+        pdf_datas = []
+        pdfs = []
+        attachment_id = self.pdf_generate(self.body_html, 'front_side')
+        pdf_datas.append(attachment_id.datas)
+        if self.back_side:
+            attachment_id = self.pdf_generate(self.back_body_html, 'back_side')
+            pdf_datas.append(attachment_id.datas)
+
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_')
+        for inx, data in enumerate(pdf_datas):
+            pdf_name = path + '/' + current_obj_name + svg_file_name + str(inx) + '.pdf'
+            pdfs.append(pdf_name)
+            with open(pdf_name, 'wb') as pdf:
+                pdf.write(base64.b64decode(data))
+
+        merger = PdfFileMerger()
+
+        name = file_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.pdf'
+        for pdf_data in pdfs:
+            merger.append(open(pdf_data, 'rb'))
+
+        with open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'wb') as fout:
+            merger.write(fout)
+
+        data_file = open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'r')
+        datas = data_file.read()
+        attachment_id = self.env['ir.attachment'].create({
+            'name': name,
+            'type': 'binary',
+            'mimetype': 'application/x-pdf',
+            'datas': base64.encodestring(datas),
+            'res_model': 'card.template',
+            'res_id': self.id,
+            'datas_fname': name,
+        })
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_type': 'controller',
+            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+        }
+
+    @api.multi
+    def print_front_side(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.id
+        context['front_side'] = True
+        return {
+            'name': _('Enter PDF Name'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new'
+        }
+
+    @api.multi
+    def print_back_side(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.id
+        context['back_side'] = True
+        return {
+            'name': _('Enter PDF Name'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new'
+        }
+
+    @api.multi
+    def print_both_side(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.id
+        context['both_side'] = True
+        return {
+            'name': _('Enter PDF Name'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new'
         }
 
 

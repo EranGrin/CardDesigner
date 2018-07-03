@@ -26,7 +26,6 @@ class CardPrintWizard(models.TransientModel):
 
     template_id = fields.Many2one(
         'card.template', 'Card Template', required=1, ondelete='cascade',
-        # default=get_template
     )
     printers = fields.Selection([('A', "Printer A"), ('B', "Printer B")], "Printers")
     model = fields.Many2one('ir.model', default=_get_model)
@@ -110,3 +109,34 @@ class CardPrintWizard(models.TransientModel):
                            }
                 imgkit.from_string(to_image, '/tmp/card_%d.jpg' % i, options=options, config=config)
                 i += 1
+
+
+class CardExportWizard(models.TransientModel):
+    _name = 'card.export.wizard'
+
+    name = fields.Char('Name', required=1)
+    template_id = fields.Many2one(
+        'card.template', 'Card Template', required=1, ondelete='cascade',
+    )
+
+    @api.model
+    def default_get(self, fields):
+        res = super(CardExportWizard, self).default_get(fields)
+        context = dict(self.env.context) or {}
+        if context.get('active_id', False):
+            res.update({
+                'template_id': context.get('active_id'),
+            })
+        return res
+
+    @api.multi
+    def export_pdf(self):
+        pdf_file = False
+        context = dict(self.env.context or {})
+        if context.get('back_side', False):
+            pdf_file = self.template_id.print_back_side_pdf(self.name)
+        elif context.get('both_side', False):
+            pdf_file = self.template_id.print_both_side_pdf(self.name)
+        else:
+            pdf_file = self.template_id.print_pdf(self.name)
+        return pdf_file
