@@ -11,6 +11,7 @@ from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
 from BeautifulSoup import BeautifulSoup
 import os
+import cssutils
 import logging
 import base64
 from weasyprint import HTML, CSS
@@ -20,6 +21,7 @@ _logger = logging.getLogger(__name__)
 import re
 import cStringIO
 from PIL import Image
+import zipfile
 
 
 def format_date(env, date, pattern=False):
@@ -187,7 +189,13 @@ class CardTemplate(models.Model):
         "the sidebar action."
     )
     attachment_ids = fields.One2many(
-        'ir.attachment', 'res_id', domain=[('res_model', '=', 'card.template')],
+        'ir.attachment', 'res_id', domain=[('res_model', '=', 'card.template'), ('mimetype', '=', 'application/x-pdf')],
+        string='Attachments',
+        help='Attachments are linked to a document through model / res_id and to the message '
+             'through this field.'
+    )
+    image_attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id', domain=[('res_model', '=', 'card.template'), ('mimetype', '=', 'image/png')],
         string='Attachments',
         help='Attachments are linked to a document through model / res_id and to the message '
              'through this field.'
@@ -214,8 +222,8 @@ class CardTemplate(models.Model):
                                     attr_list[0].strip(): attr_list[1].strip()
                                 })
                         style_dict.update({
-                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
-                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
+                            'height': str(rec.template_size.size_height_px) + 'px',
+                            'width': str(rec.template_size.size_width_px) + 'px',
                         })
                         div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
                     break
@@ -234,8 +242,8 @@ class CardTemplate(models.Model):
                                     attr_list[0].strip(): attr_list[1].strip()
                                 })
                         style_dict.update({
-                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
-                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
+                            'height': str(rec.template_size.size_height_px) + 'px',
+                            'width': str(rec.template_size.size_width_px) + 'px',
                         })
                         div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
                     break
@@ -244,9 +252,14 @@ class CardTemplate(models.Model):
 
     @api.multi
     def action_selected_card_send_email(self):
+        context = dict(self.env.context or {})
+        if context.get('image', False):
+            attachment_ids = self.image_attachment_ids
+        else:
+            attachment_ids = self.attachment_ids
         attachment_list = []
-        if self.attachment_ids and self.attachment_ids.filtered(lambda r: r.is_select):
-            for rec in self.attachment_ids.filtered(lambda r: r.is_select):
+        if attachment_ids and attachment_ids.filtered(lambda r: r.is_select):
+            for rec in attachment_ids.filtered(lambda r: r.is_select):
                 attachment_list.append(rec.id)
             ir_model_data = self.env['ir.model.data']
             try:
@@ -507,7 +520,10 @@ class CardTemplate(models.Model):
                 div.attrs = None
             soup = div.extract()
         attr_div = soup.findAll("div")
-        if len(attr_div) > 0:
+        if len(attr_div) > 0 and attr_div[0].get('style', False):
+            div_style = cssutils.parseStyle(attr_div[0].get('style'))
+            del div_style["transform"]
+            attr_div[0]['style'] = div_style.cssText
             style = attr_div[0].get('style').split(';')
             style_dict = {}
             for attr in style:
@@ -520,6 +536,9 @@ class CardTemplate(models.Model):
                 height = style_dict.get('height').strip()
             if style_dict.get('width', False):
                 width = style_dict.get('width').strip()
+            if style_dict.get('transform', False):
+                del style_dict['transform']
+            attr_div[0]['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
         current_obj_name = self.name.replace(' ', '_').replace('.', '_')
         for img in soup.findAll('img'):
             is_svg = False
@@ -580,6 +599,96 @@ class CardTemplate(models.Model):
         })
         return attachment_id
 
+    def png_generate(self, data, side_name):
+        path = self.env.ref('card_design.svg_to_pdf').value
+        svg_file_name = self.env.ref('card_design.svg_file_name').value
+        if not svg_file_name:
+            svg_file_name = 'card_design'
+        soup = BeautifulSoup(data)
+        count = 0
+        width = '0px'
+        height = '0px'
+        if not path:
+            path = '/tmp'
+        for div in soup.findAll("div", {'class': 'fixed_height'}):
+            count = count + 1
+            if count == 1:
+                div.attrs = None
+            soup = div.extract()
+        attr_div = soup.findAll("div")
+        if len(attr_div) > 0 and attr_div[0].get('style', False):
+            div_style = cssutils.parseStyle(attr_div[0].get('style'))
+            del div_style["transform"]
+            attr_div[0]['style'] = div_style.cssText
+            style = attr_div[0].get('style').split(';')
+            style_dict = {}
+            for attr in style:
+                if len(attr.split(":")) > 1:
+                    attr_list = attr.split(":")
+                    style_dict.update({
+                        attr_list[0].strip(): attr_list[1].strip()
+                    })
+            if style_dict.get('height', False):
+                height = style_dict.get('height').strip()
+            if style_dict.get('width', False):
+                width = style_dict.get('width').strip()
+            if style_dict.get('transform', False):
+                del style_dict['transform']
+            attr_div[0]['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_')
+        for img in soup.findAll('img'):
+            is_svg = False
+            if 'font_to_img' in img['src']:
+                img.attrs = None
+            elif '/web/image/' in img['src']:
+                attach_id = img['src'].split('/')[-1]
+                brow_obj = self.env['ir.attachment'].browse(int(attach_id))
+                if 'svg' in brow_obj.mimetype:
+                    is_svg = True
+                img['src'] = 'data:'+brow_obj.mimetype+';base64,' + brow_obj.datas
+            elif 'http' in img['src'] or 'https' in img['src']:
+                img['src'] = img['src']
+            else:
+                curr_path = os.path.dirname(os.path.abspath(img['src'][-1]))
+                full_path = curr_path + '/CardDesigner' + img['src']
+                image_file = open(full_path, "rb")
+                encoded_string = base64.b64encode(image_file.read())
+                img['src'] = 'data:image/png;base64,' + encoded_string
+            if not is_svg:
+                image_data = re.sub('^data:image/.+;base64,', '', img['src']).decode('base64')
+                im = Image.open(cStringIO.StringIO(image_data))
+                im.save(path + '/' + current_obj_name + "t.png", dpi=(600, 600))
+                with open(path + '/' + current_obj_name + "t.png", "rb") as imageFile:
+                    img['src'] = 'data:image/png;base64,' + base64.b64encode(imageFile.read())
+
+        data = str(soup)
+        html = HTML(string=data)
+        font_config = FontConfiguration()
+        style = '''
+            @page { size: %s %s ; margin: -8px; overflow: hidden !important;}
+            div { overflow: hidden !important;  float: left; width: %s;}
+            .pdf_overflow { margin-bottom:-2px;}
+        ''' % (width, height, '100%')
+        css = CSS(string=style, font_config=font_config)
+        resolution = self.template_size and self.template_size.dpi or 300
+        html.write_png(path + '/' + current_obj_name + svg_file_name + side_name + '.png', stylesheets=[css], font_config=font_config, resolution=resolution)
+        im = Image.open(path + '/' + current_obj_name + svg_file_name + side_name + '.png')
+        im.save(path + '/' + current_obj_name + svg_file_name + side_name + '.png', dpi=(300, 300))
+
+        name = side_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.png'
+        data_file = open(path + '/' + current_obj_name + svg_file_name + side_name + '.png', 'r')
+        datas = data_file.read()
+        attachment_id = self.env['ir.attachment'].create({
+            'name': name,
+            'type': 'binary',
+            'mimetype': 'image/png',
+            'datas': base64.encodestring(datas),
+            'res_model': 'card.template',
+            'res_id': self.id,
+            'datas_fname': name,
+        })
+        return attachment_id
+
     @api.multi
     def print_pdf(self, file_name):
         if not file_name:
@@ -598,6 +707,67 @@ class CardTemplate(models.Model):
         if not file_name:
             file_name = ''
         attachment_id = self.pdf_generate(self.back_body_html, (file_name + '_back_side'))
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_type': 'controller',
+            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+        }
+
+    @api.multi
+    def print_png_export(self, file_name):
+        if not file_name:
+            file_name = ''
+        attachment_id = self.png_generate(self.body_html, (file_name + 'front_side'))
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_type': 'controller',
+            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+        }
+
+    @api.multi
+    def print_back_side_png_export(self, file_name):
+        if not self.back_side:
+            raise UserError(_("please select back side option."))
+        if not file_name:
+            file_name = ''
+        attachment_id = self.png_generate(self.back_body_html, (file_name + 'back_side'))
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_type': 'controller',
+            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+        }
+
+    @api.multi
+    def print_both_side_png_export(self, file_name):
+        path = self.env.ref('card_design.svg_to_pdf').value
+        svg_file_name = self.env.ref('card_design.svg_file_name').value
+        if not svg_file_name:
+            svg_file_name = 'card_design'
+        if not path:
+            path = '/tmp'
+        png_datas = []
+        attachment_id = self.png_generate(self.body_html, 'front_side')
+        png_datas.append(attachment_id.datas)
+        if self.back_side:
+            attachment_id = self.png_generate(self.back_body_html, 'back_side')
+            png_datas.append(attachment_id.datas)
+        name = file_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        archive = zipfile.ZipFile(path + '/' + name + '.zip', mode='w')
+        for index, png_data in enumerate(png_datas):
+            decode_str = png_data.decode("base64")
+            im = Image.open(cStringIO.StringIO(decode_str))
+            im.save(path + '/' + name + '_' + str(index) + '.png', dpi=(300, 300))
+            archive.write(path + '/' + name + '_' + str(index) + '.png')
+        data_file = open(path + '/' + name + '.zip', 'r')
+        attachment_id = self.env['ir.attachment'].create({
+            'name': name + '.zip',
+            'type': 'binary',
+            'mimetype': 'application/zip',
+            'datas': base64.b64encode(data_file.read()),
+            'res_model': 'card.template',
+            'res_id': self.id,
+            'datas_fname': name + '.zip',
+        })
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',
@@ -659,7 +829,7 @@ class CardTemplate(models.Model):
         context['active_id'] = self.id
         context['front_side'] = True
         return {
-            'name': _('Enter PDF Name'),
+            'name': _('enter file name with out extension'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'card.export.wizard',
@@ -674,7 +844,7 @@ class CardTemplate(models.Model):
         context['active_id'] = self.id
         context['back_side'] = True
         return {
-            'name': _('Enter PDF Name'),
+            'name': _('enter file name with out extension'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'card.export.wizard',
@@ -689,7 +859,55 @@ class CardTemplate(models.Model):
         context['active_id'] = self.id
         context['both_side'] = True
         return {
-            'name': _('Enter PDF Name'),
+            'name': _('enter file name with out extension'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new'
+        }
+
+    @api.multi
+    def print_both_side_png(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.id
+        context['both_side'] = True
+        context['png'] = True
+        return {
+            'name': _('enter file name with out extension'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new'
+        }
+
+    @api.multi
+    def print_front_side_png(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.id
+        context['front_side'] = True
+        context['png'] = True
+        return {
+            'name': _('enter file name with out extension'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new'
+        }
+
+    @api.multi
+    def print_back_side_png(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.id
+        context['back_side'] = True
+        context['png'] = True
+        return {
+            'name': _('enter file name with out extension'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'card.export.wizard',

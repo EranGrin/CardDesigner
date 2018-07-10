@@ -29,12 +29,12 @@
         <field name="name">card_export_wizard</field>
         <field name="model">card.export.wizard</field>
         <field name="arch" type="xml">
-            <form string="Export PDF">
+            <form string="Enter File Name with out Extension">
                 <group>
                     <field name="name" class="oe_inline"/>
                 </group>
                 <footer>
-                    <button string="Export PDF" name="export_pdf"
+                    <button string="Export" name="export"
                             type="object" default_focus="1" class="btn-primary"/>
                     <button string="Cancel" class="btn-default"
                             special="cancel"/>

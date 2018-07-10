@@ -10,7 +10,6 @@
             <t t-set="head_mm_field_text_html_inline">
                 <t t-if="enable_editor">
                     <t t-call-assets="card_design.card_assets_mail_themes"/>
-                    <!-- <script type="text/javascript" src="/card_design/static/src/js/card_design_editor.js"></script> -->
                 </t>
             </t>
             <t t-set="head" t-value="head_mm_field_text_html_inline + (head or '')"/>

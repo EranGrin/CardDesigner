@@ -43,7 +43,37 @@ snippets_editor.Class.include({
         selected_theme = theme_params;
         // Notify form view
         odoo_top[window.callback+"_downup"]($editable_area.addClass("o_dirty").html());
-        
+
+        if ($('.o_designer_wrapper_td').length) {
+            var maindiv = $('.o_designer_wrapper_td')[0];
+            var zoom_arg = this.$el.find('#zoom');
+            if (zoom_arg) {
+                if (maindiv.style.transform) {
+                    if (maindiv.style.transform == 'scale(0.0, 0.0)' || maindiv.style.transform == "") {
+                        zoom_arg.val(1);
+                    }
+                    else {
+                        zoom_arg.val(maindiv.style.transform.replace('scale(0.',  '').split(',')[0]);
+                    }
+                }
+                else
+                {
+                    zoom_arg.val(1);
+                }
+            }
+            this.$el.on('change', '#zoom', function (e) {
+                if (maindiv) {
+                    if (maindiv.style) {
+                        if (e.target.value) {
+                            maindiv.style.transform = 'scale(0.' + String(e.target.value) +', 0.'+ String(e.target.value) +')';
+                        }
+                        else {
+                            maindiv.style.transform = "";
+                        }
+                    }
+                }
+            });
+        }
         // var $snippets_change_size = this.$el.find("#input_snippets_template_size");
         // $snippets_change_size.on('change', function (e) {
         //     e.preventDefault();

@@ -32,7 +32,16 @@
     <template id="email_designer_snippets" inherit_id="web_editor.snippets" primary="True">
         <xpath expr="//h2[@id='snippets_menu']" position="replace">
             <h2 id="snippets_menu">Select a template</h2>
-            <h4 id="snippets_template_size" class="text-center" style="color:white;display:none;">Change Size</h4>
+            <h5 id="snippets_template_size" class="text-center" style="color:white;">Zoom</h5>
+            <div id="gjs-sm-background-color" class="gjs-sm-property gjs-sm-color" style="display: block;">
+                <div class="gjs-fields" style="margin: 0px 10px 10px 10px;">
+                    <div class="gjs-field gjs-field-color">
+                        <div class="gjs-input-holder" style="    border-style: inset;border-width: 3px;padding-left: 10px;padding-right: 10px;border-color: white;">
+                            <input type="range" min="1" max="99"  id="zoom" class='slider_range' style="width:95%!important;padding-right: 0px!important;box-sizing: border-box;padding-left: 0px;margin-left: 5px;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <select id="input_snippets_template_size" class="form-control oe_view_list" style="margin-bottom:10px; width: 80% !important;margin-left: 8%; display:none;">
                 <option value="(400, 400, px)"> Default </option>
                 <t t-foreach="sizes" t-as="size">

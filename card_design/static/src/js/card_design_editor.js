@@ -385,6 +385,7 @@ snippets_editor.Editor.include({
     },
     on_more_style: function (event) {
         var $media = this.$target[0];
+        var $maindiv = $.find('div.o_designer_wrapper_td')[0];
         if ($media.parentNode.nodeName != 'DIV'){
             var tmp_media = $.parseHTML("<div>" + $media.outerHTML + "</div>")[0];
             $media.replaceWith(tmp_media)
@@ -393,7 +394,7 @@ snippets_editor.Editor.include({
         else{
             $media = $media.parentNode;
         }
-        new card_widgets.position_argument(null, {}, this.buildingBlock.$editable, $media).open();
+        new card_widgets.position_argument(null, {}, this.buildingBlock.$editable, $media, $maindiv).open();
     },
 });
 

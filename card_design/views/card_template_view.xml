@@ -45,8 +45,10 @@
             <form string="Card Template">
                 <header>
                     <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"/>
-                    <button name="print_both_side" type="object" string="Export PDF"
+                    <button name="print_both_side" type="object" string="Export as PDF"
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
+                    <button name="print_both_side_png" type="object" string="Export as Image"
+                                class="oe_highlight" icon="fa-image"/>
                     <button name="generate_cards" type="object" string="Generate Cards"></button>
                     <button name="change_template_size" type="object" string="Change Size" class="btn-primary"/>
                     <field name="state" widget="statusbar"/>
@@ -98,12 +100,16 @@
                             >
                             <button name="print_front_side" type="object" string="Export PDF"
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
+                            <button name="print_front_side_png" type="object" string="Export Image"
+                                class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
                             <field name="body_html" widget="html_frame"
                                    options="{'editor_url': '/card_design/field/card_template'}"/>
                         </page>
                         <page string="Back Template Design" name="back_body"
                             attrs="{'invisible': [('back_side', '=', False)]}">
                             <button name="print_back_side" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
+                            <button name="print_back_side_png" type="object" string="Export Image"
+                                class="oe_highlight" icon="fa-image"  style="margin-left:15px;"/>
                             <field name="back_body_html" widget="html_frame"
                                 options="{'editor_url': '/card_design/field/card_template_back'}"
                             />
@@ -114,9 +120,22 @@
                                 <field name="ref_ir_value_id" readonly="1"/>
                             </group>
                         </page>
-                        <page string="Attachment" name="attachment">
+                        <page string="History" name="attachment">
                             <button name="action_selected_card_send_email" type="object" string="Send by Email" class="btn-primary" icon="fa-envelope-o"/>
                             <field name="attachment_ids" >
+                                <tree create="false" editable="bottom">
+                                    <field name="is_select" />
+                                    <field name="datas_fname" readonly="1"/>
+                                    <field name="datas" readonly="1"/>
+                                    <field name="create_date" readonly="1"/>
+                                    <button name="action_send_email" type="object" string="Send by Email" icon="fa-envelope-o"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Image History" name="attachment">
+                            <button name="action_selected_card_send_email" type="object" string="Send by Email" class="btn-primary" icon="fa-envelope-o"
+                                context="{'image': True}"/>
+                            <field name="image_attachment_ids" >
                                 <tree create="false" editable="bottom">
                                     <field name="is_select" />
                                     <field name="datas_fname" readonly="1"/>
@@ -203,6 +222,9 @@
                     <field name="width" required="1"/>
                     <field name="height" required="1"/>
                     <field name="size_unit" required="1"/>
+                    <field name="dpi" required="1"/>
+                    <field name="size_width_px" invisible="1"/>
+                    <field name="size_height_px" invisible="1"/>
                 </tree>
             </field>
         </record>

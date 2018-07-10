@@ -15,13 +15,14 @@ odoo.define('card_design.widget', function (require) {
 
     var position_argument = Dialog.extend({
         template: 'card_design.dialog.position',
-        init: function (parent, options, $editable, media) {
+        init: function (parent, options, $editable, media, maindiv) {
             this._super(parent, _.extend({}, {
                 title: _t("Style"),
             }, options));
 
             this.$editable = $editable;
             this.media = media;
+            this.maindiv = maindiv;
             var temp = $.parseHTML(
                 "<div style='float:letf;'width:380px;'>" + this.$modal[0].outerHTML + "</div>"
             )[0];

@@ -130,13 +130,22 @@ class CardExportWizard(models.TransientModel):
         return res
 
     @api.multi
-    def export_pdf(self):
-        pdf_file = False
+    def export(self):
+        file = False
         context = dict(self.env.context or {})
         if context.get('back_side', False):
-            pdf_file = self.template_id.print_back_side_pdf(self.name)
+            if context.get('png', False):
+                file = self.template_id.print_back_side_png_export(self.name)
+            else:
+                file = self.template_id.print_back_side_pdf(self.name)
         elif context.get('both_side', False):
-            pdf_file = self.template_id.print_both_side_pdf(self.name)
+            if context.get('png', False):
+                file = self.template_id.print_both_side_png_export(self.name)
+            else:
+                file = self.template_id.print_both_side_pdf(self.name)
         else:
-            pdf_file = self.template_id.print_pdf(self.name)
-        return pdf_file
+            if context.get('png', False):
+                file = self.template_id.print_png_export(self.name)
+            else:
+                file = self.template_id.print_pdf(self.name)
+        return file
