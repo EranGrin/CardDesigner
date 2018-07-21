@@ -47,8 +47,6 @@
                     <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"/>
                     <button name="print_both_side" type="object" string="Export as PDF"
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
-                    <button name="print_both_side_png" type="object" string="Export as Image"
-                                class="oe_highlight" icon="fa-image"/>
                     <button name="generate_cards" type="object" string="Generate Cards"></button>
                     <button name="change_template_size" type="object" string="Change Size" class="btn-primary"/>
                     <field name="state" widget="statusbar"/>
@@ -75,6 +73,7 @@
                         <h1>
                             <field name="name" placeholder="Template Name"/>
                         </h1>
+                        <field name="code" invisible="1"/>
                     </div>
                     <group>
                         <label for="card_model" string="Selected Recods"/>
@@ -102,7 +101,7 @@
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
                             <button name="print_front_side_png" type="object" string="Export Image"
                                 class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
-                            <field name="body_html" widget="html_frame"
+                            <field name="body_html" widget="html_frame" context="{'code': code}"
                                    options="{'editor_url': '/card_design/field/card_template'}"/>
                         </page>
                         <page string="Back Template Design" name="back_body"
@@ -110,7 +109,7 @@
                             <button name="print_back_side" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
                             <button name="print_back_side_png" type="object" string="Export Image"
                                 class="oe_highlight" icon="fa-image"  style="margin-left:15px;"/>
-                            <field name="back_body_html" widget="html_frame"
+                            <field name="back_body_html" widget="html_frame" context="{'code': code}"
                                 options="{'editor_url': '/card_design/field/card_template_back'}"
                             />
                         </page>

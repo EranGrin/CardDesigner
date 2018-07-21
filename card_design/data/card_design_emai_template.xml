@@ -16,4 +16,16 @@
             ]]>
         </field>
         </record>
+
+        <data noupdate="1">
+
+            <record id="sequence_card_design" model="ir.sequence">
+                <field name="name">sequence card design</field>
+                <field name="code">card.template</field>
+                <field name="prefix">%(year)s%(month)s%(day)s</field>
+                <field name="padding">4</field>
+                <field eval="False" name="company_id"/>
+            </record>
+
+        </data>
 </odoo>

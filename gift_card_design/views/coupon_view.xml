@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <act_window
+           id="act_send_mail_card_design_coupon"
+           name="Send Gift Card via Mail"
+           context="{'product_coupon': True}"
+           res_model="wiz.card.coupon"
+           src_model="product.coupon"
+           view_mode="form"
+           target="new"
+           key2="client_action_multi"
+        />
+
+    </data>
+
+    <record model="ir.ui.view" id="card_desgin_template_form_view">
+        <field name="name">card.template.form.inherit</field>
+        <field name="model">card.template</field>
+        <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page name="gift_card_setting" string="Gift Card Configuration">
+                    <group>
+                        <group>
+                            <field name="combine_pdf_page" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

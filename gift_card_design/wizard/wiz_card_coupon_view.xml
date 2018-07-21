@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="wiz_card_coupon_wizard">
+        <field name="name">wiz.card.coupon</field>
+        <field name="model">wiz.card.coupon</field>
+        <field name="arch" type="xml">
+            <form string="Send mail">
+                <sheet>
+                    <group>
+                        <field name="template_id" />
+                        <field name="position" widget="radio" options="{'horizontal': true}" />
+                    </group>
+                    <field name="body"/>
+                </sheet>
+                <footer>
+                    <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"
+                        style="margin-left:15px;"/>
+                    <button string="Cancel" class="btn-default"
+                            special="cancel" style="margin-left:15px;"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

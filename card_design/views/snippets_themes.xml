@@ -88,6 +88,9 @@
                         <t t-snippet="card_design.s_card_block_image" t-thumbnail="/card_design/static/src/img/blocks/block_image.png"/>
                         <t t-snippet="card_design.s_card_block_footer_separator" t-thumbnail="/card_design/static/src/img/blocks/block_footer_separator.png"/>
                         <t t-snippet="card_design.s_card_block_footer_tag_line" t-thumbnail="/card_design/static/src/img/blocks/block_footer_tag_line.png"/>
+                        <t t-snippet="card_design.s_card_block_barcode_snippet"
+                           t-thumbnail="/card_design/static/src/img/blocks/snippet_icon.png"
+                           />
                     </div>
                 </div>
                 <div id="email_designer_default_extra" class="o_panel">
@@ -849,6 +852,20 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="s_card_block_barcode_snippet" name="Barcode">
+        <div class="s_barcode o_barcode">
+            <div class="o_barcode_container">
+                <img class="o_barcode_img img img-responsive"
+                     src="/report/barcode?type=EAN13&amp;value=11111111
+                         &amp;width=500&amp;height=500"
+                     alt="Barcode could not be rendered" />
+            </div>
+            <div class="o_barcode_footer">
+                <p class="o_barcode_text o_default_snippet_text text-center"></p>
             </div>
         </div>
     </template>

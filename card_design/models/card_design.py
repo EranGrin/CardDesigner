@@ -22,6 +22,11 @@ import re
 import cStringIO
 from PIL import Image
 import zipfile
+from base64 import b64encode
+from reportlab.lib import units
+from reportlab.graphics import renderPM
+from reportlab.graphics.barcode import createBarcodeDrawing
+from reportlab.graphics.shapes import Drawing
 
 
 def format_date(env, date, pattern=False):
@@ -156,6 +161,7 @@ class CardTemplate(models.Model):
         if desiner_models and desiner_models[0]:
             return desiner_models[0][0]
 
+    code = fields.Char("Code")
     name = fields.Char("Name", required=1)
     body_html = fields.Html(string='Body', sanitize_attributes=False)
     back_body_html = fields.Html(string='Back Body', sanitize_attributes=False)
@@ -298,8 +304,8 @@ class CardTemplate(models.Model):
         else:
             raise UserError(_("Please select attachment "))
 
-        @api.multi
-        def action_send_email(self):
+    @api.multi
+    def action_send_email(self):
             self.ensure_one()
             ir_model_data = self.env['ir.model.data']
             try:
@@ -431,6 +437,12 @@ class CardTemplate(models.Model):
         return True
 
     @api.model
+    def default_get(self, fields):
+        res = super(CardTemplate, self).default_get(fields)
+        res['code'] = self.env['ir.sequence'].next_by_code('card.template') or _('New')
+        return res
+
+    @api.model
     def create(self, vals):
         res = super(CardTemplate, self).create(vals)
         res.create_action()
@@ -503,6 +515,32 @@ class CardTemplate(models.Model):
 
         return multi_mode and results or results[res_ids[0]]
 
+    def get_barcode(self, value, width, barWidth=0.05 * units.inch, fontSize=20, humanReadable=True):
+        barcode = createBarcodeDrawing(
+            'EAN13',
+            value=value,
+            barWidth=barWidth,
+            fontSize=fontSize,
+            humanReadable=humanReadable
+        )
+        drawing_width = width
+        barcode_scale = drawing_width / barcode.width
+        drawing_height = barcode.height * barcode_scale
+
+        drawing = Drawing(drawing_width, drawing_height)
+        drawing.scale(barcode_scale, barcode_scale)
+        drawing.add(barcode, name='barcode')
+        return drawing
+
+    def get_image(self, value, width, height):
+        barcode = self.get_barcode(value=value, width=width)
+        data = b64encode(renderPM.drawToString(barcode, fmt='PNG'))
+        return "data:image/png;base64,{0}".format(data)
+
+    def get_name(self, value, extension):
+        name = value + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + extension
+        return name
+
     def pdf_generate(self, data, side_name):
         path = self.env.ref('card_design.svg_to_pdf').value
         svg_file_name = self.env.ref('card_design.svg_file_name').value
@@ -552,6 +590,9 @@ class CardTemplate(models.Model):
                 img['src'] = 'data:'+brow_obj.mimetype+';base64,' + brow_obj.datas
             elif 'http' in img['src'] or 'https' in img['src']:
                 img['src'] = img['src']
+            elif 'report' in img['src']:
+                img['src'] = self.get_image(self.code, int(img['width']), int(img['height']))
+                is_svg = True
             else:
                 curr_path = os.path.dirname(os.path.abspath(img['src'][-1]))
                 full_path = curr_path + '/CardDesigner' + img['src']
@@ -585,7 +626,7 @@ class CardTemplate(models.Model):
 
         with open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
             output.write(f)
-        name = side_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.pdf'
+        name = self.get_name(side_name, '.pdf')
         data_file = open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'r')
         datas = data_file.read()
         attachment_id = self.env['ir.attachment'].create({
@@ -648,6 +689,9 @@ class CardTemplate(models.Model):
                 img['src'] = 'data:'+brow_obj.mimetype+';base64,' + brow_obj.datas
             elif 'http' in img['src'] or 'https' in img['src']:
                 img['src'] = img['src']
+            elif 'report' in img['src']:
+                img['src'] = self.get_image(self.code, int(img['width']), int(img['height']))
+                is_svg = True
             else:
                 curr_path = os.path.dirname(os.path.abspath(img['src'][-1]))
                 full_path = curr_path + '/CardDesigner' + img['src']
@@ -674,8 +718,7 @@ class CardTemplate(models.Model):
         html.write_png(path + '/' + current_obj_name + svg_file_name + side_name + '.png', stylesheets=[css], font_config=font_config, resolution=resolution)
         im = Image.open(path + '/' + current_obj_name + svg_file_name + side_name + '.png')
         im.save(path + '/' + current_obj_name + svg_file_name + side_name + '.png', dpi=(300, 300))
-
-        name = side_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.png'
+        name = self.get_name(side_name, '.png')
         data_file = open(path + '/' + current_obj_name + svg_file_name + side_name + '.png', 'r')
         datas = data_file.read()
         attachment_id = self.env['ir.attachment'].create({
@@ -751,7 +794,7 @@ class CardTemplate(models.Model):
         if self.back_side:
             attachment_id = self.png_generate(self.back_body_html, 'back_side')
             png_datas.append(attachment_id.datas)
-        name = file_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        name = self.get_name(file_name, '.zip')
         archive = zipfile.ZipFile(path + '/' + name + '.zip', mode='w')
         for index, png_data in enumerate(png_datas):
             decode_str = png_data.decode("base64")
@@ -775,7 +818,7 @@ class CardTemplate(models.Model):
         }
 
     @api.multi
-    def print_both_side_pdf(self, file_name):
+    def print_merge_pdf_export(self, file_name):
         path = self.env.ref('card_design.svg_to_pdf').value
         svg_file_name = self.env.ref('card_design.svg_file_name').value
         if not svg_file_name:
@@ -799,7 +842,8 @@ class CardTemplate(models.Model):
 
         merger = PdfFileMerger()
 
-        name = file_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.pdf'
+        name = self.get_name(file_name, '.pdf')
+        # name = file_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.pdf'
         for pdf_data in pdfs:
             merger.append(open(pdf_data, 'rb'))
 
@@ -817,6 +861,11 @@ class CardTemplate(models.Model):
             'res_id': self.id,
             'datas_fname': name,
         })
+        return attachment_id
+
+    @api.multi
+    def print_both_side_pdf(self, file_name):
+        attachment_id = self.print_merge_pdf_export(file_name)
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',

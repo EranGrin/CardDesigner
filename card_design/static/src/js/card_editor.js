@@ -50,7 +50,7 @@ snippets_editor.Class.include({
             if (zoom_arg) {
                 if (maindiv.style.transform) {
                     if (maindiv.style.transform == 'scale(0.0, 0.0)' || maindiv.style.transform == "") {
-                        zoom_arg.val(1);
+                        zoom_arg.val(99);
                     }
                     else {
                         zoom_arg.val(maindiv.style.transform.replace('scale(0.',  '').split(',')[0]);
@@ -58,7 +58,7 @@ snippets_editor.Class.include({
                 }
                 else
                 {
-                    zoom_arg.val(1);
+                    zoom_arg.val(99);
                 }
             }
             this.$el.on('change', '#zoom', function (e) {

@@ -30,7 +30,7 @@
             <script type="text/javascript" src="/card_design/static/src/js/card_design_editor.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/boxmodel.js"></script>
             <script type="text/javascript" src="/card_design/static/src/js/card_editor.js"></script>
-            <!-- <script type="text/javascript" src="/card_design/static/src/js/boxmodel.min.js"></script> -->
+            <script type="text/javascript" src="/card_design/static/src/js/barcode_editor.js"></script>
         </xpath>
     </template>
 

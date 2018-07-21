@@ -65,6 +65,50 @@ class CardPrintWizard(models.TransientModel):
                 self.body = template.get(res_ids[0])
 
     @api.multi
+    def action_send_email(self):
+        self.ensure_one()
+        ir_model_data = self.env['ir.model.data']
+        try:
+            template_id = ir_model_data.get_object_reference(
+                'card_design', 'email_template_card_design'
+            )[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference(
+                'mail', 'email_compose_message_wizard_form'
+            )[1]
+        except ValueError:
+            compose_form_id = False
+        ctx = dict()
+        attachment_list = []
+        attachment = self.template_id.pdf_generate(self.template_id.body_html, 'front_side')
+        attachment_list.append(attachment.id)
+        if self.template_id.back_side:
+            attachment = self.template_id.pdf_generate(self.template_id.back_body_html, 'back_side')
+            attachment_list.append(attachment.id)
+        template = self.env['mail.template'].browse(template_id)
+        template.attachment_ids = [(6, 0, attachment_list)]
+        ctx.update({
+            'default_model': 'card.template',
+            'default_res_id': self.template_id.id,
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
+
+    @api.multi
     def print_card(self):
         for rec in self:
             import urlparse
@@ -109,6 +153,40 @@ class CardPrintWizard(models.TransientModel):
                            }
                 imgkit.from_string(to_image, '/tmp/card_%d.jpg' % i, options=options, config=config)
                 i += 1
+
+    @api.multi
+    def print_both_side(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.template_id.id
+        context['both_side'] = True
+        return {
+            'name': 'Enter file name with out extension',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new',
+            'nodestroy': True,
+        }
+
+    @api.multi
+    def print_png(self):
+        context = dict(self.env.context or {})
+        context['active_id'] = self.template_id.id
+        if self.position and self.position == 'b':
+            context['back_side'] = True
+        context['png'] = True
+        return {
+            'name': 'Enter file name with out extension',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'card.export.wizard',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new',
+            'nodestroy': True,
+        }
 
 
 class CardExportWizard(models.TransientModel):

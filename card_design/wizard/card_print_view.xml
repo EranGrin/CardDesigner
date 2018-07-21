@@ -16,10 +16,17 @@
                     <field name="body"/>
                 </sheet>
                 <footer>
+                    <button name="print_both_side" type="object" string="Export as PDF"
+                                class="oe_highlight" icon="fa-file-pdf-o"/>
+                    <button name="print_png" type="object" string="Export Image"
+                                class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
+                    <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"
+                        style="margin-left:15px;"/>
                     <button string="Print" name="print_card"
-                            type="object" default_focus="1" class="btn-primary"/>
+                            type="object" default_focus="1" class="btn-primary"
+                            style="margin-left:15px;"/>
                     <button string="Cancel" class="btn-default"
-                            special="cancel"/>
+                            special="cancel" style="margin-left:15px;"/>
                 </footer>
             </form>
         </field>
