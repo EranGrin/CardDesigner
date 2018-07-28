@@ -721,6 +721,8 @@ class CardTemplate(models.Model):
         name = self.get_name(side_name, '.png')
         data_file = open(path + '/' + current_obj_name + svg_file_name + side_name + '.png', 'r')
         datas = data_file.read()
+        import pdb
+        pdb.set_trace()
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',

@@ -3,7 +3,7 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Card Template to Printer",
-    'version': '10.0.2018.07.22.1',
+    'version': '10.0.2018.07.27.1',
     'summary': """
         Card Template to printer""",
     'description': """
@@ -17,6 +17,7 @@
     ],
     'data': [
         "security/ir.model.access.csv",
+        "views/printer_template.xml",
         "views/printer_view.xml",
     ],
     'demo': [

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <template id="assets_backend" name="printer_assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/card_design_printer/static/src/js/lib/rsvp-3.1.0.min.js"></script>
+            <script type="text/javascript" src="/card_design_printer/static/src/js/lib/sha-256.min.js"></script>
+            <script type="text/javascript" src="/card_design_printer/static/src/js/lib/qz-tray.js"></script>
+            <script type="text/javascript" src="/card_design_printer/static/src/js/printer_action.js"></script>
+        </xpath>
+    </template>
+
+</odoo>
