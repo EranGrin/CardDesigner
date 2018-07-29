@@ -3,7 +3,7 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Card Template to Printer",
-    'version': '10.0.2018.07.27.1',
+    'version': '10.0.2018.07.30.1',
     'summary': """
         Card Template to printer""",
     'description': """

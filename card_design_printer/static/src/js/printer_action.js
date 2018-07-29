@@ -110,13 +110,24 @@ odoo.define('card_design_printer.action', function(require) {
                 var config = qz.configs.create(
                     action.printer_name
                 );
-                var print_data = [{
-                    type: 'raw',
-                    format: 'base64',
-                    data: action.file_path
-                }];
+                var print_data = ['^XA\n',
+                    '^FO50,50^ADN,36,20^FDPRINTED USING QZ TRAY PLUGIN\n',
+                    {
+                        type: 'raw', format: 'image',
+                        data: action.path,
+                        options: { language: "ZPL" }
+                    }, 
+                    '^FS\n',
+                    '^XZ\n'
+                ];
                 qz.print(config, print_data).catch(function(e) { 
-                    console.error(e);
+                   model.call("write", [
+                        action.res_id, 
+                        {
+                            "error": error.toString(),
+                            "is_error": true
+                        }
+                    ]);
                 });
                 return $.when();
             }
@@ -134,16 +145,33 @@ odoo.define('card_design_printer.action', function(require) {
                 var config = qz.configs.create(
                     action.printer_name
                 );
-                var print_data = [{
-                    type: 'raw',
-                    format: 'base64',
-                    data: action.file_path
-                }];
+                var print_data = ['^XA\n',
+                    '^FO50,50^ADN,36,20^FDPRINTED USING QZ TRAY PLUGIN\n',
+                    {
+                        type: 'raw', format: 'image',
+                        data: action.path,
+                        options: { language: "ZPL" }
+                    }, 
+                    '^FS\n',
+                    '^XZ\n'
+                ];
                 qz.print(config, print_data).catch(function(e) { 
-                    console.error(e);
+                    model.call("write", [
+                        action.res_id, 
+                        {
+                            "error": error.toString(),
+                            "is_error": true
+                        }
+                    ]);
                 });
             }).catch(function(error) {
-                console.error(e);
+                model.call("write", [
+                    action.res_id, 
+                    {
+                        "error": error.toString(),
+                        "is_error": true
+                    }
+                ]);
             })
 
             self.inner_widget.active_view.controller.reload();

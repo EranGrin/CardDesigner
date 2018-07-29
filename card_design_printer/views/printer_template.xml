@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
@@ -9,5 +10,134 @@
             <script type="text/javascript" src="/card_design_printer/static/src/js/printer_action.js"></script>
         </xpath>
     </template>
+
+    <record model="ir.ui.view" id="card_desgin_template_form_view">
+        <field name="name">card.design.template.form.view</field>
+        <field name="model">card.template</field>
+        <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="printer_config" string="Printer Configuration">
+                    <group>
+                        <group>
+                            <field name="enable_printer" />
+                            <field name="printer_id"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                                options="{
+                                    'no_create': True,
+                                    'no_open': True
+                                }"
+                            />
+                        </group>
+                    </group>
+                    <group attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }">
+                        <group>
+                            <field name="color_type"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="units"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="density"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="orientation"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                        <group>
+                            <field name="copies"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="size"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="margins"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="interpolation"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                    </group>
+                    <group attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }">
+                        <group>
+                            <field name="printer_lang"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                    </group>
+                    <group attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }">
+                        <group>
+                            <field name="header_data"
+                                 attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                        <group>
+                            <field name="Footer_data"
+                                 attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <field name="body_html" position="before">
+                <button name="qz_print_front_side" type="object" string="Print via QZ"
+                    class="oe_highlight" icon="fa-image"  style="margin-left:15px;"
+                    attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }"/>
+            </field>
+            <field name="back_body_html" position="before">
+                <button name="qz_print_back_side" type="object" string="Print via QZ"
+                    class="oe_highlight" icon="fa-image"  style="margin-left:15px;"
+                    attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }"/>
+            </field>
+        </field>
+    </record>
 
 </odoo>

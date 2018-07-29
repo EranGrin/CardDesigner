@@ -541,15 +541,12 @@ class CardTemplate(models.Model):
         name = value + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + extension
         return name
 
-    def pdf_generate(self, data, side_name):
-        path = self.env.ref('card_design.svg_to_pdf').value
-        svg_file_name = self.env.ref('card_design.svg_file_name').value
-        if not svg_file_name:
-            svg_file_name = 'card_design'
+    def render_pdf(self, svg_file_name, data, side_name):
         soup = BeautifulSoup(data)
         count = 0
         width = '0px'
         height = '0px'
+        path = self.env.ref('card_design.svg_to_pdf').value
         if not path:
             path = '/tmp'
         for div in soup.findAll("div", {'class': 'fixed_height'}):
@@ -577,7 +574,7 @@ class CardTemplate(models.Model):
             if style_dict.get('transform', False):
                 del style_dict['transform']
             attr_div[0]['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
-        current_obj_name = self.name.replace(' ', '_').replace('.', '_')
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
         for img in soup.findAll('img'):
             is_svg = False
             if 'font_to_img' in img['src']:
@@ -614,9 +611,10 @@ class CardTemplate(models.Model):
             div { overflow: hidden !important;  float: left; width: %s; margin-top:-2px;margin-left:-1px;}
         ''' % (width, height, '100%')
         css = CSS(string=style, font_config=font_config)
-        html.write_pdf(path + '/' + current_obj_name + svg_file_name + '.pdf', stylesheets=[css], font_config=font_config)
+        current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        html.write_pdf(current_path + current_obj_name + svg_file_name + '.pdf', stylesheets=[css], font_config=font_config)
         pages_to_keep = [0]
-        infile = PdfFileReader(path + '/' + current_obj_name + svg_file_name + '.pdf', 'rb')
+        infile = PdfFileReader(current_path + current_obj_name + svg_file_name + '.pdf', 'rb')
         output = PdfFileWriter()
 
         for i in range(infile.getNumPages()):
@@ -624,27 +622,14 @@ class CardTemplate(models.Model):
                 p = infile.getPage(i)
                 output.addPage(p)
 
-        with open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
+        with open(current_path + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
             output.write(f)
-        name = self.get_name(side_name, '.pdf')
-        data_file = open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'r')
-        datas = data_file.read()
-        attachment_id = self.env['ir.attachment'].create({
-            'name': name,
-            'type': 'binary',
-            'mimetype': 'application/x-pdf',
-            'datas': base64.encodestring(datas),
-            'res_model': 'card.template',
-            'res_id': self.id,
-            'datas_fname': name,
-        })
-        return attachment_id
+        data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
+        date_file_name = current_obj_name + svg_file_name + '.pdf'
+        return date_file_name, data_file
 
-    def png_generate(self, data, side_name):
+    def render_png(self, svg_file_name, data, side_name):
         path = self.env.ref('card_design.svg_to_pdf').value
-        svg_file_name = self.env.ref('card_design.svg_file_name').value
-        if not svg_file_name:
-            svg_file_name = 'card_design'
         soup = BeautifulSoup(data)
         count = 0
         width = '0px'
@@ -676,7 +661,7 @@ class CardTemplate(models.Model):
             if style_dict.get('transform', False):
                 del style_dict['transform']
             attr_div[0]['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
-        current_obj_name = self.name.replace(' ', '_').replace('.', '_')
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
         for img in soup.findAll('img'):
             is_svg = False
             if 'font_to_img' in img['src']:
@@ -715,14 +700,35 @@ class CardTemplate(models.Model):
         ''' % (width, height, '100%')
         css = CSS(string=style, font_config=font_config)
         resolution = self.template_size and self.template_size.dpi or 300
-        html.write_png(path + '/' + current_obj_name + svg_file_name + side_name + '.png', stylesheets=[css], font_config=font_config, resolution=resolution)
-        im = Image.open(path + '/' + current_obj_name + svg_file_name + side_name + '.png')
-        im.save(path + '/' + current_obj_name + svg_file_name + side_name + '.png', dpi=(300, 300))
-        name = self.get_name(side_name, '.png')
-        data_file = open(path + '/' + current_obj_name + svg_file_name + side_name + '.png', 'r')
+        current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        html.write_png(current_path + current_obj_name + svg_file_name + side_name + '.png', stylesheets=[css], font_config=font_config, resolution=resolution)
+        im = Image.open(current_path + current_obj_name + svg_file_name + side_name + '.png')
+        im.save(current_path + current_obj_name + svg_file_name + side_name + '.png', dpi=(300, 300))
+        data_file = open(current_path + current_obj_name + svg_file_name + side_name + '.png', 'r')
+        date_file_name = current_obj_name + svg_file_name + side_name + '.png'
+        return date_file_name, data_file
+
+    def pdf_generate(self, data, side_name):
+        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        name = self.get_name(side_name, '.pdf')
+        path, data_file = self.render_pdf(svg_file_name, data, side_name)
         datas = data_file.read()
-        import pdb
-        pdb.set_trace()
+        attachment_id = self.env['ir.attachment'].create({
+            'name': name,
+            'type': 'binary',
+            'mimetype': 'application/x-pdf',
+            'datas': base64.encodestring(datas),
+            'res_model': 'card.template',
+            'res_id': self.id,
+            'datas_fname': name,
+        })
+        return attachment_id
+
+    def png_generate(self, data, side_name):
+        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        name = self.get_name(side_name, '.png')
+        path, data_file = self.render_png(svg_file_name, data, side_name)
+        datas = data_file.read()
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
@@ -785,9 +791,7 @@ class CardTemplate(models.Model):
     @api.multi
     def print_both_side_png_export(self, file_name):
         path = self.env.ref('card_design.svg_to_pdf').value
-        svg_file_name = self.env.ref('card_design.svg_file_name').value
-        if not svg_file_name:
-            svg_file_name = 'card_design'
+        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         if not path:
             path = '/tmp'
         png_datas = []
@@ -819,12 +823,8 @@ class CardTemplate(models.Model):
             'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
         }
 
-    @api.multi
-    def print_merge_pdf_export(self, file_name):
+    def render_pdf_both_side(self, svg_file_name, side_name=''):
         path = self.env.ref('card_design.svg_to_pdf').value
-        svg_file_name = self.env.ref('card_design.svg_file_name').value
-        if not svg_file_name:
-            svg_file_name = 'card_design'
         if not path:
             path = '/tmp'
         pdf_datas = []
@@ -835,7 +835,7 @@ class CardTemplate(models.Model):
             attachment_id = self.pdf_generate(self.back_body_html, 'back_side')
             pdf_datas.append(attachment_id.datas)
 
-        current_obj_name = self.name.replace(' ', '_').replace('.', '_')
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
         for inx, data in enumerate(pdf_datas):
             pdf_name = path + '/' + current_obj_name + svg_file_name + str(inx) + '.pdf'
             pdfs.append(pdf_name)
@@ -843,16 +843,23 @@ class CardTemplate(models.Model):
                 pdf.write(base64.b64decode(data))
 
         merger = PdfFileMerger()
+        current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
 
-        name = self.get_name(file_name, '.pdf')
-        # name = file_name + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.pdf'
         for pdf_data in pdfs:
             merger.append(open(pdf_data, 'rb'))
 
-        with open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'wb') as fout:
+        with open(current_path + current_obj_name + svg_file_name + '.pdf', 'wb') as fout:
             merger.write(fout)
 
-        data_file = open(path + '/' + current_obj_name + svg_file_name + '.pdf', 'r')
+        data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
+        date_file_name = current_obj_name + svg_file_name + '.pdf'
+        return date_file_name, data_file
+
+    @api.multi
+    def print_merge_pdf_export(self, file_name):
+        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        name = self.get_name(file_name, '.pdf')
+        path, data_file = self.render_png(svg_file_name, file_name)
         datas = data_file.read()
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
