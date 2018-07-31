@@ -32,33 +32,6 @@ class PrinterLines(models.Model):
                 get_default_printer_id.default_printer = False
             rec.default_printer = True
 
-    # @api.multi
-    # def test_print_data(self):
-    #     self.ensure_one()
-    #     for rec in self:
-    #         printer = rec.printer_id
-    #         printer_name = rec.name
-    #         printer_config_dict = {
-    #             "host": printer.host,
-    #             "port": {
-    #                 "secure": [int(secure_port) for secure_port in printer.secure_port.split(",")],
-    #                 "insecure": [int(secure_port) for secure_port in printer.secure_port.split(",")],
-    #             },
-    #             'use_secure': printer.using_secure,
-    #             "keep_alive": printer.keep_alive,
-    #             "retries": printer.retries,
-    #             "delay": printer.delay,
-    #         }
-    #         return {
-    #             "type": "ir.actions.print.data",
-    #             "res_model": self._name,
-    #             "res_id": rec.id,
-    #             "printer_name": printer_name,
-    #             "file_path": "/card_design_printer/static/src/file/test_card.pdf",
-    #             "printer_config_dict": printer_config_dict,
-    #             "context": self.env.context,
-    #         }
-
 
 class Printer(models.Model):
     _name = 'printer.printer'

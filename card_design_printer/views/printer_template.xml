@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
@@ -99,6 +98,24 @@
                                     'invisible': [('enable_printer', '=', False)],
                                 }"
                             />
+                            <field name="data_type"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="data_format"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="print_data_type"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
                         </group>
                     </group>
                     <group attrs="{
@@ -106,17 +123,41 @@
                     }">
                         <group>
                             <field name="header_data"
-                                 attrs="{
+                                attrs="{
                                     'required': [('enable_printer', '!=', False)],
                                     'invisible': [('enable_printer', '=', False)],
                                 }"
                             />
+                            <field name="epl_x"
+                                attrs="{
+                                    'required': [('printer_lang', '=', 'EPL')],
+                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
+                                }"
+                            />
+                            <field name="precision"
+                                attrs="{
+                                    'required': [('printer_lang', '=', 'EVOLIS')],
+                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                }"
+                            />
                         </group>
                         <group>
-                            <field name="Footer_data"
-                                 attrs="{
+                            <field name="footer_data"
+                                attrs="{
                                     'required': [('enable_printer', '!=', False)],
                                     'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="epl_y"
+                                attrs="{
+                                    'required': [('printer_lang', '=', 'EPL')],
+                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
+                                }"
+                            />
+                            <field name="overlay"
+                                attrs="{
+                                    'required': [('printer_lang', '=', 'EVOLIS')],
+                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
                                 }"
                             />
                         </group>

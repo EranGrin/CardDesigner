@@ -63,12 +63,49 @@ class CardTemplate(models.Model):
     ], string=_("Printer Language"), default="ZPL")
     header_data = fields.Text(
         string=_("Header Data"),
-        default="'^XA\n','^FO50,50^ADN,36,20^FDPRINTED USING QZ TRAY PLUGIN\n',"
+        default="^XA"
     )
-    Footer_data = fields.Text(
+    footer_data = fields.Text(
         string=_("Footer Data"),
-        default="'^FS\n','^XZ\n'"
+        default="^XZ"
     )
+    precision = fields.Integer(
+        string=_("Precision"), default=128
+    )
+    overlay = fields.Boolean(
+        string=_("Overlay"), default=True
+    )
+    data_type = fields.Char(
+        string=_("Data Type"), default="raw"
+    )
+    data_format = fields.Char(
+        string=_("Data Format"), default="image"
+    )
+    epl_x = fields.Integer(
+        string=_("X (EPL Option)"), default=0
+    )
+    epl_y = fields.Integer(
+        string=_("Y (EPL Option)"), default=0
+    )
+    print_data_type = fields.Selection([
+        ("path", "File PATH"),
+        ("base64", "BASE64"),
+    ], string=_("Printer Data Type"), default="base64")
+
+    @api.onchange('printer_lang')
+    def onchange_printer_lang(self):
+        if not self.printer_lang:
+            self.header_data = ''
+            self.footer_data = ''
+        if self.printer_lang == 'ZPL':
+            self.header_data = "^XA"
+            self.footer_data = "^XZ"
+        elif self.printer_lang == 'EPL':
+            self.header_data = "N"
+            self.footer_data = "P1"
+        elif self.printer_lang == 'EVOLIS':
+            self.header_data = "Pps;0,Pwr;0,Wcb;k;0,Ss"
+            self.footer_data = "Se"
 
     @api.multi
     def qz_print_front_side(self):
@@ -87,17 +124,37 @@ class CardTemplate(models.Model):
             }
             printer_name = printer.default_printer.name
             svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            path, data_file = self.render_pdf(svg_file_name, rec.body_html, '_front_side')
-            file_path = 'card_design/static/src/export_files/' + path
-            return {
+            path, data_file, base64_datas = self.render_png(svg_file_name, rec.body_html, '_front_side')
+            if rec.print_data_type == 'path':
+                data = 'card_design/static/src/export_files/' + path
+            else:
+                data = 'data:image/png;base64,' + base64_datas
+            action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
                 "res_id": printer.id,
                 "printer_name": printer_name,
-                "path": file_path,
+                "print_data": data,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
+                "language": rec.printer_lang,
+                "data_type": rec.data_type,
+                "data_format": rec.data_format,
+                "header_data": rec.header_data,
+                "footer_data": rec.footer_data,
+                "jobName": rec.name,
             }
+            if rec.printer_lang == 'EPL':
+                action.update({
+                    'epl_x': rec.epl_x,
+                    'epl_y': rec.epl_y,
+                })
+            elif rec.printer_lang == 'EVOLIS':
+                action.update({
+                    'precision': rec.precision,
+                    'overlay': rec.overlay,
+                })
+            return action
 
     @api.multi
     def qz_print_back_side(self):
@@ -116,14 +173,34 @@ class CardTemplate(models.Model):
             }
             printer_name = printer.default_printer.name
             svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            path, data_file = self.render_pdf(svg_file_name, rec.back_body_html, '_back_side')
-            file_path = 'card_design/static/src/export_files/' + path
-            return {
+            path, data_file, base64_datas = self.render_png(svg_file_name, rec.back_body_html, '_back_side')
+            if rec.print_data_type == 'path':
+                data = 'card_design/static/src/export_files/' + path
+            else:
+                data = 'data:image/png;base64,' + base64_datas
+            action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
                 "res_id": printer.id,
                 "printer_name": printer_name,
-                "path": file_path,
+                "print_data": data,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
+                "language": rec.printer_lang,
+                "data_type": rec.data_type,
+                "data_format": rec.data_format,
+                "header_data": rec.header_data,
+                "footer_data": rec.footer_data,
+                "jobName": rec.name,
             }
+            if rec.printer_lang == 'EPL':
+                action.update({
+                    'epl_x': rec.epl_x,
+                    'epl_y': rec.epl_y,
+                })
+            elif rec.printer_lang == 'EVOLIS':
+                action.update({
+                    'precision': rec.precision,
+                    'overlay': rec.overlay,
+                })
+            return action

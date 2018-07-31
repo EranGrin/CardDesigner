@@ -626,7 +626,9 @@ class CardTemplate(models.Model):
             output.write(f)
         data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
         date_file_name = current_obj_name + svg_file_name + '.pdf'
-        return date_file_name, data_file
+        datas = data_file.read()
+        base64_datas = base64.encodestring(datas)
+        return date_file_name, data_file, base64_datas
 
     def render_png(self, svg_file_name, data, side_name):
         path = self.env.ref('card_design.svg_to_pdf').value
@@ -706,18 +708,19 @@ class CardTemplate(models.Model):
         im.save(current_path + current_obj_name + svg_file_name + side_name + '.png', dpi=(300, 300))
         data_file = open(current_path + current_obj_name + svg_file_name + side_name + '.png', 'r')
         date_file_name = current_obj_name + svg_file_name + side_name + '.png'
-        return date_file_name, data_file
+        datas = data_file.read()
+        base64_datas = base64.encodestring(datas)
+        return date_file_name, data_file, base64_datas
 
     def pdf_generate(self, data, side_name):
         svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(side_name, '.pdf')
-        path, data_file = self.render_pdf(svg_file_name, data, side_name)
-        datas = data_file.read()
+        path, data_file, base64_datas = self.render_pdf(svg_file_name, data, side_name)
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
             'mimetype': 'application/x-pdf',
-            'datas': base64.encodestring(datas),
+            'datas': base64_datas,
             'res_model': 'card.template',
             'res_id': self.id,
             'datas_fname': name,
@@ -727,13 +730,12 @@ class CardTemplate(models.Model):
     def png_generate(self, data, side_name):
         svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(side_name, '.png')
-        path, data_file = self.render_png(svg_file_name, data, side_name)
-        datas = data_file.read()
+        path, data_file, base64_datas = self.render_png(svg_file_name, data, side_name)
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
             'mimetype': 'image/png',
-            'datas': base64.encodestring(datas),
+            'datas': base64_datas,
             'res_model': 'card.template',
             'res_id': self.id,
             'datas_fname': name,
@@ -853,19 +855,20 @@ class CardTemplate(models.Model):
 
         data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
         date_file_name = current_obj_name + svg_file_name + '.pdf'
-        return date_file_name, data_file
+        datas = data_file.read()
+        base64_datas = base64.encodestring(datas)
+        return date_file_name, data_file, base64_datas
 
     @api.multi
     def print_merge_pdf_export(self, file_name):
         svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(file_name, '.pdf')
-        path, data_file = self.render_png(svg_file_name, file_name)
-        datas = data_file.read()
+        path, data_file, base64_datas = self.render_png(svg_file_name, file_name)
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
             'mimetype': 'application/x-pdf',
-            'datas': base64.encodestring(datas),
+            'datas': base64_datas,
             'res_model': 'card.template',
             'res_id': self.id,
             'datas_fname': name,
