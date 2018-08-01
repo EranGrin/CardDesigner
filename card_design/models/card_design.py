@@ -542,6 +542,7 @@ class CardTemplate(models.Model):
         return name
 
     def render_pdf(self, svg_file_name, data, side_name):
+        resolution = self.template_size and self.template_size.dpi or 300
         soup = BeautifulSoup(data)
         count = 0
         width = '0px'
@@ -599,7 +600,7 @@ class CardTemplate(models.Model):
             if not is_svg:
                 image_data = re.sub('^data:image/.+;base64,', '', img['src']).decode('base64')
                 im = Image.open(cStringIO.StringIO(image_data))
-                im.save(path + '/' + current_obj_name + "t.png", dpi=(600, 600))
+                im.save(path + '/' + current_obj_name + "t.png", dpi=(resolution, resolution))
                 with open(path + '/' + current_obj_name + "t.png", "rb") as imageFile:
                     img['src'] = 'data:image/png;base64,' + base64.b64encode(imageFile.read())
 
@@ -631,6 +632,7 @@ class CardTemplate(models.Model):
         return date_file_name, data_file, base64_datas
 
     def render_png(self, svg_file_name, data, side_name):
+        resolution = self.template_size and self.template_size.dpi or 300
         path = self.env.ref('card_design.svg_to_pdf').value
         soup = BeautifulSoup(data)
         count = 0
@@ -688,7 +690,7 @@ class CardTemplate(models.Model):
             if not is_svg:
                 image_data = re.sub('^data:image/.+;base64,', '', img['src']).decode('base64')
                 im = Image.open(cStringIO.StringIO(image_data))
-                im.save(path + '/' + current_obj_name + "t.png", dpi=(600, 600))
+                im.save(path + '/' + current_obj_name + "t.png", dpi=(resolution, resolution))
                 with open(path + '/' + current_obj_name + "t.png", "rb") as imageFile:
                     img['src'] = 'data:image/png;base64,' + base64.b64encode(imageFile.read())
 
@@ -701,11 +703,10 @@ class CardTemplate(models.Model):
             .pdf_overflow { margin-bottom:-2px;}
         ''' % (width, height, '100%')
         css = CSS(string=style, font_config=font_config)
-        resolution = self.template_size and self.template_size.dpi or 300
         current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
         html.write_png(current_path + current_obj_name + svg_file_name + side_name + '.png', stylesheets=[css], font_config=font_config, resolution=resolution)
         im = Image.open(current_path + current_obj_name + svg_file_name + side_name + '.png')
-        im.save(current_path + current_obj_name + svg_file_name + side_name + '.png', dpi=(300, 300))
+        im.save(current_path + current_obj_name + svg_file_name + side_name + '.png', dpi=(resolution, resolution))
         data_file = open(current_path + current_obj_name + svg_file_name + side_name + '.png', 'r')
         date_file_name = current_obj_name + svg_file_name + side_name + '.png'
         datas = data_file.read()
@@ -770,7 +771,7 @@ class CardTemplate(models.Model):
     def print_png_export(self, file_name):
         if not file_name:
             file_name = ''
-        attachment_id = self.png_generate(self.body_html, (file_name + 'front_side'))
+        attachment_id = self.png_generate(self.body_html, (file_name + '_front_side'))
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',
@@ -783,7 +784,7 @@ class CardTemplate(models.Model):
             raise UserError(_("please select back side option."))
         if not file_name:
             file_name = ''
-        attachment_id = self.png_generate(self.back_body_html, (file_name + 'back_side'))
+        attachment_id = self.png_generate(self.back_body_html, (file_name + '_back_side'))
         return {
             'type': 'ir.actions.report.xml',
             'report_type': 'controller',
@@ -793,7 +794,7 @@ class CardTemplate(models.Model):
     @api.multi
     def print_both_side_png_export(self, file_name):
         path = self.env.ref('card_design.svg_to_pdf').value
-        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        resolution = self.template_size and self.template_size.dpi or 300
         if not path:
             path = '/tmp'
         png_datas = []
@@ -807,7 +808,7 @@ class CardTemplate(models.Model):
         for index, png_data in enumerate(png_datas):
             decode_str = png_data.decode("base64")
             im = Image.open(cStringIO.StringIO(decode_str))
-            im.save(path + '/' + name + '_' + str(index) + '.png', dpi=(300, 300))
+            im.save(path + '/' + name + '_' + str(index) + '.png', dpi=(resolution, resolution))
             archive.write(path + '/' + name + '_' + str(index) + '.png')
         data_file = open(path + '/' + name + '.zip', 'r')
         attachment_id = self.env['ir.attachment'].create({
@@ -863,7 +864,7 @@ class CardTemplate(models.Model):
     def print_merge_pdf_export(self, file_name):
         svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(file_name, '.pdf')
-        path, data_file, base64_datas = self.render_png(svg_file_name, file_name)
+        path, data_file, base64_datas = self.render_pdf_both_side(svg_file_name, file_name)
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
