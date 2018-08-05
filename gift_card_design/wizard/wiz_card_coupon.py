@@ -22,28 +22,36 @@ class CardCouponWizard(models.TransientModel):
             model = self._context.get('active_model')
             res_ids = self._context.get('active_ids')
             if len(res_ids) >= 1:
-                if self.template_id.front_side:
-                    body = self.template_id.body_html
-                    body = body.replace('background: url(/web/static/src/img/placeholder.png) no-repeat center;', '')
-                    template = self.env['card.template'].render_template(
-                        body, model, res_ids
-                    )
-                    self.body = template.get(res_ids[0])
+                res_ids = [res_ids[0]]
+            if self.template_id.front_side and res_ids:
+                body = self.template_id.body_html
+                body = body.replace('background: url(/web/static/src/img/placeholder.png) no-repeat center;', '')
+                template = self.env['card.template'].render_template(
+                    body, model, res_ids
+                )
+                self.body = template.get(res_ids[0])
+            if self.position != 'f' and res_ids:
+                template = self.env['card.template'].render_template(
+                    self.template_id.back_body_html, model, res_ids
+                )
+                self.body = template.get(res_ids[0])
 
     @api.onchange('position')
     def _onchange_position(self):
         model = self._context.get('active_model')
         res_ids = self._context.get('active_ids')
         if len(res_ids) >= 1:
-            if self.template_id.front_side:
-                if self.position != 'f':
-                    template = self.env['card.template'].render_template(
-                        self.template_id.back_body_html, model, res_ids
-                    )
-                else:
-                    template = self.env['card.template'].render_template(
-                        self.template_id.body_html, model, res_ids
-                    )
+            res_ids = [res_ids[0]]
+        if self.template_id.front_side and res_ids:
+            if self.position != 'f':
+                template = self.env['card.template'].render_template(
+                    self.template_id.back_body_html, model, res_ids
+                )
+                self.body = template.get(res_ids[0])
+            else:
+                template = self.env['card.template'].render_template(
+                    self.template_id.body_html, model, res_ids
+                )
                 self.body = template.get(res_ids[0])
 
     @api.multi

@@ -11,7 +11,6 @@
                         <field name="model" invisible="1" />
                         <field name="template_id" domain="[('model_id', '=', model )]" />
                         <field name="position" widget="radio" options="{'horizontal': true}" />
-                        <field name="printers" string="Select Printer" />
                     </group>
                     <field name="body"/>
                 </sheet>
@@ -20,11 +19,6 @@
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
                     <button name="print_png" type="object" string="Export Image"
                                 class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
-                    <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"
-                        style="margin-left:15px;"/>
-                    <button string="Print" name="print_card"
-                            type="object" default_focus="1" class="btn-primary"
-                            style="margin-left:15px;"/>
                     <button string="Cancel" class="btn-default"
                             special="cancel" style="margin-left:15px;"/>
                 </footer>

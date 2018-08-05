@@ -107,6 +107,72 @@ class CardTemplate(models.Model):
             self.header_data = "Pps;0,Pwr;0,Wcb;k;0,Ss"
             self.footer_data = "Se"
 
+    def create_json_print_data(self, datas=[]):
+        print_data_dict = {}
+        index = 0
+        for index, data in enumerate(datas):
+            if self.printer_lang == 'EPL':
+                print_data = []
+                headerarray = self.header_data.split(',')
+                for hindex, i in enumerate(headerarray):
+                    print_data.append("\n"+headerarray[hindex]+"\n")
+                print_data.append({
+                    'type': self.data_type, 'format': self.data_format,
+                    'data': data,
+                    'options': {
+                        'language': self.printer_lang,
+                        'x': self.epl_x,
+                        'y': self.epl_y
+                    },
+                    'index': index
+                })
+                footerarray = self.footer_data.split(',')
+                for findex, j in enumerate(footerarray):
+                    print_data.append("\n"+footerarray[findex]+"\n")
+                print_data_dict.update({
+                    index: print_data
+                })
+            elif self.printer_lang == 'ZPL':
+                print_data = []
+                headerarray = self.header_data.split(',')
+                for hindex, i in enumerate(headerarray):
+                    print_data.append(headerarray[hindex]+"\n")
+                print_data.append({
+                    'type': self.data_type, 'format': self.data_format,
+                    'data': data,
+                    'options': {'language': self.printer_lang},
+                    'index': index
+                })
+                footerarray = self.footer_data.split(',')
+                for findex, j in enumerate(footerarray):
+                    print_data.append(footerarray[findex]+"\n")
+                print_data_dict.update({
+                    index: print_data
+                })
+            elif self.printer_lang == 'EVOLIS':
+                print_data = []
+                headerarray = self.header_data.split(',')
+                for hindex, i in enumerate(headerarray):
+                    print_data.append('\x1B' + headerarray[hindex] + "\x0D")
+                print_data.append({
+                    'type': self.data_type,
+                    'format': self.data_format,
+                    'data': data,
+                    'options': {
+                        'language': self.printer_lang,
+                        'precision': self.precision,
+                        'overlay': self.overlay
+                    },
+                    'index': index
+                })
+                footerarray = self.footer_data.split(',')
+                for findex, j in footerarray:
+                    print_data.append('\x1B' + footerarray[findex] + "\x0D")
+                print_data_dict.update({
+                    index: print_data
+                })
+        return index, print_data_dict
+
     @api.multi
     def qz_print_front_side(self):
         for rec in self:
@@ -129,12 +195,14 @@ class CardTemplate(models.Model):
                 data = 'card_design/static/src/export_files/' + path
             else:
                 data = 'data:image/png;base64,' + base64_datas
+            index, print_data = self.create_json_print_data([data, data])
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
                 "res_id": printer.id,
                 "printer_name": printer_name,
-                "print_data": data,
+                "print_data": print_data,
+                'print_data_len': index,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "language": rec.printer_lang,
@@ -178,12 +246,14 @@ class CardTemplate(models.Model):
                 data = 'card_design/static/src/export_files/' + path
             else:
                 data = 'data:image/png;base64,' + base64_datas
+            index, print_data = self.create_json_print_data([data])
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
                 "res_id": printer.id,
                 "printer_name": printer_name,
-                "print_data": data,
+                "print_data": print_data,
+                'print_data_len': index,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "language": rec.printer_lang,

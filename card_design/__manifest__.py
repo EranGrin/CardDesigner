@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # Part of LICENSE file for copyright and licensing details.
-
 {
     'name': "Card Designer",
     'summary': """
@@ -12,7 +11,7 @@
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
-    'version': '10.0.2018.08.01.1',
+    'version': '10.0.2018.08.06.1',
     'depends': [
         'web_editor',
         'mail',

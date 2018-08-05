@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <act_window
-           id="act_send_mail_card_design_coupon"
-           name="Send Gift Card via Mail"
-           context="{'product_coupon': True}"
-           res_model="wiz.card.coupon"
-           src_model="product.coupon"
-           view_mode="form"
-           target="new"
-           key2="client_action_multi"
-        />
-
-    </data>
+    <act_window
+        id="act_send_mail_card_design_coupon"
+        name="Send by Email"
+        context="{'product_coupon': True}"
+        res_model="wiz.card.coupon"
+        src_model="product.coupon"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi"
+    />
 
     <record model="ir.ui.view" id="card_desgin_template_form_view">
         <field name="name">card.template.form.inherit</field>
