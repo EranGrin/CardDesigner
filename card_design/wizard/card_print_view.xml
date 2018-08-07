@@ -15,7 +15,7 @@
                     <field name="body"/>
                 </sheet>
                 <footer>
-                    <button name="print_both_side" type="object" string="Export as PDF"
+                    <button name="print_pdf" type="object" string="Export as PDF"
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
                     <button name="print_png" type="object" string="Export Image"
                                 class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>

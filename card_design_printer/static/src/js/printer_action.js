@@ -108,7 +108,7 @@ odoo.define('card_design_printer.action', function(require) {
             var model = new WebModel(action.res_model);
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
-                    action.printer_name, 
+                    action.printer_name, {units: "in", density: "300", margins: [ 0, 0, 0, 0]}
                 );
                 for(var i = 0; i <= action.print_data_len; i++) {
                     qz.print(config, action.print_data[i]).catch(function(e) { 
@@ -135,7 +135,7 @@ odoo.define('card_design_printer.action', function(require) {
                 });
                 connected.then(function() {
                     var config = qz.configs.create(
-                        action.printer_name
+                        action.printer_name, {units: "in", density: "300", margins: [ 0, 0, 0, 0]}
                     );
                     for(var i = 0; i <= action.print_data_len; i++) {
                         qz.print(config, action.print_data[i]).catch(function(e) { 

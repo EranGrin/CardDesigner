@@ -79,7 +79,7 @@ class CardTemplate(models.Model):
         string=_("Data Type"), default="raw"
     )
     data_format = fields.Char(
-        string=_("Data Format"), default="image"
+        string=_("Data Format"), default="pdf"
     )
     epl_x = fields.Integer(
         string=_("X (EPL Option)"), default=0
@@ -89,8 +89,7 @@ class CardTemplate(models.Model):
     )
     print_data_type = fields.Selection([
         ("path", "File PATH"),
-        ("base64", "BASE64"),
-    ], string=_("Printer Data Type"), default="base64")
+    ], string=_("Printer Data Type"), default="path")
 
     @api.onchange('printer_lang')
     def onchange_printer_lang(self):
@@ -110,6 +109,7 @@ class CardTemplate(models.Model):
     def create_json_print_data(self, datas=[]):
         print_data_dict = {}
         index = 0
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for index, data in enumerate(datas):
             if self.printer_lang == 'EPL':
                 print_data = []
@@ -117,8 +117,10 @@ class CardTemplate(models.Model):
                 for hindex, i in enumerate(headerarray):
                     print_data.append("\n"+headerarray[hindex]+"\n")
                 print_data.append({
-                    'type': self.data_type, 'format': self.data_format,
-                    'data': data,
+                    'type': self.data_type,
+                    'format': self.data_format,
+                    'flavor': 'file',
+                    'data': URL + data,
                     'options': {
                         'language': self.printer_lang,
                         'x': self.epl_x,
@@ -138,8 +140,10 @@ class CardTemplate(models.Model):
                 for hindex, i in enumerate(headerarray):
                     print_data.append(headerarray[hindex]+"\n")
                 print_data.append({
-                    'type': self.data_type, 'format': self.data_format,
-                    'data': data,
+                    'type': self.data_type,
+                    'format': self.data_format,
+                    'flavor': 'file',
+                    'data': URL + data,
                     'options': {'language': self.printer_lang},
                     'index': index
                 })
@@ -157,7 +161,8 @@ class CardTemplate(models.Model):
                 print_data.append({
                     'type': self.data_type,
                     'format': self.data_format,
-                    'data': data,
+                    'flavor': 'file',
+                    'data': URL + data,
                     'options': {
                         'language': self.printer_lang,
                         'precision': self.precision,
@@ -168,6 +173,18 @@ class CardTemplate(models.Model):
                 footerarray = self.footer_data.split(',')
                 for findex, j in footerarray:
                     print_data.append('\x1B' + footerarray[findex] + "\x0D")
+                print_data_dict.update({
+                    index: print_data
+                })
+            else:
+                print_data = [
+                    {
+                        'type': 'raw',
+                        'format': 'pdf',
+                        'flavor': 'file',
+                        'data': URL + data,
+                    },
+                ]
                 print_data_dict.update({
                     index: print_data
                 })
@@ -190,12 +207,12 @@ class CardTemplate(models.Model):
             }
             printer_name = printer.default_printer.name
             svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            path, data_file, base64_datas = self.render_png(svg_file_name, rec.body_html, '_front_side')
+            path, data_file, base64_datas = self.render_pdf(svg_file_name, rec.body_html, '_front_side')
             if rec.print_data_type == 'path':
-                data = 'card_design/static/src/export_files/' + path
+                data = '/card_design/static/src/export_files/' + path
             else:
                 data = 'data:image/png;base64,' + base64_datas
-            index, print_data = self.create_json_print_data([data, data])
+            index, print_data = self.create_json_print_data([data])
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
@@ -241,9 +258,9 @@ class CardTemplate(models.Model):
             }
             printer_name = printer.default_printer.name
             svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            path, data_file, base64_datas = self.render_png(svg_file_name, rec.back_body_html, '_back_side')
+            path, data_file, base64_datas = self.render_pdf(svg_file_name, rec.back_body_html, '_back_side')
             if rec.print_data_type == 'path':
-                data = 'card_design/static/src/export_files/' + path
+                data = '/card_design/static/src/export_files/' + path
             else:
                 data = 'data:image/png;base64,' + base64_datas
             index, print_data = self.create_json_print_data([data])

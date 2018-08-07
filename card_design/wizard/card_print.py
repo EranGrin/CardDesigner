@@ -70,10 +70,11 @@ class CardPrintWizard(models.TransientModel):
             self.body = template.get(res_ids[0])
 
     @api.multi
-    def print_both_side(self):
+    def print_pdf(self):
         context = dict(self.env.context or {})
         context['active_id'] = self.template_id.id
-        context['both_side'] = True
+        if self.position and self.position == 'b':
+            context['back_side'] = True
         return {
             'name': 'Enter file name with out extension',
             'view_type': 'form',
@@ -91,7 +92,6 @@ class CardPrintWizard(models.TransientModel):
         context['active_id'] = self.template_id.id
         if self.position and self.position == 'b':
             context['back_side'] = True
-        context['png'] = True
         return {
             'name': 'Enter file name with out extension',
             'view_type': 'form',
