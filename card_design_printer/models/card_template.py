@@ -78,7 +78,9 @@ class CardTemplate(models.Model):
     data_type = fields.Char(
         string=_("Data Type"), default="raw"
     )
-    data_format = fields.Char(
+    data_format = fields.Selection([
+        ("pdf", "PDF"),
+        ("image", "IMAGE")],
         string=_("Data Format"), default="pdf"
     )
     epl_x = fields.Integer(
@@ -88,7 +90,8 @@ class CardTemplate(models.Model):
         string=_("Y (EPL Option)"), default=0
     )
     print_data_type = fields.Selection([
-        ("path", "File PATH"),
+        ("path", "File Path"),
+        ("base64", "Base64")
     ], string=_("Printer Data Type"), default="path")
 
     @api.onchange('printer_lang')
@@ -116,18 +119,37 @@ class CardTemplate(models.Model):
                 headerarray = self.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     print_data.append("\n"+headerarray[hindex]+"\n")
-                print_data.append({
+                print_epl_data_dict = {
                     'type': self.data_type,
                     'format': self.data_format,
-                    'flavor': 'file',
-                    'data': URL + data,
                     'options': {
                         'language': self.printer_lang,
                         'x': self.epl_x,
                         'y': self.epl_y
                     },
                     'index': index
-                })
+                }
+                if self.print_data_type == 'path':
+                    if self.data_format == 'pdf':
+                        print_epl_data_dict.update({
+                            'flavor': 'file',
+                            'data': URL + data[0]
+                        })
+                    else:
+                        print_epl_data_dict.update({
+                            'flavor': 'file',
+                            'data': data[0]
+                        })
+                else:
+                    if self.data_format == 'pdf':
+                        print_epl_data_dict.update({
+                            'data': data[1]
+                        })
+                    else:
+                        print_epl_data_dict.update({
+                            'data': data[1]
+                        })
+                print_data.append(print_epl_data_dict)
                 footerarray = self.footer_data.split(',')
                 for findex, j in enumerate(footerarray):
                     print_data.append("\n"+footerarray[findex]+"\n")
@@ -139,14 +161,35 @@ class CardTemplate(models.Model):
                 headerarray = self.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     print_data.append(headerarray[hindex]+"\n")
-                print_data.append({
+                print_zpl_data_dict = {
                     'type': self.data_type,
                     'format': self.data_format,
-                    'flavor': 'file',
-                    'data': URL + data,
-                    'options': {'language': self.printer_lang},
+                    'options': {
+                        'language': self.printer_lang,
+                    },
                     'index': index
-                })
+                }
+                if self.print_data_type == 'path':
+                    if self.data_format == 'pdf':
+                        print_zpl_data_dict.update({
+                            'flavor': 'file',
+                            'data': URL + data[0]
+                        })
+                    else:
+                        print_zpl_data_dict.update({
+                            'flavor': 'file',
+                            'data': data[0]
+                        })
+                else:
+                    if self.data_format == 'pdf':
+                        print_zpl_data_dict.update({
+                            'data': data[1],
+                        })
+                    else:
+                        print_zpl_data_dict.update({
+                            'data': data[1]
+                        })
+                print_data.append(print_zpl_data_dict)
                 footerarray = self.footer_data.split(',')
                 for findex, j in enumerate(footerarray):
                     print_data.append(footerarray[findex]+"\n")
@@ -158,18 +201,37 @@ class CardTemplate(models.Model):
                 headerarray = self.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     print_data.append('\x1B' + headerarray[hindex] + "\x0D")
-                print_data.append({
+                print_evl_data_dict = {
                     'type': self.data_type,
                     'format': self.data_format,
-                    'flavor': 'file',
-                    'data': URL + data,
                     'options': {
                         'language': self.printer_lang,
                         'precision': self.precision,
                         'overlay': self.overlay
                     },
                     'index': index
-                })
+                }
+                if self.print_data_type == 'path':
+                    if self.data_format == 'pdf':
+                        print_evl_data_dict.update({
+                            'flavor': 'file',
+                            'data': URL + data[0]
+                        })
+                    else:
+                        print_evl_data_dict.update({
+                            'flavor': 'file',
+                            'data': data[0]
+                        })
+                else:
+                    if self.data_format == 'pdf':
+                        print_evl_data_dict.update({
+                            'data': data[1],
+                        })
+                    else:
+                        print_evl_data_dict.update({
+                            'data': data[1],
+                        })
+                print_data.append(print_evl_data_dict)
                 footerarray = self.footer_data.split(',')
                 for findex, j in footerarray:
                     print_data.append('\x1B' + footerarray[findex] + "\x0D")
@@ -177,14 +239,33 @@ class CardTemplate(models.Model):
                     index: print_data
                 })
             else:
-                print_data = [
-                    {
-                        'type': 'raw',
-                        'format': 'pdf',
-                        'flavor': 'file',
-                        'data': URL + data,
-                    },
-                ]
+                print_data = []
+                print_nl_data_dict = {
+                    'type': self.data_type,
+                    'format': self.data_format,
+                    'index': index
+                }
+                if self.print_data_type == 'path':
+                    if self.data_format == 'pdf':
+                        print_nl_data_dict.update({
+                            'flavor': 'file',
+                            'data': URL + data[0]
+                        })
+                    else:
+                        print_nl_data_dict.update({
+                            'flavor': 'file',
+                            'data': data[0]
+                        })
+                else:
+                    if self.data_format == 'pdf':
+                        print_nl_data_dict.update({
+                            'data': data[1]
+                        })
+                    else:
+                        print_nl_data_dict.update({
+                            'data': data[1]
+                        })
+                print_data.append(print_nl_data_dict)
                 print_data_dict.update({
                     index: print_data
                 })
@@ -207,12 +288,17 @@ class CardTemplate(models.Model):
             }
             printer_name = printer.default_printer.name
             svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            path, data_file, base64_datas = self.render_pdf(svg_file_name, rec.body_html, '_front_side')
-            if rec.print_data_type == 'path':
-                data = '/card_design/static/src/export_files/' + path
+            path_data = False
+            base64_data = False
+            data_list = []
+            if rec.data_format == 'pdf':
+                path, data_file, base64_datas = rec.render_pdf(svg_file_name, rec.body_html, '_front_side')
             else:
-                data = 'data:image/png;base64,' + base64_datas
-            index, print_data = self.create_json_print_data([data])
+                path, data_file, base64_datas = rec.render_png(svg_file_name, rec.body_html, '_front_side')
+            path_data = '/card_design/static/src/export_files/' + path
+            base64_data = 'data:image/png;base64,' + base64_datas
+            data_list.append((path_data, base64_data))
+            index, print_data = rec.create_json_print_data(data_list)
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
@@ -258,12 +344,15 @@ class CardTemplate(models.Model):
             }
             printer_name = printer.default_printer.name
             svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            path, data_file, base64_datas = self.render_pdf(svg_file_name, rec.back_body_html, '_back_side')
-            if rec.print_data_type == 'path':
-                data = '/card_design/static/src/export_files/' + path
+            data_list = []
+            if rec.data_format == 'pdf':
+                path, data_file, base64_datas = rec.render_pdf(svg_file_name, rec.back_body_html, '_back_side')
             else:
-                data = 'data:image/png;base64,' + base64_datas
-            index, print_data = self.create_json_print_data([data])
+                path, data_file, base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
+            path_data = '/card_design/static/src/export_files/' + path
+            base64_data = 'data:image/png;base64,' + base64_datas
+            data_list.append((path_data, base64_data))
+            index, print_data = self.create_json_print_data(data_list)
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,

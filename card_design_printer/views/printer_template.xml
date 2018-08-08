@@ -102,7 +102,7 @@
                                 attrs="{
                                     'required': [('enable_printer', '!=', False)],
                                     'invisible': [('enable_printer', '=', False)],
-                                }"
+                                }" invisible="1"
                             />
                             <field name="data_format"
                                 attrs="{

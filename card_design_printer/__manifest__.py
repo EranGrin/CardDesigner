@@ -3,7 +3,7 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Print Card Template",
-    'version': '10.0.2018.08.06.1',
+    'version': '10.0.2018.08.09.1',
     'summary': """
         Print Card Template""",
     'description': """

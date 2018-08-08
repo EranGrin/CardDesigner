@@ -35,7 +35,8 @@ class CardPrintWizard(models.TransientModel):
             context = dict(self.env.context or {})
             data_list = []
             for coupon in self.env['product.coupon'].browse(context.get('active_ids')):
-                data = False
+                path_data = False
+                base64_data = False
                 svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
                 context = dict(self.env.context or {})
                 context.update({
@@ -43,18 +44,26 @@ class CardPrintWizard(models.TransientModel):
                     'product_coupon_name': coupon.name,
                 })
                 if self.position == 'f':
-                    path, data_file, base64_datas = self.template_id.with_context(context).render_pdf(
-                        svg_file_name, self.template_id.body_html, '_front_side'
-                    )
+                    if self.template_id.data_format == 'pdf':
+                        path, data_file, base64_datas = self.template_id.with_context(context).render_pdf(
+                            svg_file_name, self.template_id.body_html, '_front_side'
+                        )
+                    else:
+                        path, data_file, base64_datas = self.template_id.with_context(context).render_png(
+                            svg_file_name, self.template_id.body_html, '_front_side'
+                        )
                 else:
-                    path, data_file, base64_datas = self.template_id.with_context(context).render_pdf(
-                        svg_file_name, self.template_id.back_body_html, '_back_side'
-                    )
-                if self.template_id.print_data_type == 'path':
-                    data = '/card_design/static/src/export_files/' + path
-                else:
-                    data = 'data:image/png;base64,' + base64_datas
-                data_list.append(data)
+                    if self.template_id.data_format == 'pdf':
+                        path, data_file, base64_datas = self.template_id.with_context(context).render_pdf(
+                            svg_file_name, self.template_id.back_body_html, '_back_side'
+                        )
+                    else:
+                        path, data_file, base64_datas = self.template_id.with_context(context).render_png(
+                            svg_file_name, self.template_id.back_body_html, '_back_side'
+                        )
+                path_data = '/card_design/static/src/export_files/' + path
+                base64_data = base64_datas
+                data_list.append((path_data, base64_data))
             index, print_data = self.template_id.create_json_print_data(data_list)
             action = {
                 "type": "ir.actions.print.data",
