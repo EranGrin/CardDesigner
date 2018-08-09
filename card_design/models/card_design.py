@@ -592,8 +592,9 @@ class CardTemplate(models.Model):
                 img['src'] = self.get_image(self.code, int(img['width']), int(img['height']))
                 is_svg = True
             else:
-                curr_path = os.path.dirname(os.path.abspath(img['src'][-1]))
-                full_path = curr_path + '/CardDesigner' + img['src']
+                current_path = os.path.dirname((os.path.abspath(__file__))).split('/card_design/')[0]
+                image_path = os.path.abspath(img['src'])
+                full_path = current_path + image_path
                 image_file = open(full_path, "rb")
                 encoded_string = base64.b64encode(image_file.read())
                 img['src'] = 'data:image/png;base64,' + encoded_string
@@ -682,8 +683,9 @@ class CardTemplate(models.Model):
                 img['src'] = self.get_image(self.code, int(img['width']), int(img['height']))
                 is_svg = True
             else:
-                curr_path = os.path.dirname(os.path.abspath(img['src'][-1]))
-                full_path = curr_path + '/CardDesigner' + img['src']
+                current_path = os.path.dirname((os.path.abspath(__file__))).split('/card_design/')[0]
+                image_path = os.path.abspath(img['src'])
+                full_path = current_path + image_path
                 image_file = open(full_path, "rb")
                 encoded_string = base64.b64encode(image_file.read())
                 img['src'] = 'data:image/png;base64,' + encoded_string
