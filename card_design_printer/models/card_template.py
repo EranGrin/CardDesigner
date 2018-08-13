@@ -295,8 +295,8 @@ class CardTemplate(models.Model):
                 path, data_file, base64_datas = rec.render_pdf(svg_file_name, rec.body_html, '_front_side')
             else:
                 path, data_file, base64_datas = rec.render_png(svg_file_name, rec.body_html, '_front_side')
-            path_data = '/card_design/static/src/export_files/' + path
-            base64_data = 'data:image/png;base64,' + base64_datas
+            path_data = path
+            base64_data = base64_datas
             data_list.append((path_data, base64_data))
             index, print_data = rec.create_json_print_data(data_list)
             action = {
@@ -349,8 +349,8 @@ class CardTemplate(models.Model):
                 path, data_file, base64_datas = rec.render_pdf(svg_file_name, rec.back_body_html, '_back_side')
             else:
                 path, data_file, base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
-            path_data = '/card_design/static/src/export_files/' + path
-            base64_data = 'data:image/png;base64,' + base64_datas
+            path_data = + path
+            base64_data = + base64_datas
             data_list.append((path_data, base64_data))
             index, print_data = self.create_json_print_data(data_list)
             action = {

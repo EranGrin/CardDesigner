@@ -47,6 +47,8 @@
                     <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"/>
                     <button name="print_both_side" type="object" string="Export as PDF"
                                 class="oe_highlight" icon="fa-file-pdf-o"/>
+                    <button name="print_both_side_png" type="object" string="Export as IMAGE"
+                                class="oe_highlight" icon="fa-image"/>
                     <button name="generate_cards" type="object" string="Generate Cards"></button>
                     <button name="change_template_size" type="object" string="Change Size" class="btn-primary"/>
                     <field name="state" widget="statusbar"/>

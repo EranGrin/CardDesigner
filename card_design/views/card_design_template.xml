@@ -8,6 +8,7 @@
             <link rel="stylesheet" href="/card_design/static/src/css/boxmodel.min.css"/>
             <link rel="stylesheet" href="/card_design/static/src/css/grapes.min.css" />
             <script type="text/javascript" src="/card_design/static/src/js/card_design.js"></script>
+            <script type="text/javascript" src="/card_design/static/src/js/action.js"></script>
         </xpath>
     </template>
 

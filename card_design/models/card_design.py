@@ -11,6 +11,7 @@ from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
 from BeautifulSoup import BeautifulSoup
 import os
+from os.path import basename
 import cssutils
 import logging
 import base64
@@ -97,6 +98,7 @@ class Irttachment(models.Model):
     _inherit = 'ir.attachment'
 
     is_select = fields.Boolean("Select For Email")
+    card_temp_path = fields.Char("path")
 
     @api.multi
     def action_send_email(self):
@@ -118,7 +120,49 @@ class Irttachment(models.Model):
             compose_form_id = False
         ctx = dict()
         template = self.env['mail.template'].browse(template_id)
-        template.attachment_ids = [(6, 0, attachment_list)]
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        body_html = template.body_html
+        soup = BeautifulSoup(body_html)
+        for tag in soup.findAll("table", {'id': 'attachment_link'}):
+            tag.replaceWith('')
+        body_html = str(soup)
+        current_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__))
+        ).replace('/models', '/static/src/export_files/')
+        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+        current_path = current_path + 'zip_files/'
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
+        zip_file = current_path + zip_file_name
+        attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
+        for attachment in attachment_list:
+            attachment = self.env['ir.attachment'].browse(attachment)
+            temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+            attachment_zipfile.write(temp_file_name, basename(temp_file_name))
+        attachment_zipfile.close()
+        base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
+        attachment = self.env['ir.attachment'].create({
+            'name': zip_file_name,
+            'type': 'binary',
+            'mimetype': 'application/zip',
+            'datas': base64_datas,
+            'res_model': 'card.template',
+            'res_id': self.ids[0],
+            'datas_fname': zip_file_name,
+            'card_temp_path': current_path.split('/card_design')[1] + zip_file_name,
+            'public': True
+        })
+        render_html = """ <table id='attachment_link'>
+                <tr>
+                    <td>
+                        <a href='%s/web/content/%s?download=true' data-original-title='%s' title='%s'>%s</a>
+                    </td>
+                </tr>
+                </table>
+        """  % (URL, attachment.id, attachment.name, attachment.name, attachment.name)
+        body_html += render_html
+        template.body_html = body_html
+        template.attachment_ids = [(6, 0, [attachment.id])]
         ctx.update({
             'default_model': 'card.template',
             'default_res_id': self.res_id,
@@ -282,7 +326,49 @@ class CardTemplate(models.Model):
                 compose_form_id = False
             ctx = dict()
             template = self.env['mail.template'].browse(template_id)
-            template.attachment_ids = [(6, 0, attachment_list)]
+            URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            body_html = template.body_html
+            soup = BeautifulSoup(body_html)
+            for tag in soup.findAll("table", {'id': 'attachment_link'}):
+                tag.replaceWith('')
+            body_html = str(soup)
+            current_path = os.path.join(os.path.dirname(
+                os.path.abspath(__file__))
+            ).replace('/models', '/static/src/export_files/')
+            zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+            current_path = current_path + 'zip_files/'
+            if not os.path.exists(current_path):
+                os.makedirs(current_path)
+            zip_file = current_path + zip_file_name
+            attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
+            for attachment in attachment_list:
+                attachment = self.env['ir.attachment'].browse(attachment)
+                temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+                attachment_zipfile.write(temp_file_name, basename(temp_file_name))
+            attachment_zipfile.close()
+            base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
+            attachment = self.env['ir.attachment'].create({
+                'name': zip_file_name,
+                'type': 'binary',
+                'mimetype': 'application/zip',
+                'datas': base64_datas,
+                'res_model': 'card.template',
+                'res_id': self.ids[0],
+                'datas_fname': zip_file_name,
+                'card_temp_path': current_path.split('/card_design')[1] + zip_file_name,
+                'public': True
+            })
+            render_html = """ <table id='attachment_link'>
+                    <tr>
+                        <td>
+                            <a href='%s/web/content/%s?download=true' data-original-title='%s' title='%s'>%s</a>
+                        </td>
+                    </tr>
+                    </table>
+            """  % (URL, attachment.id, attachment.name, attachment.name, attachment.name)
+            body_html += render_html
+            template.body_html = body_html
+            template.attachment_ids = [(6, 0, [attachment.id])]
             ctx.update({
                 'default_model': 'card.template',
                 'default_res_id': self.ids[0],
@@ -306,47 +392,90 @@ class CardTemplate(models.Model):
 
     @api.multi
     def action_send_email(self):
-            self.ensure_one()
-            ir_model_data = self.env['ir.model.data']
-            try:
-                template_id = ir_model_data.get_object_reference(
-                    'card_design', 'email_template_card_design'
-                )[1]
-            except ValueError:
-                template_id = False
-            try:
-                compose_form_id = ir_model_data.get_object_reference(
-                    'mail', 'email_compose_message_wizard_form'
-                )[1]
-            except ValueError:
-                compose_form_id = False
-            ctx = dict()
-            attachment_list = []
-            attachment = self.pdf_generate(self.body_html, 'front_side')
+        self.ensure_one()
+        ir_model_data = self.env['ir.model.data']
+        try:
+            template_id = ir_model_data.get_object_reference(
+                'card_design', 'email_template_card_design'
+            )[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference(
+                'mail', 'email_compose_message_wizard_form'
+            )[1]
+        except ValueError:
+            compose_form_id = False
+        ctx = dict()
+        attachment_list = []
+        attachment = self.pdf_generate(self.body_html, 'front_side')
+        attachment_list.append(attachment.id)
+        if self.back_side:
+            attachment = self.pdf_generate(self.back_body_html, 'back_side')
             attachment_list.append(attachment.id)
-            if self.back_side:
-                attachment = self.pdf_generate(self.back_body_html, 'back_side')
-                attachment_list.append(attachment.id)
-            template = self.env['mail.template'].browse(template_id)
-            template.attachment_ids = [(6, 0, attachment_list)]
-            ctx.update({
-                'default_model': 'card.template',
-                'default_res_id': self.ids[0],
-                'default_use_template': bool(template_id),
-                'default_template_id': template_id,
-                'default_composition_mode': 'comment',
-                'mark_so_as_sent': True,
-            })
-            return {
-                'type': 'ir.actions.act_window',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'res_model': 'mail.compose.message',
-                'views': [(compose_form_id, 'form')],
-                'view_id': compose_form_id,
-                'target': 'new',
-                'context': ctx,
-            }
+        template = self.env['mail.template'].browse(template_id)
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        body_html = template.body_html
+        soup = BeautifulSoup(body_html)
+        for tag in soup.findAll("table", {'id': 'attachment_link'}):
+            tag.replaceWith('')
+        body_html = str(soup)
+        current_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__))
+        ).replace('/models', '/static/src/export_files/')
+        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+        current_path = current_path + 'zip_files/'
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
+        zip_file = current_path + zip_file_name
+        attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
+        for attachment in attachment_list:
+            attachment = self.env['ir.attachment'].browse(attachment)
+            temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+            attachment_zipfile.write(temp_file_name, basename(temp_file_name))
+        attachment_zipfile.close()
+        base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
+        attachment = self.env['ir.attachment'].create({
+            'name': zip_file_name,
+            'type': 'binary',
+            'mimetype': 'application/zip',
+            'datas': base64_datas,
+            'res_model': 'card.template',
+            'res_id': self.ids[0],
+            'datas_fname': zip_file_name,
+            'card_temp_path': '/card_design' + current_path.split('/card_design')[1] + zip_file_name,
+            'public': True
+        })
+        render_html = """ <table id='attachment_link'>
+                <tr>
+                    <td>
+                        <a href='%s/web/content/%s?download=true' data-original-title='%s' title='%s'>%s</a>
+                    </td>
+                </tr>
+                </table>
+        """  % (URL, attachment.id, attachment.name, attachment.name, attachment.name)
+        body_html += render_html
+
+        template.body_html = body_html
+        template.attachment_ids = [(6, 0, [attachment.id])]
+        ctx.update({
+            'default_model': 'card.template',
+            'default_res_id': self.ids[0],
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context':  ctx,
+        }
 
     @api.depends('card_model')
     def get_card_model_id(self):
@@ -614,6 +743,10 @@ class CardTemplate(models.Model):
         ''' % (width, height, '100%')
         css = CSS(string=style, font_config=font_config)
         current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        current_date = fields.date.today().strftime('%Y_%m_%d')
+        current_path = current_path + current_obj_name + '/' + current_date + '/'
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
         html.write_pdf(current_path + current_obj_name + svg_file_name + '.pdf', stylesheets=[css], font_config=font_config)
         pages_to_keep = [0]
         infile = PdfFileReader(current_path + current_obj_name + svg_file_name + '.pdf', 'rb')
@@ -627,7 +760,8 @@ class CardTemplate(models.Model):
         with open(current_path + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
             output.write(f)
         data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
-        date_file_name = current_obj_name + svg_file_name + '.pdf'
+        temp_file_name = current_path + current_obj_name + svg_file_name + '.pdf'
+        date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
         return date_file_name, data_file, base64_datas
@@ -706,17 +840,22 @@ class CardTemplate(models.Model):
         ''' % (width, height, '100%')
         css = CSS(string=style, font_config=font_config)
         current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        current_date = fields.date.today().strftime('%Y_%m_%d')
+        current_path = current_path + current_obj_name + '/' + current_date + '/'
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
         html.write_png(current_path + current_obj_name + svg_file_name + side_name + '.png', stylesheets=[css], font_config=font_config, resolution=resolution)
         im = Image.open(current_path + current_obj_name + svg_file_name + side_name + '.png')
         im.save(current_path + current_obj_name + svg_file_name + side_name + '.png', dpi=(resolution, resolution))
         data_file = open(current_path + current_obj_name + svg_file_name + side_name + '.png', 'r')
-        date_file_name = current_obj_name + svg_file_name + side_name + '.png'
+        temp_file_name = current_path + current_obj_name + svg_file_name + side_name + '.png'
+        date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
         return date_file_name, data_file, base64_datas
 
     def pdf_generate(self, data, side_name):
-        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        svg_file_name = side_name + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(side_name, '.pdf')
         path, data_file, base64_datas = self.render_pdf(svg_file_name, data, side_name)
         attachment_id = self.env['ir.attachment'].create({
@@ -727,11 +866,13 @@ class CardTemplate(models.Model):
             'res_model': 'card.template',
             'res_id': self.id,
             'datas_fname': name,
+            'card_temp_path': path,
+            'public': True
         })
         return attachment_id
 
     def png_generate(self, data, side_name):
-        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        svg_file_name = side_name + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(side_name, '.png')
         path, data_file, base64_datas = self.render_png(svg_file_name, data, side_name)
         attachment_id = self.env['ir.attachment'].create({
@@ -742,6 +883,8 @@ class CardTemplate(models.Model):
             'res_model': 'card.template',
             'res_id': self.id,
             'datas_fname': name,
+            'card_temp_path': path,
+            'public': True
         })
         return attachment_id
 
@@ -795,37 +938,21 @@ class CardTemplate(models.Model):
 
     @api.multi
     def print_both_side_png_export(self, file_name):
-        path = self.env.ref('card_design.svg_to_pdf').value
-        resolution = self.template_size and self.template_size.dpi or 300
-        if not path:
-            path = '/tmp'
-        png_datas = []
-        attachment_id = self.png_generate(self.body_html, 'front_side')
-        png_datas.append(attachment_id.datas)
+        attachment_list = []
+        attachment_id = self.png_generate(self.body_html, (file_name + '_front_side'))
+        attachment_list.append(attachment_id.id)
         if self.back_side:
-            attachment_id = self.png_generate(self.back_body_html, 'back_side')
-            png_datas.append(attachment_id.datas)
-        name = self.get_name(file_name, '.zip')
-        archive = zipfile.ZipFile(path + '/' + name + '.zip', mode='w')
-        for index, png_data in enumerate(png_datas):
-            decode_str = png_data.decode("base64")
-            im = Image.open(cStringIO.StringIO(decode_str))
-            im.save(path + '/' + name + '_' + str(index) + '.png', dpi=(resolution, resolution))
-            archive.write(path + '/' + name + '_' + str(index) + '.png')
-        data_file = open(path + '/' + name + '.zip', 'r')
-        attachment_id = self.env['ir.attachment'].create({
-            'name': name + '.zip',
-            'type': 'binary',
-            'mimetype': 'application/zip',
-            'datas': base64.b64encode(data_file.read()),
-            'res_model': 'card.template',
-            'res_id': self.id,
-            'datas_fname': name + '.zip',
-        })
+            attachment_id = self.png_generate(self.back_body_html, (file_name + '_back_side'))
+            attachment_list.append(attachment_id.id)
+        actions = []
+        for attachment in attachment_list:
+            actions.append({
+                'type': 'ir.actions.act_url',
+                'url': '/web/content/%s?download=true' % (attachment)
+            })
         return {
-            'type': 'ir.actions.report.xml',
-            'report_type': 'controller',
-            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+            'type': 'ir.actions.multi.print',
+            'actions': actions,
         }
 
     def render_pdf_both_side(self, svg_file_name, side_name=''):
@@ -849,7 +976,10 @@ class CardTemplate(models.Model):
 
         merger = PdfFileMerger()
         current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
-
+        current_date = fields.date.today().strftime('%Y_%m_%d')
+        current_path = current_path + current_obj_name + '/' + current_date + '/'
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
         for pdf_data in pdfs:
             merger.append(open(pdf_data, 'rb'))
 
@@ -857,7 +987,8 @@ class CardTemplate(models.Model):
             merger.write(fout)
 
         data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
-        date_file_name = current_obj_name + svg_file_name + '.pdf'
+        temp_file_name = current_path + current_obj_name + svg_file_name + '.pdf'
+        date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
         return date_file_name, data_file, base64_datas
@@ -875,16 +1006,28 @@ class CardTemplate(models.Model):
             'res_model': 'card.template',
             'res_id': self.id,
             'datas_fname': name,
+            'card_temp_path': path,
+            'public': True
         })
         return attachment_id
 
     @api.multi
     def print_both_side_pdf(self, file_name):
-        attachment_id = self.print_merge_pdf_export(file_name)
+        attachment_list = []
+        attachment_id = self.pdf_generate(self.body_html, (file_name + '_front_side'))
+        attachment_list.append(attachment_id.id)
+        if self.back_side:
+            attachment_id = self.pdf_generate(self.back_body_html, (file_name + '_back_side'))
+            attachment_list.append(attachment_id.id)
+        actions = []
+        for attachment in attachment_list:
+            actions.append({
+                'type': 'ir.actions.act_url',
+                'url': '/web/content/%s?download=true' % (attachment)
+            })
         return {
-            'type': 'ir.actions.report.xml',
-            'report_type': 'controller',
-            'report_file': "/web/content/" + str(attachment_id.id) + "?download=true",
+            'type': 'ir.actions.multi.print',
+            'actions': actions,
         }
 
     @api.multi

@@ -3,6 +3,11 @@
 # See LICENSE file for copyright and licensing details.
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from BeautifulSoup import BeautifulSoup
+import os
+from os.path import basename
+import datetime
+import zipfile
 
 
 class CardCouponWizard(models.TransientModel):
@@ -72,6 +77,7 @@ class CardCouponWizard(models.TransientModel):
         ctx = dict()
         attachment_list = []
         context = dict(self.env.context or {})
+        context.update({'product_coupon': True})
         for rec in self.env['product.coupon'].browse(context.get('active_ids')):
             if self.template_id and self.template_id.combine_pdf_page:
                 context.update({'product_coupon_name': rec.name})
@@ -79,17 +85,59 @@ class CardCouponWizard(models.TransientModel):
                 attachment_list.append(attachment.id)
             else:
                 if self.position == 'f':
-                    context.update({'product_coupon_name': rec.name + '_front'})
-                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, 'front_side')
+                    context.update({'product_coupon_name': rec.name})
+                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side_')
                     attachment_list.append(attachment.id)
                 if self.position == 'b' and self.template_id.back_side:
-                    context.update({'product_coupon_name': rec.name + '_back'})
-                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, 'back_side')
+                    context.update({'product_coupon_name': rec.name})
+                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side_')
                     attachment_list.append(attachment.id)
                 elif self.position == 'b' and not self.template_id.back_side:
                     raise UserError(_("Please select back side design in template"))
         template = self.env['mail.template'].browse(template_id)
-        template.attachment_ids = [(6, 0, attachment_list)]
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        body_html = template.body_html
+        soup = BeautifulSoup(body_html)
+        for tag in soup.findAll("table", {'id': 'attachment_link'}):
+            tag.replaceWith('')
+        body_html = str(soup)
+        current_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__))
+        ).replace('/gift_card_design/wizard', '/card_design/static/src/export_files/')
+        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+        current_path = current_path + 'zip_files/'
+        if not os.path.exists(current_path):
+            os.makedirs(current_path)
+        zip_file = current_path + zip_file_name
+        attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
+        for attachment in attachment_list:
+            attachment = self.env['ir.attachment'].browse(attachment)
+            temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+            attachment_zipfile.write(temp_file_name, basename(temp_file_name))
+        attachment_zipfile.close()
+        base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
+        attachment = self.env['ir.attachment'].create({
+            'name': zip_file_name,
+            'type': 'binary',
+            'mimetype': 'application/zip',
+            'datas': base64_datas,
+            'res_model': 'card.template',
+            'res_id': self.template_id.id,
+            'datas_fname': zip_file_name,
+            'card_temp_path': "/card_design" + current_path.split('/card_design')[1] + zip_file_name,
+            'public': True
+        })
+        render_html = """ <table id='attachment_link'>
+                <tr>
+                    <td>
+                        <a href='%s/web/content/%s?download=true' data-original-title='%s' title='%s'>%s</a>
+                    </td>
+                </tr>
+                </table>
+        """  % (URL, attachment.id, attachment.name, attachment.name, attachment.name)
+        body_html += render_html
+        template.body_html = body_html
+        template.attachment_ids = [(6, 0, [attachment.id])]
         ctx.update({
             'default_model': 'card.template',
             'default_res_id': self.template_id.id,

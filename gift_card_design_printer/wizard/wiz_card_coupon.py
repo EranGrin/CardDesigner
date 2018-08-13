@@ -61,7 +61,7 @@ class CardPrintWizard(models.TransientModel):
                         path, data_file, base64_datas = self.template_id.with_context(context).render_png(
                             svg_file_name, self.template_id.back_body_html, '_back_side'
                         )
-                path_data = '/card_design/static/src/export_files/' + path
+                path_data = path
                 base64_data = base64_datas
                 data_list.append((path_data, base64_data))
             index, print_data = self.template_id.create_json_print_data(data_list)

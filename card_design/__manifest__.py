@@ -11,7 +11,7 @@
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
-    'version': '10.0.2018.08.06.1',
+    'version': '10.0.2018.08.14.1',
     'depends': [
         'web_editor',
         'mail',
