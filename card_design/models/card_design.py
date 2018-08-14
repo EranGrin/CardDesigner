@@ -335,7 +335,8 @@ class CardTemplate(models.Model):
             current_path = os.path.join(os.path.dirname(
                 os.path.abspath(__file__))
             ).replace('/models', '/static/src/export_files/')
-            zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
+            current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
+            zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
             current_path = current_path + 'zip_files/'
             if not os.path.exists(current_path):
                 os.makedirs(current_path)
@@ -423,7 +424,8 @@ class CardTemplate(models.Model):
         current_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__))
         ).replace('/models', '/static/src/export_files/')
-        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
+        zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)

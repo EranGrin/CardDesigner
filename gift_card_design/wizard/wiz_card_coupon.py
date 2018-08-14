@@ -17,7 +17,7 @@ class CardCouponWizard(models.TransientModel):
         'card.template', 'Card Template', required=1, ondelete='cascade',
     )
     position = fields.Selection([
-        ('f', 'Front'), ('b', 'Back')
+        ('f', 'Front'), ('b', 'Back'), ('both', 'Both')
     ], "Position", default='f')
     body = fields.Html("Card Body")
 
@@ -28,16 +28,16 @@ class CardCouponWizard(models.TransientModel):
             res_ids = self._context.get('active_ids')
             if len(res_ids) >= 1:
                 res_ids = [res_ids[0]]
-            if self.template_id.front_side and res_ids:
+            if self.position == 'b' and res_ids:
+                template = self.env['card.template'].render_template(
+                    self.template_id.back_body_html, model, res_ids
+                )
+                self.body = template.get(res_ids[0])
+            else:
                 body = self.template_id.body_html
                 body = body.replace('background: url(/web/static/src/img/placeholder.png) no-repeat center;', '')
                 template = self.env['card.template'].render_template(
                     body, model, res_ids
-                )
-                self.body = template.get(res_ids[0])
-            if self.position != 'f' and res_ids:
-                template = self.env['card.template'].render_template(
-                    self.template_id.back_body_html, model, res_ids
                 )
                 self.body = template.get(res_ids[0])
 
@@ -48,7 +48,7 @@ class CardCouponWizard(models.TransientModel):
         if len(res_ids) >= 1:
             res_ids = [res_ids[0]]
         if self.template_id.front_side and res_ids:
-            if self.position != 'f':
+            if self.position == 'b':
                 template = self.env['card.template'].render_template(
                     self.template_id.back_body_html, model, res_ids
                 )
@@ -84,13 +84,13 @@ class CardCouponWizard(models.TransientModel):
                 attachment = self.template_id.with_context(context).print_merge_pdf_export(rec.name)
                 attachment_list.append(attachment.id)
             else:
-                if self.position == 'f':
+                if self.position == 'f' or self.position == 'both':
                     context.update({'product_coupon_name': rec.name})
-                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side_')
+                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side')
                     attachment_list.append(attachment.id)
-                if self.position == 'b' and self.template_id.back_side:
+                if (self.position == 'b' or self.position == 'both') and self.template_id.back_side:
                     context.update({'product_coupon_name': rec.name})
-                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side_')
+                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side')
                     attachment_list.append(attachment.id)
                 elif self.position == 'b' and not self.template_id.back_side:
                     raise UserError(_("Please select back side design in template"))
@@ -104,7 +104,8 @@ class CardCouponWizard(models.TransientModel):
         current_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__))
         ).replace('/gift_card_design/wizard', '/card_design/static/src/export_files/')
-        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
+        current_obj_name = self.template_id.name.replace(' ', '_').replace('.', '_').lower() + '_'
+        zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
