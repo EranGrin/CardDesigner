@@ -37,7 +37,7 @@ class CardPrintWizard(models.TransientModel):
             for coupon in self.env['product.coupon'].browse(context.get('active_ids')):
                 path_data = False
                 base64_data = False
-                svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+                svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
                 context = dict(self.env.context or {})
                 context.update({
                     'product_coupon': True,

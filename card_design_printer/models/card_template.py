@@ -287,7 +287,7 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             path_data = False
             base64_data = False
             data_list = []
@@ -343,7 +343,7 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             data_list = []
             if rec.data_format == 'pdf':
                 path, data_file, base64_datas = rec.render_pdf(svg_file_name, rec.back_body_html, '_back_side')

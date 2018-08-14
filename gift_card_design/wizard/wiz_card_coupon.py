@@ -104,7 +104,7 @@ class CardCouponWizard(models.TransientModel):
         current_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__))
         ).replace('/gift_card_design/wizard', '/card_design/static/src/export_files/')
-        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)

@@ -94,10 +94,10 @@ class CardPrintWizard(models.TransientModel):
                 'remianing_ids': [cid]
             })
             if self.position in ['f', 'both']:
-                attachment_id = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side_')
+                attachment_id = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side')
                 attachment_list.append(attachment_id.id)
             if self.position in ['b', 'both'] and self.template_id.back_side:
-                attachment_id = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side_')
+                attachment_id = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side')
                 attachment_list.append(attachment_id.id)
         actions = []
         for attachment in attachment_list:
@@ -121,10 +121,10 @@ class CardPrintWizard(models.TransientModel):
                 'remianing_ids': [cid]
             })
             if self.position in ['f', 'both']:
-                attachment_id = self.template_id.with_context(context).png_generate(self.template_id.body_html, '_front_side_')
+                attachment_id = self.template_id.with_context(context).png_generate(self.template_id.body_html, '_front_side')
                 attachment_list.append(attachment_id.id)
             if self.position in ['b', 'both'] and self.template_id.back_side:
-                attachment_id = self.template_id.with_context(context).png_generate(self.template_id.back_body_html, '_back_side_')
+                attachment_id = self.template_id.with_context(context).png_generate(self.template_id.back_body_html, '_back_side')
                 attachment_list.append(attachment_id.id)
         actions = []
         for attachment in attachment_list:

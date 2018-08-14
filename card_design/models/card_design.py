@@ -129,7 +129,7 @@ class Irttachment(models.Model):
         current_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__))
         ).replace('/models', '/static/src/export_files/')
-        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
@@ -335,7 +335,7 @@ class CardTemplate(models.Model):
             current_path = os.path.join(os.path.dirname(
                 os.path.abspath(__file__))
             ).replace('/models', '/static/src/export_files/')
-            zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+            zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
             current_path = current_path + 'zip_files/'
             if not os.path.exists(current_path):
                 os.makedirs(current_path)
@@ -423,7 +423,7 @@ class CardTemplate(models.Model):
         current_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__))
         ).replace('/models', '/static/src/export_files/')
-        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '.zip'
+        zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
@@ -667,7 +667,7 @@ class CardTemplate(models.Model):
         return "data:image/png;base64,{0}".format(data)
 
     def get_name(self, value, extension):
-        name = value + '_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + extension
+        name = value + '_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + extension
         return name
 
     def render_pdf(self, svg_file_name, data, side_name):
@@ -742,14 +742,15 @@ class CardTemplate(models.Model):
             div { overflow: hidden !important;  float: left; width: %s; margin-top:-2px;margin-left:-1px;}
         ''' % (width, height, '100%')
         css = CSS(string=style, font_config=font_config)
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
         current_date = fields.date.today().strftime('%Y_%m_%d')
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
-        html.write_pdf(current_path + current_obj_name + svg_file_name + '.pdf', stylesheets=[css], font_config=font_config)
+        html.write_pdf(current_path + svg_file_name, stylesheets=[css], font_config=font_config)
         pages_to_keep = [0]
-        infile = PdfFileReader(current_path + current_obj_name + svg_file_name + '.pdf', 'rb')
+        infile = PdfFileReader(current_path + svg_file_name, 'rb')
         output = PdfFileWriter()
 
         for i in range(infile.getNumPages()):
@@ -757,10 +758,10 @@ class CardTemplate(models.Model):
                 p = infile.getPage(i)
                 output.addPage(p)
 
-        with open(current_path + current_obj_name + svg_file_name + '.pdf', 'wb') as f:
+        with open(current_path + svg_file_name, 'wb') as f:
             output.write(f)
-        data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
-        temp_file_name = current_path + current_obj_name + svg_file_name + '.pdf'
+        data_file = open(current_path + svg_file_name, 'r')
+        temp_file_name = current_path + svg_file_name
         date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
@@ -841,23 +842,23 @@ class CardTemplate(models.Model):
         css = CSS(string=style, font_config=font_config)
         current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
         current_date = fields.date.today().strftime('%Y_%m_%d')
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
-        html.write_png(current_path + current_obj_name + svg_file_name + side_name + '.png', stylesheets=[css], font_config=font_config, resolution=resolution)
-        im = Image.open(current_path + current_obj_name + svg_file_name + side_name + '.png')
-        im.save(current_path + current_obj_name + svg_file_name + side_name + '.png', dpi=(resolution, resolution))
-        data_file = open(current_path + current_obj_name + svg_file_name + side_name + '.png', 'r')
-        temp_file_name = current_path + current_obj_name + svg_file_name + side_name + '.png'
+        html.write_png(current_path + svg_file_name, stylesheets=[css], font_config=font_config, resolution=resolution)
+        im = Image.open(current_path + svg_file_name)
+        im.save(current_path + svg_file_name, dpi=(resolution, resolution))
+        data_file = open(current_path + svg_file_name, 'r')
+        temp_file_name = current_path + svg_file_name
         date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
         return date_file_name, data_file, base64_datas
 
     def pdf_generate(self, data, side_name):
-        svg_file_name = side_name + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(side_name, '.pdf')
-        path, data_file, base64_datas = self.render_pdf(svg_file_name, data, side_name)
+        path, data_file, base64_datas = self.render_pdf(name, data, side_name)
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
@@ -872,9 +873,8 @@ class CardTemplate(models.Model):
         return attachment_id
 
     def png_generate(self, data, side_name):
-        svg_file_name = side_name + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(side_name, '.png')
-        path, data_file, base64_datas = self.render_png(svg_file_name, data, side_name)
+        path, data_file, base64_datas = self.render_png(name, data, side_name)
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
@@ -995,9 +995,8 @@ class CardTemplate(models.Model):
 
     @api.multi
     def print_merge_pdf_export(self, file_name):
-        svg_file_name = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         name = self.get_name(file_name, '.pdf')
-        path, data_file, base64_datas = self.render_pdf_both_side(svg_file_name, file_name)
+        path, data_file, base64_datas = self.render_pdf_both_side(name, file_name)
         attachment_id = self.env['ir.attachment'].create({
             'name': name,
             'type': 'binary',
