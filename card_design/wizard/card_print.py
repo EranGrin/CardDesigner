@@ -48,6 +48,9 @@ class CardPrintWizard(models.TransientModel):
     position = fields.Selection([
         ('f', 'Front'), ('b', 'Back'), ('both', 'Both')
     ], "Position", default='f')
+    file_config = fields.Selection([
+        ('f', 'Only first front + all back'), ('b', ' Only first back + all front'), ('both', 'All files')
+    ], "Type", default='both')
     body = fields.Html("Card Body")
 
     @api.onchange('template_id')
@@ -95,6 +98,7 @@ class CardPrintWizard(models.TransientModel):
         allow_to_zip = self.env.ref('card_design.allow_to_zip').value
         if not self.template_id:
             return True
+        attachment_tuple = []
         attachment_list = []
         for cid in context.get('active_ids'):
             context.update({
@@ -103,9 +107,31 @@ class CardPrintWizard(models.TransientModel):
             if self.position in ['f', 'both']:
                 attachment_id = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side')
                 attachment_list.append(attachment_id.id)
+                attachment_tuple.append(('f', attachment_id.id))
             if self.position in ['b', 'both'] and self.template_id.back_side:
                 attachment_id = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side')
+                attachment_tuple.append(('b', attachment_id.id))
                 attachment_list.append(attachment_id.id)
+        if self.position in ['both']:
+            if self.file_config != 'both':
+                front_side_list = filter(lambda x: x[0] == 'f', attachment_tuple)
+                back_side_list = filter(lambda x: x[0] == 'b', attachment_tuple)
+                updated_attach_list = []
+                if self.file_config == 'f':
+                    for position, attachment in attachment_tuple:
+                        if position == 'f':
+                            updated_attach_list.append(attachment)
+                            for ps, attch in back_side_list:
+                                updated_attach_list.append(attch)
+                            break
+                if self.file_config == 'b':
+                    for position, attachment in attachment_tuple:
+                        if position == 'b':
+                            updated_attach_list.append(attachment)
+                            for ps, attch in front_side_list:
+                                updated_attach_list.append(attch)
+                            break
+                attachment_list = updated_attach_list
         actions = []
         if allow_to_zip:
             maximum_file_downalod = int(allow_to_zip)
@@ -155,6 +181,7 @@ class CardPrintWizard(models.TransientModel):
         allow_to_zip = self.env.ref('card_design.allow_to_zip').value
         if not self.template_id:
             return True
+        attachment_tuple = []
         attachment_list = []
         for cid in context.get('active_ids'):
             context.update({
@@ -163,9 +190,31 @@ class CardPrintWizard(models.TransientModel):
             if self.position in ['f', 'both']:
                 attachment_id = self.template_id.with_context(context).png_generate(self.template_id.body_html, '_front_side')
                 attachment_list.append(attachment_id.id)
+                attachment_tuple.append(('f', attachment_id.id))
             if self.position in ['b', 'both'] and self.template_id.back_side:
                 attachment_id = self.template_id.with_context(context).png_generate(self.template_id.back_body_html, '_back_side')
                 attachment_list.append(attachment_id.id)
+                attachment_tuple.append(('b', attachment_id.id))
+        if self.position in ['both']:
+            if self.file_config != 'both':
+                front_side_list = filter(lambda x: x[0] == 'f', attachment_tuple)
+                back_side_list = filter(lambda x: x[0] == 'b', attachment_tuple)
+                updated_attach_list = []
+                if self.file_config == 'f':
+                    for position, attachment in attachment_tuple:
+                        if position == 'f':
+                            updated_attach_list.append(attachment)
+                            for ps, attch in back_side_list:
+                                updated_attach_list.append(attch)
+                            break
+                if self.file_config == 'b':
+                    for position, attachment in attachment_tuple:
+                        if position == 'b':
+                            updated_attach_list.append(attachment)
+                            for ps, attch in front_side_list:
+                                updated_attach_list.append(attch)
+                            break
+                attachment_list = updated_attach_list
         actions = []
         if allow_to_zip:
             maximum_file_downalod = int(allow_to_zip)
