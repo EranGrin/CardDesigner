@@ -5,7 +5,7 @@
 
 from odoo import models, fields, api, _
 import imgkit
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 from lxml import etree
 
 

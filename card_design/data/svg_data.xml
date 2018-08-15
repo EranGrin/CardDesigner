@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="allow_to_zip" model="ir.config_parameter">
+        <field name="key">allow_to_zip</field>
+        <field name="value">4</field>
+    </record>
+
     <record id="svg_to_pdf" model="ir.config_parameter">
         <field name="key">svg_to_pdf</field>
         <field name="value">/tmp</field>

@@ -20,6 +20,12 @@
                             <field name="download_path" class="oe_inline" />
                         </div>
                     </div>
+                    <label for="allow_to_zip" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="allow_to_zip" class="oe_inline" />
+                        </div>
+                    </div>
                 </group>
             </xpath>
         </field>

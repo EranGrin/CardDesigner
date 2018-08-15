@@ -2,7 +2,6 @@
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # See LICENSE file for copyright and licensing details.
 from odoo import _, models, fields
-import datetime
 
 
 class ProductCoupon(models.Model):
