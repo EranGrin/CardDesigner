@@ -51,7 +51,7 @@ odoo.define('card_design_printer.action', function(require) {
             return $.when();
         },
 
-        ir_actions_printer_list: function(action, options) { 
+        ir_actions_printer_list: function(action, options) {
             var self = this;
             var model = new WebModel(action.res_model);
             if (qz.websocket.isActive()) {
@@ -103,7 +103,7 @@ odoo.define('card_design_printer.action', function(require) {
             return $.when();
         },
 
-        ir_actions_print_data: function(action, options) { 
+        ir_actions_print_data: function(action, options) {
             var self = this;
             var model = new WebModel(action.res_model);
             if (qz.websocket.isActive()) {
@@ -111,7 +111,8 @@ odoo.define('card_design_printer.action', function(require) {
                     action.printer_name
                 );
                 for(var i = 0; i <= action.print_data_len; i++) {
-                    qz.print(config, action.print_data[i]).catch(function(e) { 
+                    var print_data = action.print_data[i];
+                    qz.print(config, print_data).catch(function(e) {
                         model.call("write", [
                             action.res_id, 
                             {
@@ -138,7 +139,8 @@ odoo.define('card_design_printer.action', function(require) {
                         action.printer_name
                     );
                     for(var i = 0; i <= action.print_data_len; i++) {
-                        qz.print(config, action.print_data[i]).catch(function(e) { 
+                        var print_data = action.print_data[i];
+                        qz.print(config, print_data).catch(function(e) {
                             model.call("write", [
                                 action.res_id, 
                                 {

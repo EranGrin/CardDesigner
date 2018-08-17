@@ -2,22 +2,22 @@
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # Part of LICENSE file for copyright and licensing details.
 {
-    'name': "Print Gift Card",
-    'version': '10.0.2018.08.14.1',
+    'name': "Double Side Print Data",
+    'version': '10.0.2018.08.17.1',
     'summary': """
-        Print Gift Card""",
+        Double Side Print Data""",
     'description': """
-        Print Gift Card
+        Double Side Print Data
     """,
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
     "depends": [
-        'gift_card_design',
-        'card_design_printer',
+        'card_design_printer'
     ],
     'data': [
-        'wizard/wiz_card_coupon_view.xml',
+        "views/printer_template.xml",
+        "wizard/card_print_view.xml",
     ],
     'demo': [
     ],

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="wizard_double_side_print_view">
+        <field name="name">wizard.double.side.print.view</field>
+        <field name="model">wizard.double.side.print</field>
+        <field name="arch" type="xml">
+            <form string="Print Card">
+                <group>
+                    <field name="template_id" invisible="1"/>
+                </group>
+                <div>
+                    please flip the card.
+                </div>
+                <footer>
+                    <button name="print_data" type="object" string="Print"
+                                class="oe_highlight" icon="fa-print"/>
+                    <button string="Cancel" class="btn-default"
+                            special="cancel" style="margin-left:15px;"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

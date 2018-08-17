@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <template id="assets_backend" name="double_side_print_assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/card_design_double_side_print/static/src/js/printer_action.js"></script>
+        </xpath>
+    </template>
+
+    <record model="ir.ui.view" id="card_desgin_template_form_view">
+        <field name="name">card.design.template.form.view</field>
+        <field name="model">card.template</field>
+        <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="double_printer_config" string="Double Side Print Configuration"
+                    attrs="{'invisible': ['|', ('enable_printer', '=', False), ('back_side', '=', False)]}">
+                    <group>
+                        <group>
+                            <field name="enable_double_printer" />
+                        </group>
+                    </group>
+                    <group attrs="{
+                        'invisible': [('enable_double_printer', '=', False)],
+                    }">
+                        <group>
+                            <field name="double_print_data_type"
+                                invisible="1"
+                            />
+                            <field name="double_print_data_format"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                            <field name="duplex_type"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                            <field name="double_print_data_type"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                            <field name="double_print_precision"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                    </group>
+                    <group attrs="{
+                        'invisible': [('enable_double_printer', '=', False)],
+                    }">
+                        <group>
+                            <field name="double_print_front_data"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                            <field name="double_print_overlay"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                        <group>
+                            <field name="double_print_back_data"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                            <field name="double_print_footer_data"
+                                attrs="{
+                                    'required': [('enable_double_printer', '!=', False)],
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <button name="print_both_side_png" position="after">
+                <button name="qz_double_nonduplex_front_print" type="object" string="Double Nonduplex Print"
+                    class="oe_highlight" icon="fa-image" style="background: teal;border-color: teal;"
+                    attrs="{
+                        'invisible': ['|', ('enable_printer', '=', False), ('back_side', '=', False)],
+                    }"/>
+                <button name="qz_double_duplex_print" type="object" string="Double Duplex Print"
+                    class="oe_highlight" icon="fa-image" style="background: teal;border-color: teal;"
+                    attrs="{
+                        'invisible': ['|', ('enable_printer', '=', False), ('back_side', '=', False)],
+                    }"/>
+            </button>
+        </field>
+    </record>
+
+</odoo>

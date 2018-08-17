@@ -112,7 +112,6 @@ class CardTemplate(models.Model):
     def create_json_print_data(self, datas=[]):
         print_data_dict = {}
         index = 0
-        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for index, data in enumerate(datas):
             if self.printer_lang == 'EPL':
                 print_data = []
@@ -133,7 +132,7 @@ class CardTemplate(models.Model):
                     if self.data_format == 'pdf':
                         print_epl_data_dict.update({
                             'flavor': 'file',
-                            'data': URL + data[0]
+                            'data': data[0]
                         })
                     else:
                         print_epl_data_dict.update({
@@ -143,10 +142,12 @@ class CardTemplate(models.Model):
                 else:
                     if self.data_format == 'pdf':
                         print_epl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1]
                         })
                     else:
                         print_epl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1]
                         })
                 print_data.append(print_epl_data_dict)
@@ -173,7 +174,7 @@ class CardTemplate(models.Model):
                     if self.data_format == 'pdf':
                         print_zpl_data_dict.update({
                             'flavor': 'file',
-                            'data': URL + data[0]
+                            'data': data[0]
                         })
                     else:
                         print_zpl_data_dict.update({
@@ -183,10 +184,12 @@ class CardTemplate(models.Model):
                 else:
                     if self.data_format == 'pdf':
                         print_zpl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1],
                         })
                     else:
                         print_zpl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1]
                         })
                 print_data.append(print_zpl_data_dict)
@@ -215,7 +218,7 @@ class CardTemplate(models.Model):
                     if self.data_format == 'pdf':
                         print_evl_data_dict.update({
                             'flavor': 'file',
-                            'data': URL + data[0]
+                            'data': data[0]
                         })
                     else:
                         print_evl_data_dict.update({
@@ -225,15 +228,17 @@ class CardTemplate(models.Model):
                 else:
                     if self.data_format == 'pdf':
                         print_evl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1],
                         })
                     else:
                         print_evl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1],
                         })
                 print_data.append(print_evl_data_dict)
                 footerarray = self.footer_data.split(',')
-                for findex, j in footerarray:
+                for findex, j in enumerate(footerarray):
                     print_data.append('\x1B' + footerarray[findex] + "\x0D")
                 print_data_dict.update({
                     index: print_data
@@ -249,7 +254,7 @@ class CardTemplate(models.Model):
                     if self.data_format == 'pdf':
                         print_nl_data_dict.update({
                             'flavor': 'file',
-                            'data': URL + data[0]
+                            'data': data[0]
                         })
                     else:
                         print_nl_data_dict.update({
@@ -259,10 +264,12 @@ class CardTemplate(models.Model):
                 else:
                     if self.data_format == 'pdf':
                         print_nl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1]
                         })
                     else:
                         print_nl_data_dict.update({
+                            'flavor': 'base64',
                             'data': data[1]
                         })
                 print_data.append(print_nl_data_dict)

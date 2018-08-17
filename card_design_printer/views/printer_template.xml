@@ -166,14 +166,16 @@
             </xpath>
             <field name="body_html" position="before">
                 <button name="qz_print_front_side" type="object" string="Print via QZ"
-                    class="oe_highlight" icon="fa-image"  style="margin-left:15px;"
+                    class="oe_highlight" icon="fa-image"
+                    style="margin-left:15px;background: dimgray;border-color:dimgray;"
                     attrs="{
                         'invisible': [('enable_printer', '=', False)],
                     }"/>
             </field>
             <field name="back_body_html" position="before">
                 <button name="qz_print_back_side" type="object" string="Print via QZ"
-                    class="oe_highlight" icon="fa-image"  style="margin-left:15px;"
+                    class="oe_highlight" icon="fa-image"
+                    style="margin-left:15px;background: dimgray;border-color:dimgray;"
                     attrs="{
                         'invisible': [('enable_printer', '=', False)],
                     }"/>

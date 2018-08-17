@@ -9,7 +9,7 @@
             <xpath expr="//footer/button[@name='print_png']" posotiontion="after">
                 <button string="Print Gift Card"  class="oe_highlight"
                     name="print_coupons" type="object" icon="fa-print"
-                    style="margin-left:15px;"
+                    style="margin-left:15px;background: dimgray;border-color:dimgray;"
                 />
             </xpath>
             <field name="position" position="after">
