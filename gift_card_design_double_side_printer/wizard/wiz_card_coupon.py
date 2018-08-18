@@ -32,25 +32,27 @@ class CardPrintWizard(models.TransientModel):
             context = dict(self.env.context or {})
             print_data_dict = {}
             for i, coupon in enumerate(self.env['product.coupon'].browse(context.get('active_ids'))):
-                svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
                 context = dict(self.env.context or {})
                 context.update({
                     'product_coupon': True,
                     'product_coupon_name': coupon.name,
                 })
+                current_obj_name = coupon.name.replace(' ', '_').replace('.', '_').lower() + '_'
                 if rec.template_id.data_format == 'pdf':
-                    svg_file_name += '.pdf'
+                    svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                     front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_pdf(
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )
+                    svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                     back_path, back_data_file, back_base64_datas = rec.template_id.with_context(context).render_pdf(
                         svg_file_name, rec.template_id.back_body_html, '_back_side'
                     )
                 else:
-                    svg_file_name += '.png'
+                    svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                     front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )
+                    svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                     back_path, back_data_file, back_base64_datas = rec.template_id.with_context(context).render_png(
                         svg_file_name, rec.template_id.back_body_html, '_back_side'
                     )
@@ -96,19 +98,19 @@ class CardPrintWizard(models.TransientModel):
             context = dict(self.env.context or {})
             print_data_dict = {}
             for i, coupon in enumerate(self.env['product.coupon'].browse(context.get('active_ids'))):
-                svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
                 context = dict(self.env.context or {})
                 context.update({
                     'product_coupon': True,
                     'product_coupon_name': coupon.name,
                 })
+                current_obj_name = coupon.name.replace(' ', '_').replace('.', '_').lower() + '_'
                 if rec.template_id.double_print_data_format == 'pdf':
-                    svg_file_name += '.pdf'
+                    svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                     front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_pdf(
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )
                 else:
-                    svg_file_name += '.png'
+                    svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                     front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # See LICENSE file for copyright and licensing details.
-from odoo import models, api, _
+from odoo import models, api
 import datetime
 
 
@@ -24,7 +24,6 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             print_data_dict = {}
             dict_context = dict(self.env.context or {})
             for i, coupon in enumerate(self.env['product.coupon'].browse(dict_context.get('gift_card_ids'))):
@@ -33,15 +32,16 @@ class CardTemplate(models.Model):
                     'product_coupon': True,
                     'product_coupon_name': coupon.name,
                 })
+                current_obj_name = coupon.name.replace(' ', '_').replace('.', '_').lower() + '_'
                 if rec.double_print_data_format == 'pdf':
-                    svg_file_name += '.pdf'
-                    back_path, data_file, back_base64_datas = rec.render_pdf(
-                        '_back_side_' + svg_file_name, rec.back_body_html, '_back_side'
+                    svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
+                    back_path, data_file, back_base64_datas = rec.with_context(context).render_pdf(
+                        svg_file_name, rec.back_body_html, '_back_side'
                     )
                 else:
-                    svg_file_name += '.png'
-                    back_path, data_file, back_base64_datas = rec.render_png(
-                        '_back_side_' + svg_file_name, rec.back_body_html, '_back_side'
+                    svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
+                    back_path, data_file, back_base64_datas = rec.with_context(context).render_png(
+                        svg_file_name, rec.back_body_html, '_back_side'
                     )
                 if rec.double_print_data_type == 'path':
                     index, print_data = self.create_json_nonduplex_back_data(back_path)

@@ -157,17 +157,19 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
             index = False
             if rec.double_print_data_format == 'pdf':
-                svg_file_name += '.pdf'
-                front_path, front_data_file, front_base64_datas = rec.render_pdf('_front_side_' + svg_file_name, rec.body_html, '_front_side')
-                back_path, back_data_file, back_base64_datas = rec.render_pdf('_back_side_' + svg_file_name, rec.back_body_html, '_back_side')
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
+                front_path, front_data_file, front_base64_datas = rec.render_pdf(svg_file_name, rec.body_html, '_front_side')
+                svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
+                back_path, back_data_file, back_base64_datas = rec.render_pdf(svg_file_name, rec.back_body_html, '_back_side')
             else:
-                svg_file_name += '.png'
-                front_path, front_data_file, front_base64_datas = rec.render_png('_front_side_' + svg_file_name, rec.back_body_html, '_back_side')
-                back_path, back_data_file, back_base64_datas = rec.render_png('_back_side_' + svg_file_name, rec.back_body_html, '_back_side')
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
+                front_path, front_data_file, front_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_front_side')
+                svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
+                back_path, back_data_file, back_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
             if rec.double_print_data_type == 'path':
                 index, print_data = self.create_json_duplex_data(front_path, back_path)
             else:
@@ -299,14 +301,14 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
             if rec.double_print_data_format == 'pdf':
-                svg_file_name += '.pdf'
-                front_path, front_data_file, front_base64_datas = rec.render_pdf('_front_side_' + svg_file_name, rec.body_html, '_front_side')
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
+                front_path, front_data_file, front_base64_datas = rec.render_pdf(svg_file_name, rec.body_html, '_front_side')
             else:
-                svg_file_name += '.png'
-                front_path, front_data_file, front_base64_datas = rec.render_png('_front_side_' + svg_file_name, rec.body_html, '_front_side_')
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
+                front_path, front_data_file, front_base64_datas = rec.render_png(svg_file_name, rec.body_html, '_front_side_')
 
             if rec.double_print_data_type == 'path':
                 index, print_data = self.create_json_nonduplex_front_data(front_path)
@@ -340,17 +342,17 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
             if rec.double_print_data_format == 'pdf':
-                svg_file_name += '.pdf'
+                svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 back_path, data_file, back_base64_datas = rec.render_pdf(
-                    '_back_side_' + svg_file_name, rec.back_body_html, '_back_side'
+                    svg_file_name, rec.back_body_html, '_back_side'
                 )
             else:
-                svg_file_name += '.png'
+                svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 back_path, data_file, back_base64_datas = rec.render_png(
-                    '_back_side_' + svg_file_name, rec.back_body_html, '_back_side'
+                    svg_file_name, rec.back_body_html, '_back_side'
                 )
             if rec.double_print_data_type == 'path':
                 index, print_data = self.create_json_nonduplex_back_data(back_path)

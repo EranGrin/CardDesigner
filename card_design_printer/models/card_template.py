@@ -294,15 +294,15 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
             path_data = False
             base64_data = False
             data_list = []
             if rec.data_format == 'pdf':
-                svg_file_name += '.pdf'
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 path, data_file, base64_datas = rec.render_pdf(svg_file_name, rec.body_html, '_front_side')
             else:
-                svg_file_name += '.png'
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 path, data_file, base64_datas = rec.render_png(svg_file_name, rec.body_html, '_front_side')
             path_data = path
             base64_data = base64_datas
@@ -352,13 +352,13 @@ class CardTemplate(models.Model):
                 "delay": printer.delay,
             }
             printer_name = printer.default_printer.name
-            svg_file_name = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             data_list = []
             if rec.data_format == 'pdf':
-                svg_file_name += '.pdf'
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 path, data_file, base64_datas = rec.render_pdf(svg_file_name, rec.back_body_html, '_back_side')
             else:
-                svg_file_name += '.png'
+                svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 path, data_file, base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
             path_data = path
             base64_data = base64_datas

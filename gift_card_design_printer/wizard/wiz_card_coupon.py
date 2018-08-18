@@ -43,25 +43,26 @@ class CardPrintWizard(models.TransientModel):
                     'product_coupon': True,
                     'product_coupon_name': coupon.name,
                 })
+                current_obj_name = coupon.name.replace(' ', '_').replace('.', '_').lower() + '_'
                 if self.position == 'f':
                     if self.template_id.data_format == 'pdf':
-                        svg_file_name += '.pdf'
+                        svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                         path, data_file, base64_datas = self.template_id.with_context(context).render_pdf(
                             svg_file_name, self.template_id.body_html, '_front_side'
                         )
                     else:
-                        svg_file_name += '.png'
+                        svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                         path, data_file, base64_datas = self.template_id.with_context(context).render_png(
                             svg_file_name, self.template_id.body_html, '_front_side'
                         )
                 else:
                     if self.template_id.data_format == 'pdf':
-                        svg_file_name += '.pdf'
+                        svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                         path, data_file, base64_datas = self.template_id.with_context(context).render_pdf(
                             svg_file_name, self.template_id.back_body_html, '_back_side'
                         )
                     else:
-                        svg_file_name += '.png'
+                        svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                         path, data_file, base64_datas = self.template_id.with_context(context).render_png(
                             svg_file_name, self.template_id.back_body_html, '_back_side'
                         )
