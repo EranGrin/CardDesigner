@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="card_design_print_duplex_wizard">
+        <field name="name">card.print.wizard</field>
+        <field name="model">card.print.wizard</field>
+        <field name="inherit_id" ref="card_design.card_design_print_wizard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//footer/button[@name='print_png']" posotiontion="after">
+                <button string="Print Duplex Gift Card"  class="oe_highlight"
+                    name="print_douplex" type="object" icon="fa-print"
+                    style="background: teal;border-color: teal;"
+                />
+                <button string="Print Non-duplex Gift Card"  class="oe_highlight"
+                    name="print_nondouplex" type="object" icon="fa-print"
+                    style="background: teal;border-color: teal;"
+                />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

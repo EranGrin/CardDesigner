@@ -6,9 +6,7 @@
         <field name="model">wizard.double.side.print</field>
         <field name="arch" type="xml">
             <form string="Print Card">
-                <group>
-                    <field name="template_id" invisible="1"/>
-                </group>
+                <field name="template_id" invisible="1"/>
                 <div>
                     please flip the card.
                 </div>

@@ -89,12 +89,12 @@
             </xpath>
             <button name="print_both_side_png" position="after">
                 <button name="qz_double_nonduplex_front_print" type="object" string="Double Nonduplex Print"
-                    class="oe_highlight" icon="fa-image" style="background: teal;border-color: teal;"
+                    class="oe_highlight" icon="fa-print" style="background: teal;border-color: teal;"
                     attrs="{
                         'invisible': ['|', ('enable_printer', '=', False), ('back_side', '=', False)],
                     }"/>
                 <button name="qz_double_duplex_print" type="object" string="Double Duplex Print"
-                    class="oe_highlight" icon="fa-image" style="background: teal;border-color: teal;"
+                    class="oe_highlight" icon="fa-print" style="background: teal;border-color: teal;"
                     attrs="{
                         'invisible': ['|', ('enable_printer', '=', False), ('back_side', '=', False)],
                     }"/>

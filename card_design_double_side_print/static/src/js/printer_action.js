@@ -16,7 +16,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
                     var print_data = action.print_data[i];
                     qz.print(config, print_data).catch(function(e) {
                         model.call("write", [
-                            action.res_id, 
+                            action.res_id,
                             {
                                 "error": error.toString(),
                                 "is_error": true
@@ -44,7 +44,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
                         var print_data = action.print_data[i];
                         qz.print(config, print_data).catch(function(e) {
                             model.call("write", [
-                                action.res_id, 
+                                action.res_id,
                                 {
                                     "error": error.toString(),
                                     "is_error": true
@@ -76,18 +76,20 @@ odoo.define('card_design_double_side_print.action', function(require) {
                 var config = qz.configs.create(
                     action.printer_name
                 );
-                var print_data = action.print_data;
-                qz.print(config, print_data).catch(function(e) {
-                    model.call("write", [
-                        action.res_id, 
-                        {
-                            "error": error.toString(),
-                            "is_error": true
-                        }
-                    ]);
-                    self.inner_widget.active_view.controller.reload();
-                    return $.when();
-                });
+                for(var i = 0; i <= action.print_data_len; i++) {
+                    var print_data = action.print_data[i];
+                    qz.print(config, print_data).catch(function(e) {
+                        model.call("write", [
+                            action.res_id,
+                            {
+                                "error": error.toString(),
+                                "is_error": true
+                            }
+                        ]);
+                        self.inner_widget.active_view.controller.reload();
+                        return $.when();
+                    });
+                }
             }
             else {
                 var connected = qz.websocket.connect({
@@ -102,18 +104,20 @@ odoo.define('card_design_double_side_print.action', function(require) {
                     var config = qz.configs.create(
                         action.printer_name
                     );
-                    var print_data = action.print_data;
-                    qz.print(config, print_data).catch(function(e) {
-                        model.call("write", [
-                            action.res_id, 
-                            {
-                                "error": error.toString(),
-                                "is_error": true
-                            }
-                        ]);
-                        self.inner_widget.active_view.controller.reload();
-                        return $.when();
-                    });
+                    for(var i = 0; i <= action.print_data_len; i++) {
+                        var print_data = action.print_data[i];
+                        qz.print(config, print_data).catch(function(e) {
+                            model.call("write", [
+                                action.res_id,
+                                {
+                                    "error": error.toString(),
+                                    "is_error": true
+                                }
+                            ]);
+                            self.inner_widget.active_view.controller.reload();
+                            return $.when();
+                        });
+                    }
                 }).catch(function(error) {
                     model.call("write", [
                         action.res_id, 
@@ -134,6 +138,8 @@ odoo.define('card_design_double_side_print.action', function(require) {
                 views: [[false, 'form']],
                 target: 'new',
                 context: {
+                    'is_gift_card': action.context.is_gift_card,
+                    'gift_card_ids': action.context.gift_card_ids,
                     'default_res_model': 'wizard.double.side.print',
                     'default_template_id': action.res_id,
                 },
@@ -147,18 +153,20 @@ odoo.define('card_design_double_side_print.action', function(require) {
                 var config = qz.configs.create(
                     action.printer_name
                 );
-                var print_data = action.print_data;
-                qz.print(config, print_data).catch(function(e) {
-                    model.call("write", [
-                        action.res_id, 
-                        {
-                            "error": error.toString(),
-                            "is_error": true
-                        }
-                    ]);
-                    self.inner_widget.active_view.controller.reload();
-                    return $.when();
-                });
+                for(var i = 0; i <= action.print_data_len; i++) {
+                    var print_data = action.print_data[i];
+                    qz.print(config, print_data).catch(function(e) {
+                        model.call("write", [
+                            action.res_id,
+                            {
+                                "error": error.toString(),
+                                "is_error": true
+                            }
+                        ]);
+                        self.inner_widget.active_view.controller.reload();
+                        return $.when();
+                    });
+                }
             }
             else {
                 var connected = qz.websocket.connect({
@@ -174,17 +182,20 @@ odoo.define('card_design_double_side_print.action', function(require) {
                         action.printer_name
                     );
                     var print_data = action.print_data;
-                    qz.print(config, print_data).catch(function(e) {
-                        model.call("write", [
-                            action.res_id, 
-                            {
-                                "error": error.toString(),
-                                "is_error": true
-                            }
-                        ]);
-                        self.inner_widget.active_view.controller.reload();
-                        return $.when();
-                    });
+                    for(var i = 0; i <= action.print_data_len; i++) {
+                        var print_data = action.print_data[i];
+                        qz.print(config, print_data).catch(function(e) {
+                            model.call("write", [
+                                action.res_id,
+                                {
+                                    "error": error.toString(),
+                                    "is_error": true
+                                }
+                            ]);
+                            self.inner_widget.active_view.controller.reload();
+                            return $.when();
+                        });
+                    }
                 }).catch(function(error) {
                     model.call("write", [
                         action.res_id, 
