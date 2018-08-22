@@ -18,8 +18,8 @@
     ],
     'external_dependencies': {
         'python': [
-            'imgkit', 'weasyprint', 'PyPDF2', 'python-imaging', 'BeautifulSoup',
-            'cssutils', 'html5lib', 'cffi==1.5.2'
+            'imgkit', 'weasyprint', 'PyPDF2', 'PIL', 'BeautifulSoup',
+            'cssutils', 'html5lib', 'cffi'
         ],
     },
     'data': [
