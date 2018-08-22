@@ -3,11 +3,8 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Card Designer",
-    'summary': """
-        Card Designer Module for Odoo""",
-    'description': """
-        Card Designer Module for Odoo
-    """,
+    'summary': """Card Designer Module for Odoo""",
+    'description': """Card Designer Module for Odoo""",
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',
@@ -21,7 +18,8 @@
     ],
     'external_dependencies': {
         'python': [
-            'imgkit', 'weasyprint', 'PyPDF2', 'PIL'
+            'imgkit', 'weasyprint', 'PyPDF2', 'python-imaging', 'BeautifulSoup',
+            'cssutils', 'html5lib', 'cffi==1.5.2'
         ],
     },
     'data': [
@@ -40,5 +38,6 @@
         '/card_design/static/src/xml/card_design.xml',
         '/card_design/static/src/xml/colorpicker.xml'
     ],
+    'installable': True,
     'application': True,
 }
