@@ -1,0 +1,9 @@
+sudo pip install imgkit PyPDF2
+sudo apt-get install python-imaging
+sudo apt-get install python3 python-dev python3-dev build-essential libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python-pip
+sudo pip install cffi==1.5.2
+sudo pip install weasyprint
+sudo pip install BeautifulSoup
+sudo pip install cssutils
+sudo apt-get remove python-html5lib
+sudo pip install --upgrade html5lib
