@@ -211,4 +211,5 @@ odoo.define('card_design_double_side_print.action', function(require) {
             return self.do_action({'type': 'ir.actions.act_window_close'})
         },
     });
-}); 
+
+});

@@ -19,6 +19,7 @@
     ],
     'data': [
         'wizard/wiz_card_coupon_view.xml',
+        'views/printer_template.xml',
     ],
     'demo': [
     ],

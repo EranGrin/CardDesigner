@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <template id="double_assets_backend" name="assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/gift_card_design_double_side_printer/static/src/js/printer_action.js"></script>
+        </xpath>
+    </template>
+</odoo>

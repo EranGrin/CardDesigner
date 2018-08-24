@@ -6,7 +6,10 @@
         <field name="model">card.print.wizard</field>
         <field name="inherit_id" ref="card_design.card_design_print_wizard"/>
         <field name="arch" type="xml">
-            <xpath expr="//footer/button[@name='print_png']" posotiontion="after">
+            <field name="file_config" position="after">
+                <field name="nondulpex_type" widget="radio"/>
+            </field>
+            <xpath expr="//footer/button[@name='print_png']" position="after">
                 <button string="Print Duplex Gift Card"  class="oe_highlight"
                     name="print_douplex" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
@@ -14,8 +17,45 @@
                 <button string="Print Non-duplex Gift Card"  class="oe_highlight"
                     name="print_nondouplex" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
+                    attrs="{'invisible': [('nondulpex_type', '=', 'nobulk')]}"
+                />
+                <button string="Print Non-duplex Gift Card"  class="oe_highlight"
+                    name="print_nondouplex_nobulk" type="object" icon="fa-print"
+                    style="background: teal;border-color: teal;"
+                    attrs="{'invisible': [('nondulpex_type', '=', 'bulk')]}"
                 />
             </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="wizard_wizard_non_duplex_print_view">
+        <field name="name">wizard.non.duplex.print.view</field>
+        <field name="model">wizard.non.duplex.print</field>
+        <field name="arch" type="xml">
+            <form string="Print Card">
+                <field name="template_id" invisible="1"/>
+                <field name="is_front_side" invisible="1"/>
+                <field name="printer_id" invisible="1"/>
+                <field name="coupon_id" readonly="1" nolabel="1" style="float:left;"/>
+                <div attrs="{'invisible': [('is_front_side', '!=', False)]}">
+                    Please flip the card print the back side of the card.
+                </div>
+                <div attrs="{'invisible': [('is_front_side', '=', False)]}">
+                    Print the front side of the card.
+                </div>
+                <footer>
+                    <button name="print_data_back" type="object" string="Print"
+                        class="oe_highlight" icon="fa-print"
+                        attrs="{'invisible': [('is_front_side', '!=', False)]}"
+                    />
+                    <button name="print_data_front" type="object" string="Print"
+                        class="oe_highlight" icon="fa-print"
+                        attrs="{'invisible': [('is_front_side', '=', False)]}"
+                    />
+                    <button string="Cancel" class="btn-default"
+                            special="cancel" style="margin-left:15px;"/>
+                </footer>
+            </form>
         </field>
     </record>
 
