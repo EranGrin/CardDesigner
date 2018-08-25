@@ -85,6 +85,37 @@
                             />
                         </group>
                     </group>
+
+
+                    <group attrs="{
+                        'invisible': [('enable_double_printer', '=', False)],
+                    }">
+                        <group>
+                            <field name="is_mag_strip"
+                                attrs="{
+                                    'invisible': [('enable_double_printer', '=', False)],
+                                }"
+                            />
+                            <field name="mag_strip_track1"
+                                attrs="{
+                                    'required': [('is_mag_strip', '!=', False)],
+                                    'invisible': [('is_mag_strip', '=', False)],
+                                }"
+                            />
+                            <field name="mag_strip_track2"
+                                attrs="{
+                                    'required': [('is_mag_strip', '!=', False)],
+                                    'invisible': [('is_mag_strip', '=', False)],
+                                }"
+                            />
+                            <field name="mag_strip_track3"
+                                attrs="{
+                                    'required': [('is_mag_strip', '!=', False)],
+                                    'invisible': [('is_mag_strip', '=', False)],
+                                }"
+                            />
+                        </group>
+                    </group>
                 </page>
             </xpath>
             <button name="print_both_side_png" position="after">

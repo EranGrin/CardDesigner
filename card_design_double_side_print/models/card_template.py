@@ -49,6 +49,10 @@ class CardTemplate(models.Model):
         string=_("Footer Data"),
         default="Se"
     )
+    is_mag_strip = fields.Boolean("Enable  Magnetic Stripe")
+    mag_strip_track1 = fields.Char("Track1")
+    mag_strip_track2 = fields.Char("Track2")
+    mag_strip_track3 = fields.Char("Track3")
 
     def create_json_duplex_data(self, front_side_data, back_side_data):
         print_data_dict = {}
@@ -58,6 +62,12 @@ class CardTemplate(models.Model):
             headerarray = rec.double_print_front_data.split(',')
             for hindex, i in enumerate(headerarray):
                 print_data.append('\x1B' + headerarray[hindex] + '\x0D')
+
+            if rec.is_mag_strip:
+                print_data.append('\x1B' + rec.mag_strip_track1 + '\x0D')
+                print_data.append('\x1B' + rec.mag_strip_track2 + '\x0D')
+                print_data.append('\x1B' + rec.mag_strip_track3 + '\x0D')
+                print_data.append('\x1B' + 'smw' + '\x0D')
 
             print_evl_front_data_dict = {
                 'type': rec.double_print_data_type,
@@ -194,6 +204,12 @@ class CardTemplate(models.Model):
         headerarray = self.double_print_front_data.split(',')
         for hindex, i in enumerate(headerarray):
             print_data.append('\x1B' + headerarray[hindex] + '\x0D')
+
+        if self.is_mag_strip:
+            print_data.append('\x1B' + self.mag_strip_track1 + '\x0D')
+            print_data.append('\x1B' + self.mag_strip_track2 + '\x0D')
+            print_data.append('\x1B' + self.mag_strip_track3 + '\x0D')
+            print_data.append('\x1B' + 'smw' + '\x0D')
 
         print_evl_back_data_dict = {
             'type': self.double_print_data_type,

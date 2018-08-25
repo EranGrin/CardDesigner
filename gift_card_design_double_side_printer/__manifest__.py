@@ -13,6 +13,7 @@
     'website': "http://www.inceptus.io",
     'category': 'Tools',
     "depends": [
+        'card_design',
         'gift_card_design',
         'gift_card_design_printer',
         'card_design_double_side_print',
