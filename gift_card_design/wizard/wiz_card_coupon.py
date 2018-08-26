@@ -8,6 +8,9 @@ import os
 from os.path import basename
 import datetime
 import zipfile
+import csv
+import tempfile
+import base64
 
 
 class CardCouponWizard(models.TransientModel):
@@ -138,7 +141,35 @@ class CardCouponWizard(models.TransientModel):
         """  % (URL, attachment.id, attachment.name, attachment.name, attachment.name)
         body_html += render_html
         template.body_html = body_html
-        template.attachment_ids = [(6, 0, [attachment.id])]
+        tmp_dir = tempfile.mkdtemp()
+        sequence = self.env['ir.sequence'].next_by_code('product.coupon.csv')
+        export_file = tmp_dir + '/' + str(sequence) + '_gift_card.csv'
+        csv_file = open(export_file, "wb")
+        writer = csv.writer(csv_file)
+        writer.writerow([
+            'Sequence', 'Gift Card Number', 'Card Template Name', 'Design Side'
+        ])
+        for att_csv in attachment_list:
+            att_csv = self.env['ir.attachment'].browse(att_csv)
+            name = att_csv.name.split("_")
+            writer.writerow([
+                name[0], name[1], self.template_id.name, name[2]
+            ])
+        csv_file.close()
+
+        fn = open(export_file, 'rb')
+        file_data = base64.encodestring(fn.read())
+        fn.close()
+        csv_attachment = self.env['ir.attachment'].create({
+            'name': str(sequence) + '_gift_card.csv',
+            'type': 'binary',
+            'mimetype': 'text/csv',
+            'datas': file_data,
+            'res_model': 'card.template',
+            'res_id': self.template_id.id,
+            'datas_fname': str(sequence) + '_gift_card.csv',
+        })
+        template.attachment_ids = [(6, 0, [attachment.id, csv_attachment.id])]
         ctx.update({
             'default_model': 'card.template',
             'default_res_id': self.template_id.id,

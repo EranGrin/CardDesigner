@@ -18,7 +18,8 @@ class card_template(models.Model):
         context = dict(self.env.context or {})
         if context.get('product_coupon', False):
             if context.get('product_coupon_name', False):
-                value = context.get('product_coupon_name') + value
+                sequence = self.env['ir.sequence'].next_by_code('product.coupon.export')
+                value = str(sequence) + '_' + context.get('product_coupon_name') + value
         elif context.get('active_model', False):
             if context.get('active_model') == 'product.coupon':
                 if context.get('remianing_ids', False):
@@ -34,7 +35,8 @@ class card_template(models.Model):
                     })
                 coupon = self.env['product.coupon'].browse(coupon_id)
                 if coupon:
-                    value = str(coupon.name) + value
+                    sequence = self.env['ir.sequence'].next_by_code('product.coupon.export')
+                    value = str(sequence) + '_' + str(coupon.name) + value
         return super(card_template, self).get_name(value, extension)
 
     def get_image(self, value, width, height):

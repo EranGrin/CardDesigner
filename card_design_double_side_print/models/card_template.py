@@ -5,7 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 import datetime
 from odoo import models, fields, _, api
-import ast
+from ast import literal_eval
 
 
 class CardTemplate(models.Model):
@@ -53,6 +53,40 @@ class CardTemplate(models.Model):
     mag_strip_track1 = fields.Char("Track1")
     mag_strip_track2 = fields.Char("Track2")
     mag_strip_track3 = fields.Char("Track3")
+    is_manually_duplex = fields.Boolean(string="Manually Body Data")
+    manually_body_data_duplex = fields.Text(string="Manually Body Data")
+
+    def update_manually_json_duplex(self):
+        print_data = ''
+        print_data += "('type', '%s')," % self.data_type
+        print_data += "('format', '%s')," % self.data_format
+        if self.print_data_type == 'path':
+            print_data += "('flavor', 'file'),"
+        else:
+            print_data += "('flavor', 'base64'),"
+        print_data += "('options', {'language': '%s'})," % self.printer_lang
+        return print_data
+
+    @api.multi
+    def update_manually_data_duplex(self):
+        for rec in self:
+            manually_data = rec.update_manually_json_duplex()
+            rec.manually_body_data_duplex = manually_data
+        return True
+
+    def get_manually_data_duplex(self):
+        print_data_dict = {}
+        if not self.is_manually_duplex:
+            raise("Please select the manually print data.")
+        try:
+            datas = literal_eval(self.manually_body_data_duplex)
+            for data in datas:
+                print_data_dict.update({
+                    data[0]: data[1]
+                })
+        except:
+            raise("Manually data is not correctly data. please check and try again.")
+        return print_data_dict
 
     def create_json_duplex_data(self, front_side_data, back_side_data):
         print_data_dict = {}
@@ -69,23 +103,34 @@ class CardTemplate(models.Model):
                 print_data.append('\x1B' + rec.mag_strip_track3 + '\x0D')
                 print_data.append('\x1B' + 'smw' + '\x0D')
 
-            print_evl_front_data_dict = {
-                'type': rec.double_print_data_type,
-                'format': rec.double_print_data_format,
-                'options': {
-                    'language': 'EVOLIS',
+            if self.is_manually_duplex:
+                print_evl_front_data_dict = self.get_manually_data_duplex()
+                print_evl_front_data_dict.update({
+                    'index': index
+                })
+                print_evl_front_data_dict['options'].update({
                     'precision': rec.double_print_precision,
                     'overlay': True
-                },
-                'index': index
-            }
+                })
+            else:
+                print_evl_front_data_dict = {
+                    'type': rec.double_print_data_type,
+                    'format': rec.double_print_data_format,
+                    'options': {
+                        'language': 'EVOLIS',
+                        'precision': rec.double_print_precision,
+                        'overlay': True
+                    },
+                    'index': index
+                }
+
             print_evl_back_data_dict = {
                 'type': rec.double_print_data_type,
                 'format': rec.double_print_data_format,
                 'options': {
                     'language': 'EVOLIS',
                     'precision': rec.double_print_precision,
-                    'overlay': [ast.literal_eval(rec.double_print_overlay)[0], ast.literal_eval(rec.double_print_overlay)[1]]
+                    'overlay': [literal_eval(rec.double_print_overlay)[0], literal_eval(rec.double_print_overlay)[1]]
                 },
                 'index': index
             }
@@ -211,7 +256,7 @@ class CardTemplate(models.Model):
             'options': {
                 'language': 'EVOLIS',
                 'precision': self.double_print_precision,
-                'overlay': [ast.literal_eval(self.double_print_overlay)[0], ast.literal_eval(self.double_print_overlay)[1]]
+                'overlay': [literal_eval(self.double_print_overlay)[0], literal_eval(self.double_print_overlay)[1]]
             },
             'index': index
         }
@@ -260,16 +305,26 @@ class CardTemplate(models.Model):
             print_data.append('\x1B' + self.mag_strip_track3 + '\x0D')
             print_data.append('\x1B' + 'smw' + '\x0D')
 
-        print_evl_front_data_dict = {
-            'type': self.double_print_data_type,
-            'format': self.double_print_data_format,
-            'options': {
-                'language': 'EVOLIS',
+        if self.is_manually_duplex:
+            print_evl_front_data_dict = self.get_manually_data_duplex()
+            print_evl_front_data_dict.update({
+                'index': index
+            })
+            print_evl_front_data_dict['options'].update({
                 'precision': self.double_print_precision,
                 'overlay': True
-            },
-            'index': index
-        }
+            })
+        else:
+            print_evl_front_data_dict = {
+                'type': self.double_print_data_type,
+                'format': self.double_print_data_format,
+                'options': {
+                    'language': 'EVOLIS',
+                    'precision': self.double_print_precision,
+                    'overlay': True
+                },
+                'index': index
+            }
 
         if self.double_print_data_type == 'path':
             if self.double_print_data_format == 'pdf':

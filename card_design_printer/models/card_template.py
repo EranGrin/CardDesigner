@@ -5,6 +5,7 @@ import logging
 _logger = logging.getLogger(__name__)
 import datetime
 from odoo import models, fields, _, api
+from ast import literal_eval
 
 
 class CardTemplate(models.Model):
@@ -93,6 +94,26 @@ class CardTemplate(models.Model):
         ("path", "File Path"),
         ("base64", "Base64")
     ], string=_("Printer Data Type"), default="path")
+    is_manually = fields.Boolean(string="Manually Body Data")
+    manually_body_data = fields.Text(string="Manually Body Data")
+
+    def update_manually_json_duplex(self):
+        print_data = ''
+        print_data += "('type', '%s')," % self.data_type
+        print_data += "('format', '%s')," % self.data_format
+        if self.print_data_type == 'path':
+            print_data += "('flavor', 'file'),"
+        else:
+            print_data += "('flavor', 'base64'),"
+        print_data += "('options', {'language': '%s'})," % self.printer_lang
+        return print_data
+
+    @api.multi
+    def update_manually_data(self):
+        for rec in self:
+            manually_data = rec.update_manually_json()
+            rec.manually_body_data = manually_data
+        return True
 
     @api.onchange('printer_lang')
     def onchange_printer_lang(self):
@@ -109,6 +130,20 @@ class CardTemplate(models.Model):
             self.header_data = "Pps;0,Pwr;0,Wcb;k;0,Ss"
             self.footer_data = "Se"
 
+    def get_manually_data(self):
+        print_data_dict = {}
+        if not self.is_manually:
+            raise("Please select the manually print data.")
+        try:
+            datas = literal_eval(self.manually_body_data)
+            for data in datas:
+                print_data_dict.update({
+                    data[0]: data[1]
+                })
+        except:
+            raise("Manually data is not correctly data. please check and try again.")
+        return print_data_dict
+
     def create_json_print_data(self, datas=[]):
         print_data_dict = {}
         index = 0
@@ -118,16 +153,26 @@ class CardTemplate(models.Model):
                 headerarray = self.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     print_data.append("\n"+headerarray[hindex]+"\n")
-                print_epl_data_dict = {
-                    'type': self.data_type,
-                    'format': self.data_format,
-                    'options': {
-                        'language': self.printer_lang,
+                if self.is_manually:
+                    print_epl_data_dict = self.get_manually_data()
+                    print_epl_data_dict.update({
+                        'index': index
+                    })
+                    print_epl_data_dict['options'].update({
                         'x': self.epl_x,
                         'y': self.epl_y
-                    },
-                    'index': index
-                }
+                    })
+                else:
+                    print_epl_data_dict = {
+                        'type': self.data_type,
+                        'format': self.data_format,
+                        'options': {
+                            'language': self.printer_lang,
+                            'x': self.epl_x,
+                            'y': self.epl_y
+                        },
+                        'index': index
+                    }
                 if self.print_data_type == 'path':
                     if self.data_format == 'pdf':
                         print_epl_data_dict.update({
@@ -162,14 +207,20 @@ class CardTemplate(models.Model):
                 headerarray = self.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     print_data.append(headerarray[hindex]+"\n")
-                print_zpl_data_dict = {
-                    'type': self.data_type,
-                    'format': self.data_format,
-                    'options': {
-                        'language': self.printer_lang,
-                    },
-                    'index': index
-                }
+                if self.is_manually:
+                    print_zpl_data_dict = self.get_manually_data()
+                    print_zpl_data_dict.update({
+                        'index': index
+                    })
+                else:
+                    print_zpl_data_dict = {
+                        'type': self.data_type,
+                        'format': self.data_format,
+                        'options': {
+                            'language': self.printer_lang,
+                        },
+                        'index': index
+                    }
                 if self.print_data_type == 'path':
                     if self.data_format == 'pdf':
                         print_zpl_data_dict.update({
@@ -204,16 +255,26 @@ class CardTemplate(models.Model):
                 headerarray = self.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     print_data.append('\x1B' + headerarray[hindex] + "\x0D")
-                print_evl_data_dict = {
-                    'type': self.data_type,
-                    'format': self.data_format,
-                    'options': {
-                        'language': self.printer_lang,
+                if self.is_manually:
+                    print_evl_data_dict = self.get_manually_data()
+                    print_evl_data_dict.update({
+                        'index': index
+                    })
+                    print_evl_data_dict['options'].update({
                         'precision': self.precision,
                         'overlay': self.overlay
-                    },
-                    'index': index
-                }
+                    })
+                else:
+                    print_evl_data_dict = {
+                        'type': self.data_type,
+                        'format': self.data_format,
+                        'options': {
+                            'language': self.printer_lang,
+                            'precision': self.precision,
+                            'overlay': self.overlay
+                        },
+                        'index': index
+                    }
                 if self.print_data_type == 'path':
                     if self.data_format == 'pdf':
                         print_evl_data_dict.update({

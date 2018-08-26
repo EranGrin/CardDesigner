@@ -18,6 +18,7 @@
         'ies_giftcards'
     ],
     'data': [
+        'data/sequence.xml',
         'views/coupon_view.xml',
         'wizard/wiz_card_coupon_view.xml',
     ],
