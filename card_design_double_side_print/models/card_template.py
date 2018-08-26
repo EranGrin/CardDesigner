@@ -205,12 +205,6 @@ class CardTemplate(models.Model):
         for hindex, i in enumerate(headerarray):
             print_data.append('\x1B' + headerarray[hindex] + '\x0D')
 
-        if self.is_mag_strip:
-            print_data.append('\x1B' + self.mag_strip_track1 + '\x0D')
-            print_data.append('\x1B' + self.mag_strip_track2 + '\x0D')
-            print_data.append('\x1B' + self.mag_strip_track3 + '\x0D')
-            print_data.append('\x1B' + 'smw' + '\x0D')
-
         print_evl_back_data_dict = {
             'type': self.double_print_data_type,
             'format': self.double_print_data_format,
@@ -259,6 +253,12 @@ class CardTemplate(models.Model):
         headerarray = self.double_print_front_data.split(',')
         for hindex, i in enumerate(headerarray):
             print_data.append('\x1B' + headerarray[hindex] + '\x0D')
+
+        if self.is_mag_strip:
+            print_data.append('\x1B' + self.mag_strip_track1 + '\x0D')
+            print_data.append('\x1B' + self.mag_strip_track2 + '\x0D')
+            print_data.append('\x1B' + self.mag_strip_track3 + '\x0D')
+            print_data.append('\x1B' + 'smw' + '\x0D')
 
         print_evl_front_data_dict = {
             'type': self.double_print_data_type,
