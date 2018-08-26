@@ -116,6 +116,28 @@
                             />
                         </group>
                     </group>
+                    <group attrs="{
+                        'invisible': [('enable_double_printer', '=', False)],
+                    }">
+                        <field name="is_manually_duplex" attrs="{
+                            'invisible': [('enable_double_printer', '=', False)],
+                        }"/>
+                    </group>
+                    <div attrs="{
+                        'invisible': [('enable_double_printer', '=', False)],
+                    }">
+                        <button name="update_manually_data_duplex" type="object"
+                            string="Update Manually Data" attrs="{
+                                'invisible': [('is_manually_duplex', '=', False)],
+                            }"/>
+                    </div>
+                    <group attrs="{
+                        'invisible': [('enable_double_printer', '=', False)],
+                    }">
+                        <field nolabel="1" name="manually_body_data_duplex" attrs="{
+                            'invisible': [('is_manually_duplex', '=', False)],
+                        }"/>
+                    </group>
                 </page>
             </xpath>
             <button name="print_both_side_png" position="after">
