@@ -97,7 +97,7 @@ class CardTemplate(models.Model):
     is_manually = fields.Boolean(string="Manually Body Data")
     manually_body_data = fields.Text(string="Manually Body Data")
 
-    def update_manually_json_duplex(self):
+    def update_manually_json(self):
         print_data = ''
         print_data += "('type', '%s')," % self.data_type
         print_data += "('format', '%s')," % self.data_format
