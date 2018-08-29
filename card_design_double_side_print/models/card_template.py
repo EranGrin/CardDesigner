@@ -12,66 +12,150 @@ class CardTemplate(models.Model):
     _inherit = 'card.template'
 
     enable_double_printer = fields.Boolean(
-        string=_("Enable Double Print"),
+        string=_("Enable Evoils"),
     )
-    double_print_precision = fields.Integer(
-        string=_("Precision"), default=128
-    )
+    # precision = fields.Integer(
+    #     string=_("Precision"), default=128
+    # )
     double_print_overlay = fields.Text(
-        string=_("Overlay"), default="[0, 0, 439, 1016],[588, 0, 648, 1016]"
+        string=_("Back Overlay"), default="[0, 0, 439, 1016],[588, 0, 648, 1016]"
     )
-    double_print_data_type = fields.Char(
-        string=_("Data Type"), default="raw"
-    )
-    double_print_data_format = fields.Selection([
-        ("pdf", "PDF"),
-        ("image", "IMAGE")],
-        string=_("Data Format"), default="image"
-    )
+    # double_print_data_type = fields.Char(
+    #     string=_("Data Type"), default="raw"
+    # )
+    # double_print_data_format = fields.Selection([
+    #     ("pdf", "PDF"),
+    #     ("image", "IMAGE")],
+    #     string=_("Data Format"), default="image"
+    # )
     duplex_type = fields.Selection([
         ("duplex", "Duplex"),
         ("noduplex", "Non-Duplex")],
         string=_("Type"), default="noduplex"
     )
-    double_print_data_type = fields.Selection([
-        ("path", "File Path"),
-        ("base64", "Base64")
-    ], string=_("Printer Data Type"), default="path")
-    double_print_front_data = fields.Text(
-        string=_("Front Side Data"),
-        default="Pps;0,Pwr;0,Pwr;0,Ss,Sr"
-    )
+    # data_type = fields.Selection([
+    #     ("path", "File Path"),
+    #     ("base64", "Base64")
+    # ], string=_("Printer Data Type"), default="path")
+    # header_data = fields.Text(
+    #     string=_("Front Side Data"),
+    #     default="Pps;0,Pwr;0,Pwr;0,Ss,Sr"
+    # )
     double_print_back_data = fields.Text(
         string=_("Back Side Data"),
         default="Sv"
     )
-    double_print_footer_data = fields.Text(
-        string=_("Footer Data"),
-        default="Se"
-    )
-    is_mag_strip = fields.Boolean("Enable  Magnetic Stripe")
-    mag_strip_track1 = fields.Char("Track1")
-    mag_strip_track2 = fields.Char("Track2")
-    mag_strip_track3 = fields.Char("Track3")
-    is_manually_duplex = fields.Boolean(string="Manually Body Data")
-    manually_body_data_duplex = fields.Text(string="Manually Body Data")
+    # footer_data = fields.Text(
+    #     string=_("Footer Data"),
+    #     default="Se"
+    # )
+    # is_manually_duplex = fields.Boolean(string="Manually Syntax")
+    # manually_body_data_duplex = fields.Text(string="Manually Syntax")
+    # check_manually_data_duplex = fields.Text(string="Check Syntax")
 
-    def update_manually_json_duplex(self):
+    @api.onchange('printer_lang')
+    def onchange_printer_lang(self):
+        super(CardTemplate, self).onchange_printer_lang()
+        for rec in self:
+            if rec.printer_lang == 'EVOLIS':
+                rec.enable_double_printer = True
+            else:
+                rec.enable_double_printer = False
+
+    @api.onchange('enable_printer')
+    def onchange_enable_printer(self):
+        for rec in self:
+            if not rec.enable_printer:
+                rec.enable_double_printer = False
+
+    def get_evolis_string(self):
         print_data = ''
-        print_data += "('type', '%s')," % self.data_type
-        print_data += "('format', '%s')," % self.data_format
-        if self.print_data_type == 'path':
-            print_data += "('flavor', 'file'),"
+        if not self.enable_double_printer:
+            return super(CardTemplate, self).get_evolis_string()
+        if self.duplex_type == 'duplex' and self.enable_double_printer:
+            headerarray = self.header_data.split(',')
+            for hindex, i in enumerate(headerarray):
+                print_data += '/x1B' + headerarray[hindex] + "/x0D\n"
+            if self.is_mag_strip:
+                print_data += '/x1B' + self.mag_strip_track1 + '/x0D\n'
+                print_data += '/x1B' + self.mag_strip_track2 + '/x0D\n'
+                print_data += '/x1B' + self.mag_strip_track3 + '/x0D\n'
+                print_data += '/x1B' + 'smw' + '/x0D\n'
+            print_data_dict = self.get_manually_data()
+            print_data_dict = print_data_dict and print_data_dict[0] or {}
+            print_data_dict['options'].update({
+                'precision': self.precision,
+                'overlay': self.overlay
+            })
+            if self.print_data_type == 'path':
+                print_data_dict.update({
+                    'flavor': 'file',
+                    'data': '$value',
+                })
+            else:
+                print_data_dict.update({
+                    'flavor': 'base64',
+                    'data': '$value',
+                })
+            print_data += '%s\n' % print_data_dict
+
+            backarray = self.double_print_back_data.split(',')
+            for bindex, i in enumerate(backarray):
+                print_data += '/x1B' + backarray[bindex] + '/x0D\n'
+
+            print_data_dict = self.get_manually_data()
+            print_data_dict = print_data_dict and print_data_dict[0] or {}
+            print_data_dict['options'].update({
+                'precision': self.precision,
+                'overlay': [literal_eval(self.double_print_overlay)[0], literal_eval(self.double_print_overlay)[1]]
+            })
+            if self.print_data_type == 'path':
+                print_data_dict.update({
+                    'flavor': 'file',
+                    'data': '$value',
+                })
+            else:
+                print_data_dict.update({
+                    'flavor': 'base64',
+                    'data': '$value',
+                })
+            print_data += '%s\n' % print_data_dict
+            footerarray = self.footer_data.split(',')
+            for findex, j in enumerate(footerarray):
+                print_data += '/x1B' + footerarray[findex] + "/x0D\n"
         else:
-            print_data += "('flavor', 'base64'),"
-        print_data += "('options', {'language': '%s'})," % self.printer_lang
+            headerarray = self.header_data.split(',')
+            for hindex, i in enumerate(headerarray):
+                print_data += '/x1B' + headerarray[hindex] + "/x0D\n"
+            if self.is_mag_strip:
+                print_data += '/x1B' + self.mag_strip_track1 + '/x0D\n'
+                print_data += '/x1B' + self.mag_strip_track2 + '/x0D\n'
+                print_data += '/x1B' + self.mag_strip_track3 + '/x0D\n'
+                print_data += '/x1B' + 'smw' + '/x0D\n'
+            print_data_dict = self.get_manually_data()
+            print_data_dict = print_data_dict and print_data_dict[0] or {}
+            print_data_dict['options'].update({
+                'precision': self.precision,
+                'overlay': True
+            })
+            if self.print_data_type == 'path':
+                print_data_dict.update({
+                    'flavor': 'file',
+                    'data': '$value',
+                })
+            else:
+                print_data_dict.update({
+                    'flavor': 'base64',
+                    'data': '$value',
+                })
+            print_data += '%s\n' % print_data_dict
+            footerarray = self.footer_data.split(',')
+            for findex, j in enumerate(footerarray):
+                print_data += '/x1B' + footerarray[findex] + "/x0D\n"
         return print_data
 
     @api.multi
-    def update_manually_data_duplex(self):
-        for rec in self:
-            manually_data = rec.update_manually_json_duplex()
-            rec.manually_body_data_duplex = manually_data
+    def check_data_duplex(self):
         return True
 
     def get_manually_data_duplex(self):
@@ -79,7 +163,7 @@ class CardTemplate(models.Model):
         if not self.is_manually_duplex:
             raise("Please select the manually print data.")
         try:
-            datas = literal_eval(self.manually_body_data_duplex)
+            datas = literal_eval(self.manually_body_data)
             for data in datas:
                 print_data_dict.update({
                     data[0]: data[1]
@@ -93,7 +177,7 @@ class CardTemplate(models.Model):
         index = 0
         for index, rec in enumerate(self):
             print_data = []
-            headerarray = rec.double_print_front_data.split(',')
+            headerarray = rec.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 print_data.append('\x1B' + headerarray[hindex] + '\x0D')
 
@@ -109,34 +193,34 @@ class CardTemplate(models.Model):
                     'index': index
                 })
                 print_evl_front_data_dict['options'].update({
-                    'precision': rec.double_print_precision,
+                    'precision': rec.precision,
                     'overlay': True
                 })
             else:
                 print_evl_front_data_dict = {
-                    'type': rec.double_print_data_type,
-                    'format': rec.double_print_data_format,
+                    'type': rec.data_type,
+                    'format': rec.data_format,
                     'options': {
                         'language': 'EVOLIS',
-                        'precision': rec.double_print_precision,
+                        'precision': rec.precision,
                         'overlay': True
                     },
                     'index': index
                 }
 
             print_evl_back_data_dict = {
-                'type': rec.double_print_data_type,
-                'format': rec.double_print_data_format,
+                'type': rec.data_type,
+                'format': rec.data_format,
                 'options': {
                     'language': 'EVOLIS',
-                    'precision': rec.double_print_precision,
+                    'precision': rec.precision,
                     'overlay': [literal_eval(rec.double_print_overlay)[0], literal_eval(rec.double_print_overlay)[1]]
                 },
                 'index': index
             }
 
-            if rec.double_print_data_type == 'path':
-                if rec.double_print_data_format == 'pdf':
+            if rec.data_type == 'path':
+                if rec.data_format == 'pdf':
                     print_evl_front_data_dict.update({
                         'flavor': 'file',
                         'data': front_side_data
@@ -147,7 +231,7 @@ class CardTemplate(models.Model):
                         'data': front_side_data
                     })
             else:
-                if rec.double_print_data_format == 'pdf':
+                if rec.data_format == 'pdf':
                     print_evl_front_data_dict.update({
                         'flavor': 'base64',
                         'data': front_side_data,
@@ -163,8 +247,8 @@ class CardTemplate(models.Model):
             for bindex, i in enumerate(backarray):
                 print_data.append('\x1B' + backarray[bindex] + '\x0D')
 
-            if rec.double_print_data_type == 'path':
-                if rec.double_print_data_format == 'pdf':
+            if rec.data_type == 'path':
+                if rec.data_format == 'pdf':
                     print_evl_back_data_dict.update({
                         'flavor': 'file',
                         'data': back_side_data
@@ -175,7 +259,7 @@ class CardTemplate(models.Model):
                         'data': back_side_data
                     })
             else:
-                if rec.double_print_data_format == 'pdf':
+                if rec.data_format == 'pdf':
                     print_evl_back_data_dict.update({
                         'flavor': 'base64',
                         'data': back_side_data,
@@ -187,7 +271,7 @@ class CardTemplate(models.Model):
                     })
             print_data.append(print_evl_back_data_dict)
 
-            footerarray = rec.double_print_footer_data.split(',')
+            footerarray = rec.footer_data.split(',')
             for findex, j in enumerate(footerarray):
                 print_data.append('\x1B' + footerarray[findex] + '\x0D')
 
@@ -215,7 +299,7 @@ class CardTemplate(models.Model):
             current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
             index = False
-            if rec.double_print_data_format == 'pdf':
+            if rec.data_format == 'pdf':
                 svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 front_path, front_data_file, front_base64_datas = rec.render_pdf(svg_file_name, rec.body_html, '_front_side')
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
@@ -225,7 +309,7 @@ class CardTemplate(models.Model):
                 front_path, front_data_file, front_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_front_side')
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 back_path, back_data_file, back_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
-            if rec.double_print_data_type == 'path':
+            if rec.data_type == 'path':
                 index, print_data = self.create_json_duplex_data(front_path, back_path)
             else:
                 index, print_data = self.create_json_duplex_data(front_base64_datas, back_base64_datas)
@@ -246,23 +330,23 @@ class CardTemplate(models.Model):
         index = 0
         print_data = []
 
-        headerarray = self.double_print_front_data.split(',')
+        headerarray = self.header_data.split(',')
         for hindex, i in enumerate(headerarray):
             print_data.append('\x1B' + headerarray[hindex] + '\x0D')
 
         print_evl_back_data_dict = {
-            'type': self.double_print_data_type,
-            'format': self.double_print_data_format,
+            'type': self.data_type,
+            'format': self.data_format,
             'options': {
                 'language': 'EVOLIS',
-                'precision': self.double_print_precision,
+                'precision': self.precision,
                 'overlay': [literal_eval(self.double_print_overlay)[0], literal_eval(self.double_print_overlay)[1]]
             },
             'index': index
         }
 
-        if self.double_print_data_type == 'path':
-            if self.double_print_data_format == 'pdf':
+        if self.data_type == 'path':
+            if self.data_format == 'pdf':
                 print_evl_back_data_dict.update({
                     'flavor': 'file',
                     'data': side_data
@@ -273,7 +357,7 @@ class CardTemplate(models.Model):
                     'data': side_data
                 })
         else:
-            if self.double_print_data_format == 'pdf':
+            if self.data_format == 'pdf':
                 print_evl_back_data_dict.update({
                     'flavor': 'base64',
                     'data': side_data,
@@ -285,7 +369,7 @@ class CardTemplate(models.Model):
                 })
         print_data.append(print_evl_back_data_dict)
 
-        footerarray = self.double_print_footer_data.split(',')
+        footerarray = self.footer_data.split(',')
         for findex, j in enumerate(footerarray):
             print_data.append('\x1B' + footerarray[findex] + '\x0D')
 
@@ -295,7 +379,7 @@ class CardTemplate(models.Model):
         index = 0
         print_data = []
 
-        headerarray = self.double_print_front_data.split(',')
+        headerarray = self.header_data.split(',')
         for hindex, i in enumerate(headerarray):
             print_data.append('\x1B' + headerarray[hindex] + '\x0D')
 
@@ -311,23 +395,23 @@ class CardTemplate(models.Model):
                 'index': index
             })
             print_evl_front_data_dict['options'].update({
-                'precision': self.double_print_precision,
+                'precision': self.precision,
                 'overlay': True
             })
         else:
             print_evl_front_data_dict = {
-                'type': self.double_print_data_type,
-                'format': self.double_print_data_format,
+                'type': self.data_type,
+                'format': self.data_format,
                 'options': {
                     'language': 'EVOLIS',
-                    'precision': self.double_print_precision,
+                    'precision': self.precision,
                     'overlay': True
                 },
                 'index': index
             }
 
-        if self.double_print_data_type == 'path':
-            if self.double_print_data_format == 'pdf':
+        if self.data_type == 'path':
+            if self.data_format == 'pdf':
                 print_evl_front_data_dict.update({
                     'flavor': 'file',
                     'data': side_data
@@ -338,7 +422,7 @@ class CardTemplate(models.Model):
                     'data': side_data
                 })
         else:
-            if self.double_print_data_format == 'pdf':
+            if self.data_format == 'pdf':
                 print_evl_front_data_dict.update({
                     'flavor': 'base64',
                     'data': side_data,
@@ -350,7 +434,7 @@ class CardTemplate(models.Model):
                 })
         print_data.append(print_evl_front_data_dict)
 
-        footerarray = self.double_print_footer_data.split(',')
+        footerarray = self.footer_data.split(',')
         for findex, j in enumerate(footerarray):
             print_data.append('\x1B' + footerarray[findex] + '\x0D')
 
@@ -374,14 +458,14 @@ class CardTemplate(models.Model):
             printer_name = printer.default_printer.name
             current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
-            if rec.double_print_data_format == 'pdf':
+            if rec.data_format == 'pdf':
                 svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 front_path, front_data_file, front_base64_datas = rec.render_pdf(svg_file_name, rec.body_html, '_front_side')
             else:
                 svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 front_path, front_data_file, front_base64_datas = rec.render_png(svg_file_name, rec.body_html, '_front_side_')
 
-            if rec.double_print_data_type == 'path':
+            if rec.data_type == 'path':
                 index, print_data = self.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = self.create_json_nonduplex_front_data(front_base64_datas)
@@ -415,7 +499,7 @@ class CardTemplate(models.Model):
             printer_name = printer.default_printer.name
             current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
-            if rec.double_print_data_format == 'pdf':
+            if rec.data_format == 'pdf':
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 back_path, data_file, back_base64_datas = rec.render_pdf(
                     svg_file_name, rec.back_body_html, '_back_side'
@@ -425,7 +509,7 @@ class CardTemplate(models.Model):
                 back_path, data_file, back_base64_datas = rec.render_png(
                     svg_file_name, rec.back_body_html, '_back_side'
                 )
-            if rec.double_print_data_type == 'path':
+            if rec.data_type == 'path':
                 index, print_data = self.create_json_nonduplex_back_data(back_path)
             else:
                 index, print_data = self.create_json_nonduplex_back_data(back_base64_datas)

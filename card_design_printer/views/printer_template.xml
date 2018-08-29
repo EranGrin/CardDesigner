@@ -16,7 +16,7 @@
         <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page name="printer_config" string="Printer Configuration">
+                <page name="printer_config" string="Printer">
                     <group>
                         <group>
                             <field name="enable_printer" />
@@ -31,66 +31,6 @@
                                 }"
                             />
                         </group>
-                    </group>
-                    <group attrs="{
-                        'invisible': [('enable_printer', '=', False)],
-                    }">
-                        <group>
-                            <field name="color_type"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="units"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="density"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="orientation"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                        </group>
-                        <group>
-                            <field name="copies"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="size"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="margins"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="interpolation"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                        </group>
-                    </group>
-                    <group attrs="{
-                        'invisible': [('enable_printer', '=', False)],
-                    }">
                         <group>
                             <field name="printer_lang"
                                 attrs="{
@@ -98,70 +38,170 @@
                                     'invisible': [('enable_printer', '=', False)],
                                 }"
                             />
-                            <field name="data_type"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }" invisible="1"
-                            />
-                            <field name="data_format"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="print_data_type"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
                         </group>
                     </group>
-                    <group attrs="{
-                        'invisible': [('enable_printer', '=', False)],
-                    }">
-                        <group>
-                            <field name="header_data"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="epl_x"
-                                attrs="{
-                                    'required': [('printer_lang', '=', 'EPL')],
-                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
-                                }"
-                            />
-                            <field name="precision"
-                                attrs="{
-                                    'required': [('printer_lang', '=', 'EVOLIS')],
-                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                }"
-                            />
-                        </group>
-                        <group>
-                            <field name="footer_data"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="epl_y"
-                                attrs="{
-                                    'required': [('printer_lang', '=', 'EPL')],
-                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
-                                }"
-                            />
-                            <field name="overlay"
-                                attrs="{
-                                    'required': [('printer_lang', '=', 'EVOLIS')],
-                                    'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                }"
-                            />
-                        </group>
-                    </group>
+                    <notebook attrs="{
+                            'invisible': [('enable_printer', '=', False)],
+                        }">
+                        <page name="config" string="Configuration">
+                            <group attrs="{
+                                'invisible': [('enable_printer', '=', False)],
+                            }">
+                                <group>
+                                    <field name="data_type"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }" invisible="1"
+                                    />
+                                    <field name="data_format"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="print_data_type"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                </group>
+                            </group>
+                            <group attrs="{
+                                'invisible': [('enable_printer', '=', False)],
+                            }" invisible="1">
+                                <group>
+                                    <field name="color_type"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="units"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="density"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="orientation"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                </group>
+                                <group>
+                                    <field name="copies"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="size"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="margins"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="interpolation"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                </group>
+                            </group>
+                            <group attrs="{
+                                        'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                    }">
+                                <group>
+                                    <field name="is_mag_strip"
+                                        attrs="{
+                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                        }"
+                                    />
+                                    <field name="mag_strip_track1"
+                                        attrs="{
+                                            'required': [('is_mag_strip', '!=', False), ('printer_lang', '=', 'EVOLIS')],
+                                            'invisible': ['|', ('is_mag_strip', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                        }"
+                                    />
+                                    <field name="mag_strip_track2"
+                                        attrs="{
+                                            'required': [('is_mag_strip', '!=', False), ('printer_lang', '=', 'EVOLIS')],
+                                            'invisible': ['|', ('is_mag_strip', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                        }"
+                                    />
+                                    <field name="mag_strip_track3"
+                                        attrs="{
+                                            'required': [('is_mag_strip', '!=', False), ('printer_lang', '=', 'EVOLIS')],
+                                            'invisible': ['|', ('is_mag_strip', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                        }"
+                                    />
+                                </group>
+                            </group>
+                            <group attrs="{
+                                'invisible': [('enable_printer', '=', False)],
+                            }">
+                                <group>
+                                    <field name="header_data"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="epl_x"
+                                        attrs="{
+                                            'required': [('printer_lang', '=', 'EPL')],
+                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
+                                        }"
+                                    />
+                                    <field name="precision"
+                                        attrs="{
+                                            'required': [('printer_lang', '=', 'EVOLIS')],
+                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                        }"
+                                    />
+                                </group>
+                                <group>
+                                    <field name="footer_data"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="epl_y"
+                                        attrs="{
+                                            'required': [('printer_lang', '=', 'EPL')],
+                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
+                                        }"
+                                    />
+                                    <field name="overlay"
+                                        attrs="{
+                                            'required': [('printer_lang', '=', 'EVOLIS')],
+                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                        }"
+                                    />
+                                </group>
+                            </group>
+                            
+                        </page>
+                    </notebook>
+                    <br/>
+                    <br/>
                     <group attrs="{
                         'invisible': [('enable_printer', '=', False)],
                     }">
@@ -184,11 +224,26 @@
                             'invisible': [('is_manually', '=', False)],
                         }"/>
                     </group>
+                    <div attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }">
+                        <button name="check_manually_body_data" type="object"
+                            string="Check Manually Data" attrs="{
+                                'invisible': [('is_manually', '=', False)],
+                            }"/>
+                    </div>
+                    <group attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }">
+                        <field nolabel="1" name="check_manually_data" attrs="{
+                            'invisible': [('is_manually', '=', False)],
+                        }" readonly="1"/>
+                    </group>
                 </page>
             </xpath>
             <field name="body_html" position="before">
                 <button name="qz_print_front_side" type="object" string="Print via QZ"
-                    class="oe_highlight" icon="fa-image"
+                    class="oe_highlight" icon="fa-print"
                     style="margin-left:15px;background: dimgray;border-color:dimgray;"
                     attrs="{
                         'invisible': [('enable_printer', '=', False)],
@@ -196,7 +251,7 @@
             </field>
             <field name="back_body_html" position="before">
                 <button name="qz_print_back_side" type="object" string="Print via QZ"
-                    class="oe_highlight" icon="fa-image"
+                    class="oe_highlight" icon="fa-print"
                     style="margin-left:15px;background: dimgray;border-color:dimgray;"
                     attrs="{
                         'invisible': [('enable_printer', '=', False)],

@@ -3,12 +3,9 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Print Gift Card",
-    'version': '10.0.2018.08.14.1',
-    'summary': """
-        Print Gift Card""",
-    'description': """
-        Print Gift Card
-    """,
+    'version': '10.0.2018.08.29.1',
+    'summary': """Print Gift Card""",
+    'description': """Print Gift Card""",
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',

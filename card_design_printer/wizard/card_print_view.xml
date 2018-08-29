@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="card_design_print_wizard">
+        <field name="name">card_print_wizard</field>
+        <field name="model">card.print.wizard</field>
+        <field name="inherit_id" ref="card_design.card_design_print_wizard"/>
+        <field name="arch" type="xml">
+            <field name="template_id" position="after">
+                <field name="printer_lang" invisible="1"/>
+                <field name="enable_printer" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

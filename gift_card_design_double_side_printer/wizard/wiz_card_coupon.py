@@ -12,6 +12,19 @@ class CardPrintWizard(models.TransientModel):
     nondulpex_type = fields.Selection([
         ('bulk', 'Bulk'), ('nobulk', 'Nonbulk')
     ], "Duplex Type", default='bulk')
+    enable_double_printer = fields.Boolean(
+        related='template_id.enable_double_printer',
+        string="Duplex Printer",
+        store=True,
+        readonly=True,
+        default=False,
+    )
+    duplex_type = fields.Selection(
+        related='template_id.duplex_type',
+        string="Duplex Typr",
+        store=True,
+        readonly=True
+    )
 
     @api.multi
     def print_douplex(self):
@@ -60,7 +73,7 @@ class CardPrintWizard(models.TransientModel):
                     back_path, back_data_file, back_base64_datas = rec.template_id.with_context(context).render_png(
                         svg_file_name, rec.template_id.back_body_html, '_back_side'
                     )
-                if rec.template_id.double_print_data_type == 'path':
+                if rec.template_id.data_type == 'path':
                     index, print_data = rec.template_id.create_json_duplex_data(front_path, back_path)
                 else:
                     index, print_data = rec.template_id.create_json_duplex_data(front_base64_datas, back_base64_datas)
@@ -108,7 +121,7 @@ class CardPrintWizard(models.TransientModel):
                     'product_coupon_name': coupon.name,
                 })
                 current_obj_name = coupon.name.replace(' ', '_').replace('.', '_').lower() + '_'
-                if rec.template_id.double_print_data_format == 'pdf':
+                if rec.template_id.data_format == 'pdf':
                     svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                     front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_pdf(
                         svg_file_name, rec.template_id.body_html, '_front_side'
@@ -118,7 +131,7 @@ class CardPrintWizard(models.TransientModel):
                     front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )
-                if rec.template_id.double_print_data_type == 'path':
+                if rec.template_id.data_type == 'path':
                     index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
                 else:
                     index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
@@ -231,7 +244,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 'product_coupon_name': rec.coupon_id.name,
             })
             current_obj_name = rec.coupon_id.name.replace(' ', '_').replace('.', '_').lower() + '_'
-            if rec.template_id.double_print_data_format == 'pdf':
+            if rec.template_id.data_format == 'pdf':
                 svg_file_name = current_obj_name + 'front_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_pdf(
                     svg_file_name, rec.template_id.body_html, '_front_side'
@@ -241,7 +254,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                     svg_file_name, rec.template_id.body_html, '_front_side'
                 )
-            if rec.template_id.double_print_data_type == 'path':
+            if rec.template_id.data_type == 'path':
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
@@ -290,7 +303,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 'product_coupon_name': rec.coupon_id.name,
             })
             current_obj_name = rec.coupon_id.name.replace(' ', '_').replace('.', '_').lower() + '_'
-            if rec.template_id.double_print_data_format == 'pdf':
+            if rec.template_id.data_format == 'pdf':
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.pdf'
                 front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_pdf(
                     svg_file_name, rec.template_id.back_body_html, '_back_side'
@@ -300,7 +313,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                     svg_file_name, rec.template_id.back_body_html, '_back_side'
                 )
-            if rec.template_id.double_print_data_type == 'path':
+            if rec.template_id.data_type == 'path':
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)

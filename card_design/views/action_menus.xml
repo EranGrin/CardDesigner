@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.actions.act_window" id="card_desgin_template_action">
+        <field name="name">Card Template</field>
+        <field name="res_model">card.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="card_card_design_action">
+        <field name="name">Cards</field>
+        <field name="res_model">card.card</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_view_template_size">
+        <field name="name">Template Size</field>
+        <field name="res_model">template.size</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="template_size_view_form" />
+    </record>
+
+    <record model="ir.actions.act_window" id="action_view_custome_image_snippets">
+        <field name="name">Image Snippets</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">custome.image.snippets</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="custome_image_snippets_view_tree"/>
+    </record>
+
+    <menuitem name="Design" id="card_design_menu"/>
+
+    <menuitem name="Cards" id="card_design_menu_child"
+        parent="card_design_menu"
+    />
+
+    <menuitem name="Card Templates"
+        id="card_design_template_menu"
+        parent="card_design_menu_child"
+        action="card_desgin_template_action"
+    />
+
+    <menuitem name="Cards" id="card_card_desgin_menu"
+        parent="card_design_menu_child"
+        action="card_card_design_action"
+    />
+
+    <menuitem name="Cards Setting" id="ies_design_menu_setting"
+        parent="card_design.card_design_menu"
+    />
+
+    <menuitem name="Template Size" id="menu_view_template_size"
+        parent="ies_design_menu_setting" sequence="3"
+        action="action_view_template_size"
+    />
+
+    <menuitem name="Image Snippets"
+        id="menu_view_custome_image_snippets"
+        parent="ies_design_menu_setting" sequence="3"
+        action="action_view_custome_image_snippets"
+    />
+
+</odoo>

@@ -7,22 +7,34 @@
         <field name="inherit_id" ref="card_design.card_design_print_wizard"/>
         <field name="arch" type="xml">
             <field name="file_config" position="after">
-                <field name="nondulpex_type" widget="radio"/>
+                <field name="nondulpex_type" widget="radio" attrs="{
+                    'invisible': [('enable_printer', '=', False)],
+                }"/>
+                <field name="enable_double_printer" invisible="1"/>
+                <field name="duplex_type" invisible="1"/>
             </field>
+            <button name="print_coupons" position="attributes">
+                <attribute name="attrs">{
+                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '!=', False)],
+                }</attribute>
+            </button>
             <xpath expr="//footer/button[@name='print_png']" position="after">
                 <button string="Print Duplex Gift Card"  class="oe_highlight"
                     name="print_douplex" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
+                    attrs="{
+                        'invisible': ['|', '|', ('enable_printer', '=', False), ('enable_double_printer', '=', False), ('duplex_type', '=', 'noduplex')],
+                    }"
                 />
                 <button string="Print Non-duplex Gift Card"  class="oe_highlight"
                     name="print_nondouplex" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
-                    attrs="{'invisible': [('nondulpex_type', '=', 'nobulk')]}"
+                    attrs="{'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('enable_double_printer', '=', False), ('duplex_type', '=', 'duplex'), ('nondulpex_type', '=', 'nobulk')]}"
                 />
                 <button string="Print Non-duplex Gift Card"  class="oe_highlight"
                     name="print_nondouplex_nobulk" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
-                    attrs="{'invisible': [('nondulpex_type', '=', 'bulk')]}"
+                    attrs="{'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('enable_double_printer', '=', False), ('duplex_type', '=', 'duplex'), ('nondulpex_type', '=', 'bulk')]}"
                 />
             </xpath>
         </field>

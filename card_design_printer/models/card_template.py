@@ -90,30 +90,17 @@ class CardTemplate(models.Model):
     epl_y = fields.Integer(
         string=_("Y (EPL Option)"), default=0
     )
+    is_mag_strip = fields.Boolean("Enable  Magnetic Stripe")
+    mag_strip_track1 = fields.Char("Track1")
+    mag_strip_track2 = fields.Char("Track2")
+    mag_strip_track3 = fields.Char("Track3")
     print_data_type = fields.Selection([
         ("path", "File Path"),
         ("base64", "Base64")
     ], string=_("Printer Data Type"), default="path")
-    is_manually = fields.Boolean(string="Manually Body Data")
-    manually_body_data = fields.Text(string="Manually Body Data")
-
-    def update_manually_json(self):
-        print_data = ''
-        print_data += "('type', '%s')," % self.data_type
-        print_data += "('format', '%s')," % self.data_format
-        if self.print_data_type == 'path':
-            print_data += "('flavor', 'file'),"
-        else:
-            print_data += "('flavor', 'base64'),"
-        print_data += "('options', {'language': '%s'})," % self.printer_lang
-        return print_data
-
-    @api.multi
-    def update_manually_data(self):
-        for rec in self:
-            manually_data = rec.update_manually_json()
-            rec.manually_body_data = manually_data
-        return True
+    is_manually = fields.Boolean(string="Manually Syntax")
+    manually_body_data = fields.Text(string="Manually Syntax")
+    check_manually_data = fields.Text(string="Check Syntax")
 
     @api.onchange('printer_lang')
     def onchange_printer_lang(self):
@@ -129,7 +116,117 @@ class CardTemplate(models.Model):
         elif self.printer_lang == 'EVOLIS':
             self.header_data = "Pps;0,Pwr;0,Wcb;k;0,Ss"
             self.footer_data = "Se"
+            if self.is_mag_strip:
+                self.mag_strip_track1 = 'Dm;1;foo'
+                self.mag_strip_track2 = 'Dm;1;12459'
+                self.mag_strip_track3 = 'Dm;1;55555'
 
+    @api.one
+    def update_manually_json(self):
+        print_data = ''
+        print_data += "('type', '%s')," % self.data_type
+        print_data += "('format', '%s')," % self.data_format
+        if self.print_data_type == 'path':
+            print_data += "('flavor', 'file'),"
+        else:
+            print_data += "('flavor', 'base64'),"
+        print_data += "('data', '$Value'),"
+        print_data += "('options', {'language': '%s'})," % self.printer_lang
+        return print_data
+
+    @api.multi
+    def update_manually_data(self):
+        for rec in self:
+            manually_data = rec.update_manually_json()
+            rec.manually_body_data = manually_data and manually_data[0] or ''
+        return True
+
+    def get_evolis_string(self):
+        print_data = ''
+        headerarray = self.header_data.split(',')
+        for hindex, i in enumerate(headerarray):
+            print_data += '/x1B' + headerarray[hindex] + "/x0D\n"
+        if self.is_mag_strip:
+            print_data += '/x1B' + self.mag_strip_track1 + '/x0D\n'
+            print_data += '/x1B' + self.mag_strip_track2 + '/x0D\n'
+            print_data += '/x1B' + self.mag_strip_track3 + '/x0D\n'
+            print_data += '/x1B' + 'smw' + '/x0D\n'
+        print_data_dict = self.get_manually_data()
+        print_data_dict = print_data_dict and print_data_dict[0] or {}
+        print_data_dict['options'].update({
+            'precision': self.precision,
+            'overlay': self.overlay
+        })
+        if self.print_data_type == 'path':
+            print_data_dict.update({
+                'flavor': 'file',
+                'data': '$value',
+            })
+        else:
+            print_data_dict.update({
+                'flavor': 'base64',
+                'data': '$value',
+            })
+        print_data += '%s\n' % print_data_dict
+        footerarray = self.footer_data.split(',')
+        for findex, j in enumerate(footerarray):
+            print_data += '/x1B' + footerarray[findex] + "/x0D\n"
+        return print_data
+
+    @api.multi
+    def check_manually_body_data(self):
+        for rec in self:
+            print_data = ''
+            if rec.printer_lang == 'EPL':
+                headerarray = self.header_data.split(',')
+                for hindex, i in enumerate(headerarray):
+                    print_data += "/n" + headerarray[hindex] + "/n\n"
+                print_data_dict = rec.get_manually_data()
+                print_data_dict = print_data_dict and print_data_dict[0] or {}
+                print_data_dict.get('options', False).update({
+                    'x': rec.epl_x,
+                    'y': rec.epl_y
+                })
+                if rec.print_data_type == 'path':
+                    print_data_dict.update({
+                        'flavor': 'file',
+                        'data': '$value',
+                    })
+                else:
+                    print_data_dict.update({
+                        'flavor': 'base64',
+                        'data': '$value',
+                    })
+                print_data += '%s\n' % print_data_dict
+                footerarray = rec.footer_data.split(',')
+                for findex, j in enumerate(footerarray):
+                    print_data += "/n" + footerarray[findex] + "/n\n"
+            elif rec.printer_lang == 'ZPL':
+                headerarray = rec.header_data.split(',')
+                for hindex, i in enumerate(headerarray):
+                    print_data += headerarray[hindex] + "/n\n"
+                print_data_dict = rec.get_manually_data()
+                print_data_dict = print_data_dict and print_data_dict[0] or {}
+                if rec.print_data_type == 'path':
+                    print_data_dict.update({
+                        'flavor': 'file',
+                        'data': '$value',
+                    })
+                else:
+                    print_data_dict.update({
+                        'flavor': 'base64',
+                        'data': '$value',
+                    })
+                print_data += '%s\n' % print_data_dict
+                footerarray = rec.footer_data.split(',')
+                for findex, j in enumerate(footerarray):
+                    print_data += footerarray[findex]+"/n\n"
+            elif rec.printer_lang == 'EVOLIS':
+                print_data = rec.get_evolis_string()
+            rec.check_manually_data = print_data
+        return True
+
+    @api.one
     def get_manually_data(self):
         print_data_dict = {}
         if not self.is_manually:
@@ -174,27 +271,15 @@ class CardTemplate(models.Model):
                         'index': index
                     }
                 if self.print_data_type == 'path':
-                    if self.data_format == 'pdf':
-                        print_epl_data_dict.update({
-                            'flavor': 'file',
-                            'data': data[0]
-                        })
-                    else:
-                        print_epl_data_dict.update({
-                            'flavor': 'file',
-                            'data': data[0]
-                        })
+                    print_epl_data_dict.update({
+                        'flavor': 'file',
+                        'data': data[0]
+                    })
                 else:
-                    if self.data_format == 'pdf':
-                        print_epl_data_dict.update({
-                            'flavor': 'base64',
-                            'data': data[1]
-                        })
-                    else:
-                        print_epl_data_dict.update({
-                            'flavor': 'base64',
-                            'data': data[1]
-                        })
+                    print_epl_data_dict.update({
+                        'flavor': 'base64',
+                        'data': data[1]
+                    })
                 print_data.append(print_epl_data_dict)
                 footerarray = self.footer_data.split(',')
                 for findex, j in enumerate(footerarray):
@@ -251,10 +336,19 @@ class CardTemplate(models.Model):
                     index: print_data
                 })
             elif self.printer_lang == 'EVOLIS':
+                context = dict(self.env.context or {})
+
                 print_data = []
                 headerarray = self.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     print_data.append('\x1B' + headerarray[hindex] + "\x0D")
+
+                if self.is_mag_strip and context.get('front_side', False):
+                    print_data.append('\x1B' + self.mag_strip_track1 + '\x0D')
+                    print_data.append('\x1B' + self.mag_strip_track2 + '\x0D')
+                    print_data.append('\x1B' + self.mag_strip_track3 + '\x0D')
+                    print_data.append('\x1B' + 'smw' + '\x0D')
+
                 if self.is_manually:
                     print_evl_data_dict = self.get_manually_data()
                     print_evl_data_dict.update({
@@ -368,7 +462,11 @@ class CardTemplate(models.Model):
             path_data = path
             base64_data = base64_datas
             data_list.append((path_data, base64_data))
-            index, print_data = rec.create_json_print_data(data_list)
+            context = dict(self.env.context or {})
+            context.update({
+                'front_side': True,
+            })
+            index, print_data = rec.with_context(context).create_json_print_data(data_list)
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,

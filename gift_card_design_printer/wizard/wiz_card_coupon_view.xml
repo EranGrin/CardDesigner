@@ -10,6 +10,9 @@
                 <button string="Print Gift Card"  class="oe_highlight"
                     name="print_coupons" type="object" icon="fa-print"
                     style="margin-left:15px;background: dimgray;border-color:dimgray;"
+                    attrs="{
+                        'invisible': [('enable_printer', '=', False)],
+                    }"
                 />
             </xpath>
             <field name="position" position="after">
@@ -17,6 +20,9 @@
                     options="{
                         'no_create': True,
                         'no_open': True
+                    }"
+                    attrs="{
+                        'invisible': [('enable_printer', '=', False)],
                     }"
                 />
             </field>

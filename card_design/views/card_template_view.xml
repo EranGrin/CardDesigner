@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record id="view_general_configuration_form_inherit_card_design" model="ir.ui.view">
+    <record id="view_general_conf_form_inherit" model="ir.ui.view">
         <field name="name">base.config.settings.form.inherit.card.design</field>
         <field name="model">base.config.settings</field>
         <field name="inherit_id" ref="base_setup.view_general_configuration"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='google_analytics']" position="after">
-                <group string="Card Design" name="svg_to_pdf_path">
+                <group string="Card Design" name="svg_to_pdf_path" invisible="1">
                     <label for="file_name" />
                     <div class="row">
                         <div class="col-xs-6">
-                            <field name="file_name" class="oe_inline" />
+                            <field name="file_name" class="oe_inline" invisible="1"/>
                         </div>
                     </div>
                     <label for="download_path" />
                     <div class="row">
                         <div class="col-xs-6">
-                            <field name="download_path" class="oe_inline" />
+                            <field name="download_path" class="oe_inline" invisible="1"/>
                         </div>
                     </div>
+                </group>
+                <group name="zip_allow" string="Card Design">
                     <label for="allow_to_zip" />
                     <div class="row">
                         <div class="col-xs-6">
@@ -30,8 +32,6 @@
             </xpath>
         </field>
     </record>
-
-    <menuitem name="Design" id="card_design_menu"/>
 
     <record model="ir.ui.view" id="card_design_template_tree_view">
         <field name="name">card.design.template.tree.view</field>
@@ -50,13 +50,26 @@
         <field name="arch" type="xml">
             <form string="Card Template">
                 <header>
-                    <button name="action_send_email" type="object" string="Send by Email" class="btn-primary"/>
-                    <button name="print_both_side" type="object" string="Export as PDF"
-                                class="oe_highlight" icon="fa-file-pdf-o"/>
-                    <button name="print_both_side_png" type="object" string="Export as IMAGE"
-                                class="oe_highlight" icon="fa-image"/>
-                    <button name="generate_cards" type="object" string="Generate Cards"></button>
-                    <button name="change_template_size" type="object" string="Change Size" class="btn-primary"/>
+                    <button name="generate_cards" type="object"
+                        string="Generate Cards" 
+                    />
+                    <button name="action_send_email"
+                        type="object" string="Send by Email"
+                        class="btn-primary"
+                    />
+                    <button name="print_both_side"
+                        type="object" string="Export PDF"
+                        class="oe_highlight" icon="fa-file-pdf-o"
+                    />
+                    <button 
+                        name="print_both_side_png"
+                        type="object" string="Export IMAGE"
+                        class="oe_highlight" icon="fa-image"
+                    />
+                    <button name="change_template_size" type="object"
+                        string="Template Size Change"
+                        class="btn-primary"
+                    />
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -65,14 +78,17 @@
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-clone">
-                            <field string="Cards" name="card_count" widget="statinfo"/>
+                            <field string="Cards" name="card_count"
+                                widget="statinfo"
+                            />
                         </button>
                         <button name="toggle_active"
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-archive">
                             <field name="active" widget="boolean_button"
-                                   options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                                options="{&quot;terminology&quot;: &quot;archive&quot;}"
+                            />
                         </button>
                     </div>
                     <div class="oe_title">
@@ -84,16 +100,22 @@
                         <field name="code" invisible="1"/>
                     </div>
                     <group>
-                        <label for="card_model" string="Selected Recods"/>
+                        <label for="card_model" string="Selected Model"/>
                         <div>
                             <div>
-                                <field name="card_model" widget="radio" options="{'horizontal': true}"/>
+                                <field name="card_model"
+                                    widget="radio"
+                                    options="{'horizontal': true}"
+                                />
                             </div>
                         </div>
                     </group>
                     <group>
                         <group>
-                            <field name="template_size" string="Size" options="{'no_create': True,'no_open': True}" />
+                            <field name="template_size"
+                                string="Size"
+                                options="{'no_create': True,'no_open': True}" 
+                            />
                             <field name="user_id" invisible="1"/>
                         </group>
                         <group>
@@ -102,75 +124,77 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Front Template Design" name="body"
-                            attrs="{'invisible': [('front_side', '=', False)]}"
-                            >
-                            <button name="print_front_side" type="object" string="Export PDF"
-                                class="oe_highlight" icon="fa-file-pdf-o"/>
-                            <button name="print_front_side_png" type="object" string="Export Image"
-                                class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
-                            <field name="body_html" widget="html_frame" context="{'code': code}"
-                                   options="{'editor_url': '/card_design/field/card_template'}"/>
-                        </page>
-                        <page string="Back Template Design" name="back_body"
-                            attrs="{'invisible': [('back_side', '=', False)]}">
-                            <button name="print_back_side" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
-                            <button name="print_back_side_png" type="object" string="Export Image"
-                                class="oe_highlight" icon="fa-image"  style="margin-left:15px;"/>
-                            <field name="back_body_html" widget="html_frame" context="{'code': code}"
-                                options="{'editor_url': '/card_design/field/card_template_back'}"
-                            />
-                        </page>
-                        <page string="Info" name="info">
+                        <page string="General Information" name="info">
                             <group>
                                 <field name="ref_ir_act_window_id" readonly="1"/>
                                 <field name="ref_ir_value_id" readonly="1"/>
                             </group>
                         </page>
-                        <page string="History" name="attachment">
-                            <button name="action_selected_card_send_email" type="object" string="Send by Email" class="btn-primary" icon="fa-envelope-o"/>
-                            <field name="attachment_ids" >
-                                <tree create="false" editable="bottom">
-                                    <field name="is_select" />
-                                    <field name="datas_fname" readonly="1"/>
-                                    <field name="datas" readonly="1"/>
-                                    <field name="create_date" readonly="1"/>
-                                    <!-- <button name="action_send_email" type="object" string="Send by Email" icon="fa-envelope-o"/> -->
-                                </tree>
-                            </field>
+                        <page string="Template Design">
+                            <notebook>
+                                <page string="Front Side" name="body"
+                                    attrs="{'invisible': [('front_side', '=', False)]}"
+                                    >
+                                    <br/>
+                                    <button name="print_front_side" type="object" string="Export PDF"
+                                        class="oe_highlight" icon="fa-file-pdf-o"/>
+                                    <button name="print_front_side_png" type="object" string="Export Image"
+                                        class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
+                                    <field name="body_html" widget="html_frame" context="{'code': code}"
+                                           options="{'editor_url': '/card_design/field/card_template'}"/>
+                                </page>
+                                <page string="Back Side" name="back_body"
+                                    attrs="{'invisible': [('back_side', '=', False)]}">
+                                    <br/>
+                                    <button name="print_back_side" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
+                                    <button name="print_back_side_png" type="object" string="Export Image"
+                                        class="oe_highlight" icon="fa-image"  style="margin-left:15px;"/>
+                                    <field name="back_body_html" widget="html_frame" context="{'code': code}"
+                                        options="{'editor_url': '/card_design/field/card_template_back'}"
+                                    />
+                                </page>
+                            </notebook>
                         </page>
-                        <page string="Image History" name="attachment">
-                            <button name="action_selected_card_send_email" type="object" string="Send by Email" class="btn-primary" icon="fa-envelope-o"
-                                context="{'image': True}"/>
-                            <field name="image_attachment_ids" >
-                                <tree create="false" editable="bottom">
-                                    <field name="is_select" />
-                                    <field name="datas_fname" readonly="1"/>
-                                    <field name="datas" readonly="1"/>
-                                    <field name="create_date" readonly="1"/>
-                                    <!-- <button name="action_send_email" type="object" string="Send by Email" icon="fa-envelope-o"/> -->
-                                </tree>
-                            </field>
+                        <page string="Attachment History" name="attachment">
+                            <notebook>
+                                <page string="PDF" name="pdf_files">
+                                    <br/>
+                                    <button name="action_selected_card_send_email"
+                                        type="object" string="Send by Email"
+                                        class="btn-primary" icon="fa-envelope-o"
+                                    />
+                                    <field name="attachment_ids" >
+                                        <tree create="false" editable="bottom">
+                                            <field name="is_select" />
+                                            <field name="datas_fname" readonly="1"/>
+                                            <field name="datas" readonly="1"/>
+                                            <field name="create_date" readonly="1"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page string="IMAGE" name="attachment">
+                                    <br/>
+                                    <button name="action_selected_card_send_email"
+                                        type="object" string="Send by Email"
+                                        class="btn-primary" icon="fa-envelope-o"
+                                        context="{'image': True}"
+                                    />
+                                    <field name="image_attachment_ids" >
+                                        <tree create="false" editable="bottom">
+                                            <field name="is_select" />
+                                            <field name="datas_fname" readonly="1"/>
+                                            <field name="datas" readonly="1"/>
+                                            <field name="create_date" readonly="1"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
                         </page>
                     </notebook>
                 </sheet>
-
             </form>
         </field>
     </record>
-
-    <record model="ir.actions.act_window" id="card_desgin_template_action">
-        <field name="name">Card Template</field>
-        <field name="res_model">card.template</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <menuitem name="Cards" id="card_design_menu_child" parent="card_design_menu"/>
-
-    <menuitem name="Card Templates"
-        id="card_design_template_menu"
-        parent="card_design_menu_child"
-        action="card_desgin_template_action"/>
 
     <record model="ir.ui.view" id="card_card_design_tree_view">
         <field name="name">card.card.design.tree.view</field>
@@ -211,88 +235,52 @@
         </field>
     </record>
 
-    <record model="ir.actions.act_window" id="card_card_design_action">
-        <field name="name">Cards</field>
-        <field name="res_model">card.card</field>
-        <field name="view_mode">tree,form</field>
+    <record id="template_size_view_form" model="ir.ui.view">
+        <field name="name">template.size.view.form</field>
+        <field name="model">template.size</field>
+        <field name="arch" type="xml">
+            <tree string="Size" editable="top">
+                <field name="name" required="1"/>
+                <field name="width" required="1"/>
+                <field name="height" required="1"/>
+                <field name="size_unit" required="1"/>
+                <field name="dpi" required="1"/>
+                <field name="size_width_px" invisible="1"/>
+                <field name="size_height_px" invisible="1"/>
+            </tree>
+        </field>
     </record>
 
-    <menuitem name="Cards" id="card_card_desgin_menu" parent="card_design_menu_child" action="card_card_design_action"/>
+    <record id="custome_image_snippets_view_tree" model="ir.ui.view">
+        <field name="name">custome.image.snippets.view.tree</field>
+        <field name="model">custome.image.snippets</field>
+        <field name="arch" type="xml">
+            <tree string="Size">
+                <field name="name" />
+                <field name="model_id"/>
+                <field name="field_id" />
+            </tree>
+        </field>
+    </record>
 
-
-    <record id="template_size_view_form" model="ir.ui.view">
-            <field name="name">template.size.view.form</field>
-            <field name="model">template.size</field>
-            <field name="arch" type="xml">
-                <tree string="Size" editable="top">
-                    <field name="name" required="1"/>
-                    <field name="width" required="1"/>
-                    <field name="height" required="1"/>
-                    <field name="size_unit" required="1"/>
-                    <field name="dpi" required="1"/>
-                    <field name="size_width_px" invisible="1"/>
-                    <field name="size_height_px" invisible="1"/>
-                </tree>
-            </field>
-        </record>
-
-        <menuitem name="Cards Setting" id="ies_design_menu_setting" parent="card_design.card_design_menu"/>
-
-        <record model="ir.actions.act_window" id="action_view_template_size">
-            <field name="name">Card Size</field>
-            <field name="res_model">template.size</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="template_size_view_form" />
-        </record>
-
-        <menuitem name="Card Size" id="menu_view_template_size"
-            parent="ies_design_menu_setting" sequence="3"
-            action="action_view_template_size"/>
-
-        <record id="custome_image_snippets_view_tree" model="ir.ui.view">
-            <field name="name">custome.image.snippets.view.tree</field>
-            <field name="model">custome.image.snippets</field>
-            <field name="arch" type="xml">
-                <tree string="Size">
-                    <field name="name" />
-                    <field name="model_id"/>
-                    <field name="field_id" />
-                </tree>
-            </field>
-        </record>
-
-        <record id="custome_image_snippets_view_form" model="ir.ui.view">
-            <field name="name">custome.image.snippets.view.form</field>
-            <field name="model">custome.image.snippets</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
+    <record id="custome_image_snippets_view_form" model="ir.ui.view">
+        <field name="name">custome.image.snippets.view.form</field>
+        <field name="model">custome.image.snippets</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
                         <group>
-                            <group>
-                                <field name="name" required="1"/>
-                                <field name="model_id" required="1" options="{'no_create': True,'no_open': True}"/>
-                                <field name="field_id" required="1" domain="[('ttype', '=', 'binary'),('model_id', '=', model_id)]" options="{'no_create': True,'no_open': True}"/>
-                            </group>
-                            <group>
-                            </group>
+                            <field name="name" required="1"/>
+                            <field name="model_id" required="1" options="{'no_create': True,'no_open': True}"/>
+                            <field name="field_id" required="1" domain="[('ttype', '=', 'binary'),('model_id', '=', model_id)]" options="{'no_create': True,'no_open': True}"/>
                         </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_view_custome_image_snippets">
-            <field name="name">Image Snippets</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">custome.image.snippets</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_type">form</field>
-            <field name="view_id" ref="custome_image_snippets_view_tree"/>
-        </record>
-
-        <menuitem name="Image Snippets" id="menu_view_custome_image_snippets"
-            parent="ies_design_menu_setting" sequence="3"
-            action="action_view_custome_image_snippets"/>
+                        <group>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
 </odoo>

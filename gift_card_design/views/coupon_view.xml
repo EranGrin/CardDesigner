@@ -17,15 +17,9 @@
         <field name="model">card.template</field>
         <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//notebook/page[last()]" position="after">
-                <page name="gift_card_setting" string="Gift Card Configuration">
-                    <group>
-                        <group>
-                            <field name="combine_pdf_page" />
-                        </group>
-                    </group>
-                </page>
-            </xpath>
+            <field name="ref_ir_value_id" position="after">
+                <field name="combine_pdf_page" />
+            </field>
         </field>
     </record>
 

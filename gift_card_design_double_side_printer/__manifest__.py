@@ -3,12 +3,9 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Print Gift Card Double Side",
-    'version': '10.0.2018.08.14.1',
-    'summary': """
-        Print Gift Card Double Side""",
-    'description': """
-        Print Gift Card Double Side
-    """,
+    'version': '10.0.2018.08.29.1',
+    'summary': """Print Gift Card Double Side""",
+    'description': """Print Gift Card Double Side""",
     'author': "Inceptus.io",
     'website': "http://www.inceptus.io",
     'category': 'Tools',

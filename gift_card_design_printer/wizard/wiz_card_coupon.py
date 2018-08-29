@@ -69,7 +69,11 @@ class CardPrintWizard(models.TransientModel):
                 path_data = path
                 base64_data = base64_datas
                 data_list.append((path_data, base64_data))
-            index, print_data = self.template_id.create_json_print_data(data_list)
+            if self.position == 'f':
+                context.update({
+                    'front_side': True,
+                })
+            index, print_data = self.template_id.with_context(context).create_json_print_data(data_list)
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
