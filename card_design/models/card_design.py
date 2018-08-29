@@ -741,7 +741,7 @@ class CardTemplate(models.Model):
         font_config = FontConfiguration()
         style = '''
             @page { size: %s %s ; margin: -6px; overflow: hidden !important;}
-            div { overflow: hidden !important;  float: left; width: %s; margin-top:-2px;margin-left:-1px;}
+            div { overflow: hidden !important;  margin-top:-2px;margin-left:-1px;}
         ''' % (width, height, '100%')
         css = CSS(string=style, font_config=font_config)
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
