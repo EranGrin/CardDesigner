@@ -17,12 +17,12 @@
             </field>
             <button name="qz_print_front_side" position="attributes">
                 <attribute name="attrs">{
-                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '!=', 'False')],
+                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '!=', False)],
                 }</attribute>
             </button>
             <button name="qz_print_back_side" position="attributes">
                 <attribute name="attrs">{
-                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '!=', 'False')],
+                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '!=', False)],
                 }</attribute>
             </button>
             <xpath expr="//page[@name='config']" position="after">

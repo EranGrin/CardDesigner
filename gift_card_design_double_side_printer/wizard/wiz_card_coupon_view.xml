@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <field name="file_config" position="after">
                 <field name="nondulpex_type" widget="radio" attrs="{
-                    'invisible': [('enable_printer', '=', False)],
+                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '=', False)],
                 }"/>
                 <field name="enable_double_printer" invisible="1"/>
                 <field name="duplex_type" invisible="1"/>
