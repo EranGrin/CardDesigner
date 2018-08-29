@@ -16,10 +16,28 @@
         <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page name="printer_config" string="Printer">
+                <page name="printer_config" string="Printer Configuration">
                     <group>
                         <group>
                             <field name="enable_printer" />
+                            <field name="print_type" widget="radio"
+                                attrs="{
+                                    'required': [('enable_printer', '!=', False)],
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="zebra_lang" 
+                                attrs="{
+                                    'required': [('print_type', '=', 'zebra')],
+                                    'invisible': ['|', ('enable_printer', '=', False), ('print_type', '!=', 'zebra')],
+                                }"
+                            />
+                            <field name="evolis_lang" 
+                                attrs="{
+                                    'required': [('print_type', '=', 'evolis')],
+                                    'invisible': ['|', ('enable_printer', '=', False), ('print_type', '!=', 'evolis')],
+                                }"
+                            />
                             <field name="printer_id"
                                 attrs="{
                                     'required': [('enable_printer', '!=', False)],
@@ -31,14 +49,9 @@
                                 }"
                             />
                         </group>
-                        <group>
-                            <field name="printer_lang"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                        </group>
+                        <field name="printer_lang" widget="radio"
+                            invisible="1"
+                        />
                     </group>
                     <notebook attrs="{
                             'invisible': [('enable_printer', '=', False)],
@@ -241,6 +254,11 @@
                     </group>
                 </page>
             </xpath>
+            <field name="back_side" position="attributes">
+                <attribute name="attrs">{
+                     'invisible': ['|', ('enable_printer', '=', False), ('print_type', '=', 'zebra')],
+                    }</attribute>
+            </field>
             <field name="body_html" position="before">
                 <button name="qz_print_front_side" type="object" string="Print via QZ"
                     class="oe_highlight" icon="fa-print"

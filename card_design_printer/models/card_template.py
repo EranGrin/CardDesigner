@@ -11,6 +11,17 @@ from ast import literal_eval
 class CardTemplate(models.Model):
     _inherit = 'card.template'
 
+    print_type = fields.Selection([
+        ("zebra", "Zebra"),
+        ("evolis", "Evolis"),
+    ], string="Printer Type", default="zebra")
+    zebra_lang = fields.Selection([
+        ("ZPL", "ZPL"),
+        ("EPL", "EPL"),
+    ], string="Printer Language")
+    evolis_lang = fields.Selection([
+        ("EVOLIS", "EVOLIS"),
+    ], string="Printer Language")
     enable_printer = fields.Boolean(
         string=_("Enable Printer"),
     )
@@ -101,6 +112,35 @@ class CardTemplate(models.Model):
     is_manually = fields.Boolean(string="Manually Syntax")
     manually_body_data = fields.Text(string="Manually Syntax")
     check_manually_data = fields.Text(string="Check Syntax")
+
+    @api.onchange('print_type')
+    def onchange_print_type(self):
+        for rec in self:
+            if rec.print_type == 'zebra':
+                if rec.zebra_lang:
+                    rec.onchange_zebra_lang()
+            else:
+                if rec.evolis_lang:
+                    rec.printer_lang = rec.evolis_lang
+                    rec.onchange_evolis_lang()
+
+    @api.onchange('zebra_lang')
+    def onchange_zebra_lang(self):
+        for rec in self:
+            if rec.zebra_lang:
+                rec.printer_lang = rec.zebra_lang
+                rec.onchange_printer_lang()
+            else:
+                rec.printer_lang = False
+
+    @api.onchange('evolis_lang')
+    def onchange_evolis_lang(self):
+        for rec in self:
+            if rec.evolis_lang:
+                rec.printer_lang = rec.evolis_lang
+                rec.onchange_printer_lang()
+            else:
+                rec.printer_lang = False
 
     @api.onchange('printer_lang')
     def onchange_printer_lang(self):

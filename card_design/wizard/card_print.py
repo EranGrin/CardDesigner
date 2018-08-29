@@ -60,7 +60,7 @@ class CardPrintWizard(models.TransientModel):
             res_ids = self._context.get('active_ids')
             if len(res_ids) >= 1:
                 res_ids = [res_ids[0]]
-            if self.position == 'b' and res_ids:
+            if self.position == 'b' and res_ids and self.template_id.back_side:
                 template = self.env['card.template'].render_template(
                     self.template_id.back_body_html, model, res_ids
                 )
@@ -82,7 +82,7 @@ class CardPrintWizard(models.TransientModel):
         if len(res_ids) >= 1:
             res_ids = [res_ids[0]]
         if res_ids:
-            if self.position == 'b':
+            if self.position == 'b' and self.template_id.back_side:
                 template = self.env['card.template'].render_template(
                     self.template_id.back_body_html, model, res_ids
                 )

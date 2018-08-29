@@ -13,7 +13,7 @@
         <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
         <field name="arch" type="xml">
             <field name="printer_lang" position="before">
-                <field name="enable_double_printer" />
+                <field name="enable_double_printer" invisible="1"/>
             </field>
             <button name="qz_print_front_side" position="attributes">
                 <attribute name="attrs">{
