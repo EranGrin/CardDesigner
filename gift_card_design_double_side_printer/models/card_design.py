@@ -43,7 +43,7 @@ class CardTemplate(models.Model):
                     back_path, data_file, back_base64_datas = rec.with_context(context).render_png(
                         svg_file_name, rec.back_body_html, '_back_side'
                     )
-                if rec.data_type == 'path':
+                if rec.print_data_type == 'path':
                     index, print_data = self.create_json_nonduplex_back_data(back_path)
                 else:
                     index, print_data = self.create_json_nonduplex_back_data(back_base64_datas)

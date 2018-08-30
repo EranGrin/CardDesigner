@@ -3,7 +3,7 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Print Card Template",
-    'version': '10.0.2018.08.29.1',
+    'version': '10.0.2018.08.30.1',
     'summary': """Print Card Template""",
     'description': """Print Card Template""",
     'author': "Inceptus.io",

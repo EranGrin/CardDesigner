@@ -222,17 +222,13 @@
                             'invisible': [('enable_printer', '=', False)],
                         }"/>
                     </group>
-                    <div attrs="{
-                        'invisible': [('enable_printer', '=', False)],
-                    }">
+                    <div invisible="1" >
                         <button name="update_manually_data" type="object"
                             string="Update Manually Data" attrs="{
                                 'invisible': [('is_manually', '=', False)],
                             }"/>
                     </div>
-                    <group attrs="{
-                        'invisible': [('enable_printer', '=', False)],
-                    }">
+                    <group invisible="1">
                         <field nolabel="1" name="manually_body_data" attrs="{
                             'invisible': [('is_manually', '=', False)],
                         }"/>
@@ -250,7 +246,7 @@
                     }">
                         <field nolabel="1" name="check_manually_data" attrs="{
                             'invisible': [('is_manually', '=', False)],
-                        }" readonly="1"/>
+                        }" />
                     </group>
                 </page>
             </xpath>
