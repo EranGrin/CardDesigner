@@ -272,8 +272,8 @@ class CardTemplate(models.Model):
                                     attr_list[0].strip(): attr_list[1].strip()
                                 })
                         style_dict.update({
-                            'height': str(rec.template_size.size_height_px) + 'px',
-                            'width': str(rec.template_size.size_width_px) + 'px',
+                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
+                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
                         })
                         div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
                     break
@@ -292,8 +292,8 @@ class CardTemplate(models.Model):
                                     attr_list[0].strip(): attr_list[1].strip()
                                 })
                         style_dict.update({
-                            'height': str(rec.template_size.size_height_px) + 'px',
-                            'width': str(rec.template_size.size_width_px) + 'px',
+                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
+                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
                         })
                         div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
                     break
