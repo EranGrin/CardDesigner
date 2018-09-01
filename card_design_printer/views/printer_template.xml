@@ -15,43 +15,20 @@
         <field name="model">card.template</field>
         <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
         <field name="arch" type="xml">
+             <xpath expr="//notebook" position="before">
+                <group>
+                    <field name="type" widget="radio" options="{'horizontal': true}"/>
+                </group>
+             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="printer_config" string="Printer Configuration">
                     <group>
                         <group>
                             <field name="enable_printer" />
-                            <field name="print_type" widget="radio"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                            />
-                            <field name="zebra_lang" 
-                                attrs="{
-                                    'required': [('print_type', '=', 'zebra'), ('enable_printer', '!=', False)],
-                                    'invisible': ['|', ('enable_printer', '=', False), ('print_type', '!=', 'zebra')],
-                                }"
-                            />
-                            <field name="evolis_lang" 
-                                attrs="{
-                                    'required': [('print_type', '=', 'evolis')],
-                                    'invisible': ['|', ('enable_printer', '=', False), ('print_type', '!=', 'evolis')],
-                                }"
-                            />
-                            <field name="printer_id"
-                                attrs="{
-                                    'required': [('enable_printer', '!=', False)],
-                                    'invisible': [('enable_printer', '=', False)],
-                                }"
-                                options="{
-                                    'no_create': True,
-                                    'no_open': True
-                                }"
+                            <field name="printer_lang" widget="radio"
+                                invisible="1"
                             />
                         </group>
-                        <field name="printer_lang" widget="radio"
-                            invisible="1"
-                        />
                     </group>
                     <notebook attrs="{
                             'invisible': [('enable_printer', '=', False)],
@@ -67,6 +44,23 @@
                                             'invisible': [('enable_printer', '=', False)],
                                         }" invisible="1"
                                     />
+                                    <field name="zebra_lang" 
+                                        attrs="{
+                                            'required': [('type', '=', 'label'), ('enable_printer', '!=', False)],
+                                            'invisible': ['|', ('enable_printer', '=', False), ('type', '!=', 'label')],
+                                        }"
+                                    />
+                                    <field name="evolis_lang"  invisible="1"/>
+                                    <field name="printer_id"
+                                        attrs="{
+                                            'required': [('enable_printer', '!=', False)],
+                                            'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                        options="{
+                                            'no_create': True,
+                                            'no_open': True
+                                        }"
+                                    />
                                     <field name="data_format"
                                         attrs="{
                                             'required': [('enable_printer', '!=', False)],
@@ -80,36 +74,39 @@
                                         }"
                                     />
                                 </group>
-                            </group>
-                            <group attrs="{
-                                'invisible': [('enable_printer', '=', False)],
-                            }">
-                                <group>
+                                <group name="add_size" attrs="{
+                                            'invisible': ['|', ('enable_printer', '=', False), ('type', '!=', 'label')],
+                                        }">
                                     <field name="dotDensity"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
+                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
+                                            'invisible': ['|', ('enable_printer', '=', False), ('type', '!=', 'label')],
                                         }"
                                     />
                                     <field name="xml_tag"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
+                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
+                                            'invisible': ['|',('enable_printer', '=', False), ('type', '!=', 'label')],
                                         }"
                                     />
                                     <field name="pageHeight"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
+                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
+                                            'invisible': ['|',('enable_printer', '=', False), ('type', '!=', 'label')],
                                         }"
                                     />
                                     <field name="pageWidth"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
+                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
+                                            'invisible': ['|',('enable_printer', '=', False), ('type', '!=', 'label')],
                                         }"
                                     />
                                 </group>
+                            </group>
+                            <!-- <group attrs="{
+                                'invisible': [('enable_printer', '=', False)],
+                            }">
+                                
                                 <group invisible="1">
                                     <field name="copies"
                                         attrs="{
@@ -136,36 +133,7 @@
                                         }"
                                     />
                                 </group>
-                            </group>
-                            <group attrs="{
-                                        'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                    }">
-                                <group>
-                                    <field name="is_mag_strip"
-                                        attrs="{
-                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                        }"
-                                    />
-                                    <field name="mag_strip_track1"
-                                        attrs="{
-                                            'required': [('is_mag_strip', '!=', False), ('printer_lang', '=', 'EVOLIS')],
-                                            'invisible': ['|', ('is_mag_strip', '=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                        }"
-                                    />
-                                    <field name="mag_strip_track2"
-                                        attrs="{
-                                            'required': [('is_mag_strip', '!=', False), ('printer_lang', '=', 'EVOLIS')],
-                                            'invisible': ['|', ('is_mag_strip', '=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                        }"
-                                    />
-                                    <field name="mag_strip_track3"
-                                        attrs="{
-                                            'required': [('is_mag_strip', '!=', False), ('printer_lang', '=', 'EVOLIS')],
-                                            'invisible': ['|', ('is_mag_strip', '=', False), ('printer_lang', '!=', 'EVOLIS')],
-                                        }"
-                                    />
-                                </group>
-                            </group>
+                            </group> -->
                             <group attrs="{
                                 'invisible': [('enable_printer', '=', False)],
                             }">
@@ -210,7 +178,63 @@
                                     />
                                 </group>
                             </group>
-                            
+                            <group attrs="{
+                                'invisible': [
+                                    '|', 
+                                    ('enable_printer', '=', False),
+                                    ('type', '=', 'label')],
+                                }">
+                                <group>
+                                    <field name="is_mag_strip"
+                                        attrs="{
+                                            'invisible': [
+                                                '|',
+                                                ('enable_printer', '=', False),
+                                                ('type', '=', 'label'),
+                                            ],
+                                        }"
+                                    />
+                                    <field name="mag_strip_track1"
+                                        attrs="{
+                                            'required': [
+                                                ('is_mag_strip', '!=', False),
+                                                ('type', '=', 'card')
+                                            ],
+                                            'invisible': [
+                                                '|',
+                                                ('is_mag_strip', '=', False),
+                                                ('type', '=', 'label')
+                                            ],
+                                        }"
+                                    />
+                                    <field name="mag_strip_track2"
+                                        attrs="{
+                                            'required': [
+                                                ('is_mag_strip', '!=', False),
+                                                ('type', '=', 'card')
+                                            ],
+                                            'invisible': [
+                                                '|',
+                                                ('is_mag_strip', '=', False),
+                                                ('type', '=', 'label')
+                                            ],
+                                        }"
+                                    />
+                                    <field name="mag_strip_track3"
+                                        attrs="{
+                                            'required': [
+                                                ('is_mag_strip', '!=', False),
+                                                ('type', '=', 'card')
+                                            ],
+                                            'invisible': [
+                                                '|',
+                                                ('is_mag_strip', '=', False),
+                                                ('type', '=', 'label')
+                                            ],
+                                        }"
+                                    />
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                     <br/>
@@ -246,13 +270,13 @@
                     }">
                         <field nolabel="1" name="check_manually_data" attrs="{
                             'invisible': [('is_manually', '=', False)],
-                        }" />
+                        }"  style="min-height:300px"/>
                     </group>
                 </page>
             </xpath>
             <field name="back_side" position="attributes">
                 <attribute name="attrs">{
-                     'invisible': ['|', ('enable_printer', '=', False), ('print_type', '=', 'zebra')],
+                     'invisible': [('type', '=', 'label')],
                     }</attribute>
             </field>
             <field name="body_html" position="before">

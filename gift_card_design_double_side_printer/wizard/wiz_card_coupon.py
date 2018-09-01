@@ -12,12 +12,11 @@ class CardPrintWizard(models.TransientModel):
     nondulpex_type = fields.Selection([
         ('bulk', 'Bulk'), ('nobulk', 'Nonbulk')
     ], "Duplex Type", default='bulk')
-    enable_double_printer = fields.Boolean(
-        related='template_id.enable_double_printer',
-        string="Duplex Printer",
+    type = fields.Selection(
+        related='template_id.type',
+        string="Type",
         store=True,
-        readonly=True,
-        default=False,
+        readonly=True
     )
     duplex_type = fields.Selection(
         related='template_id.duplex_type',

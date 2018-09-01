@@ -302,6 +302,8 @@ class CardTemplate(models.Model):
 
     @api.multi
     def action_selected_card_send_email(self):
+        import pdb
+        pdb.set_trace()
         context = dict(self.env.context or {})
         if context.get('image', False):
             attachment_ids = self.image_attachment_ids

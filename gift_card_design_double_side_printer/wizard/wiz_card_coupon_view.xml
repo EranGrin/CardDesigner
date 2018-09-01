@@ -8,14 +8,15 @@
         <field name="arch" type="xml">
             <field name="file_config" position="after">
                 <field name="nondulpex_type" widget="radio" attrs="{
-                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '=', False)],
+                    'invisible': ['|', ('enable_printer', '=', False), ('type', '=', 'label')],
                 }"/>
-                <field name="enable_double_printer" invisible="1"/>
                 <field name="duplex_type" invisible="1"/>
+                <field name="type" invisible="1"/>
             </field>
             <button name="print_coupons" position="attributes">
                 <attribute name="attrs">{
-                    'invisible': ['|', ('enable_printer', '=', False), ('enable_double_printer', '!=', False)],
+                    'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('duplex_type', 'not in', ['normal']),
+                    ('duplex_type', '=', False)],
                 }</attribute>
             </button>
             <xpath expr="//footer/button[@name='print_png']" position="after">
@@ -23,18 +24,24 @@
                     name="print_douplex" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
                     attrs="{
-                        'invisible': ['|', '|', ('enable_printer', '=', False), ('enable_double_printer', '=', False), ('duplex_type', '=', 'noduplex')],
+                        'invisible': [
+                            '|', '|', '|',
+                            ('enable_printer', '=', False),
+                            ('type', '=', 'label'),
+                            ('duplex_type', 'in', ['normal','noduplex']),
+                            ('duplex_type', '=', False)
+                        ],
                     }"
                 />
                 <button string="Print Non-duplex Gift Card"  class="oe_highlight"
                     name="print_nondouplex" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
-                    attrs="{'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('enable_double_printer', '=', False), ('duplex_type', '=', 'duplex'), ('nondulpex_type', '=', 'nobulk')]}"
+                    attrs="{'invisible': ['|', '|', '|', '|',('enable_printer', '=', False), ('type', '=', 'label'), ('duplex_type', 'in', ['normal','duplex']), ('duplex_type', '=', False), ('nondulpex_type', '=', 'nobulk')]}"
                 />
                 <button string="Print Non-duplex Gift Card"  class="oe_highlight"
                     name="print_nondouplex_nobulk" type="object" icon="fa-print"
                     style="background: teal;border-color: teal;"
-                    attrs="{'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('enable_double_printer', '=', False), ('duplex_type', '=', 'duplex'), ('nondulpex_type', '=', 'bulk')]}"
+                    attrs="{'invisible': ['|', '|', '|', '|', ('enable_printer', '=', False), ('type', '=', 'label'),  ('duplex_type', '=', False), ('duplex_type', 'in', ['normal','duplex']), ('nondulpex_type', '=', 'bulk')]}"
                 />
             </xpath>
         </field>

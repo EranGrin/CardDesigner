@@ -11,17 +11,23 @@ from ast import literal_eval
 class CardTemplate(models.Model):
     _inherit = 'card.template'
 
-    print_type = fields.Selection([
-        ("zebra", "Zebra"),
-        ("evolis", "Evolis"),
-    ], string="Printer Type", default="zebra")
+    type = fields.Selection([
+        ("card", "Card"),
+        ("label", "Label"),
+    ], string="Type",
+        default="label", required="1"
+    )
+    # print_type = fields.Selection([
+    #     ("zebra", "Zebra"),
+    #     ("evolis", "Evolis"),
+    # ], string="Printer Type", default="zebra")
     zebra_lang = fields.Selection([
         ("ZPL", "ZPL"),
         ("EPL", "EPL"),
-    ], string="Printer Language")
+    ], string="Language")
     evolis_lang = fields.Selection([
         ("EVOLIS", "EVOLIS"),
-    ], string="Printer Language")
+    ], string="Language", default="EVOLIS")
     enable_printer = fields.Boolean(
         string=_("Enable Printer"),
     )
@@ -121,24 +127,19 @@ class CardTemplate(models.Model):
     manually_body_data = fields.Text(string="Manually Syntax")
     check_manually_data = fields.Text(string="Check Syntax")
 
-    @api.onchange('print_type')
-    def onchange_print_type(self):
+    @api.onchange('type')
+    def onchange_type(self):
         for rec in self:
-            if rec.print_type == 'zebra':
-                if rec.zebra_lang:
-                    rec.onchange_zebra_lang()
-            else:
-                if rec.evolis_lang:
-                    rec.printer_lang = rec.evolis_lang
-                    rec.onchange_evolis_lang()
+            if rec.type == 'label':
+                rec.back_side = False
 
     @api.multi
     def change_template_size(self):
         res = super(CardTemplate, self).change_template_size()
         for rec in self:
-            if rec.template_size and rec.enable_printer \
-                and rec.print_type == 'zebra' \
-                    and rec.printer_lang != 'EVOLIS':
+            if rec.template_size and \
+                rec.enable_printer and \
+                    rec.printer_lang != 'EVOLIS':
                         rec.pageHeight = rec.template_size.size_height_px
                         rec.pageWidth = rec.template_size.size_width_px
         return res

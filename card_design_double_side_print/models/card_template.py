@@ -11,9 +11,9 @@ from ast import literal_eval
 class CardTemplate(models.Model):
     _inherit = 'card.template'
 
-    enable_double_printer = fields.Boolean(
-        string=_("Enable Evoils"),
-    )
+    # enable_double_printer = fields.Boolean(
+    #     string=_("Enable Evoils"),
+    # )
     # precision = fields.Integer(
     #     string=_("Precision"), default=128
     # )
@@ -29,9 +29,10 @@ class CardTemplate(models.Model):
     #     string=_("Data Format"), default="image"
     # )
     duplex_type = fields.Selection([
+        ("normal", "Normal"),
         ("duplex", "Duplex"),
         ("noduplex", "Non-Duplex")],
-        string=_("Type"), default="noduplex"
+        string=_("Type"), default="normal"
     )
     # data_type = fields.Selection([
     #     ("path", "File Path"),
@@ -53,26 +54,26 @@ class CardTemplate(models.Model):
     # manually_body_data_duplex = fields.Text(string="Manually Syntax")
     # check_manually_data_duplex = fields.Text(string="Check Syntax")
 
-    @api.onchange('printer_lang')
-    def onchange_printer_lang(self):
-        super(CardTemplate, self).onchange_printer_lang()
-        for rec in self:
-            if rec.printer_lang == 'EVOLIS':
-                rec.enable_double_printer = True
-            else:
-                rec.enable_double_printer = False
+    # @api.onchange('printer_lang')
+    # def onchange_printer_lang(self):
+    #     super(CardTemplate, self).onchange_printer_lang()
+    #     for rec in self:
+    #         if rec.printer_lang == 'EVOLIS':
+    #             rec.enable_double_printer = True
+    #         else:
+    #             rec.enable_double_printer = False
 
-    @api.onchange('enable_printer')
-    def onchange_enable_printer(self):
-        for rec in self:
-            if not rec.enable_printer:
-                rec.enable_double_printer = False
+    # @api.onchange('enable_printer')
+    # def onchange_enable_printer(self):
+    #     for rec in self:
+    #         if not rec.enable_printer:
+    #             rec.enable_double_printer = False
 
     def get_evolis_string(self):
         print_data = ''
-        if not self.enable_double_printer:
+        if self.type != 'card':
             return super(CardTemplate, self).get_evolis_string()
-        if self.duplex_type == 'duplex' and self.enable_double_printer:
+        if self.duplex_type == 'duplex' and self.type == 'card':
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
