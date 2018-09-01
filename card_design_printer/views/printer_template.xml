@@ -87,26 +87,26 @@
                                 <group>
                                     <field name="dotDensity"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
+                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
                                         }"
                                     />
                                     <field name="xml_tag"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
+                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
                                         }"
                                     />
                                     <field name="pageHeight"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
+                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
                                         }"
                                     />
                                     <field name="pageWidth"
                                         attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
+                                            'required': [('enable_printer', '!=', False), ('printer_lang', '!=', 'EVOLIS')],
+                                            'invisible': [('enable_printer', '=', False), ('printer_lang', '=', 'EVOLIS')],
                                         }"
                                     />
                                 </group>

@@ -256,7 +256,7 @@ class CardTemplate(models.Model):
     )
     template_size = fields.Many2one('template.size', 'Template Size')
 
-    @api .multi
+    @api.multi
     def change_template_size(self):
         for rec in self:
             if rec.body_html and rec.template_size:

@@ -132,6 +132,17 @@ class CardTemplate(models.Model):
                     rec.printer_lang = rec.evolis_lang
                     rec.onchange_evolis_lang()
 
+    @api.multi
+    def change_template_size(self):
+        res = super(CardTemplate, self).change_template_size()
+        for rec in self:
+            if rec.template_size and rec.enable_printer \
+                and rec.print_type == 'zebra' \
+                    and rec.printer_lang != 'EVOLIS':
+                        rec.pageHeight = rec.template_size.size_height_px
+                        rec.pageWidth = rec.template_size.size_width_px
+        return res
+
     @api.onchange('zebra_lang')
     def onchange_zebra_lang(self):
         for rec in self:
@@ -203,7 +214,7 @@ class CardTemplate(models.Model):
         print_data_dict = print_data_dict and print_data_dict[0] or {}
         print_data_dict['options'].update({
             'precision': self.precision,
-            'overlay': self.overlay
+            'overlay': self.overlay,
         })
         if self.print_data_type == 'path':
             print_data_dict.update({
@@ -233,6 +244,10 @@ class CardTemplate(models.Model):
                 print_data_dict = rec.get_manually_data()
                 print_data_dict = print_data_dict and print_data_dict[0] or {}
                 print_data_dict.get('options', False).update({
+                    'dotDensity': rec.dotDensity.encode("utf-8"),
+                    'pageHeight': rec.pageHeight,
+                    'pageWidth': rec.pageWidth,
+                    'xmlTag': rec.xml_tag.encode("utf-8"),
                     'x': rec.epl_x,
                     'y': rec.epl_y
                 })
@@ -256,6 +271,12 @@ class CardTemplate(models.Model):
                     print_data += headerarray[hindex] + "#n\n"
                 print_data_dict = rec.get_manually_data()
                 print_data_dict = print_data_dict and print_data_dict[0] or {}
+                print_data_dict.get('options', False).update({
+                    'dotDensity': rec.dotDensity.encode("utf-8"),
+                    'pageHeight': rec.pageHeight,
+                    'pageWidth': rec.pageWidth,
+                    'xmlTag': rec.xml_tag.encode("utf-8"),
+                })
                 if rec.print_data_type == 'path':
                     print_data_dict.update({
                         'flavor': 'file',
