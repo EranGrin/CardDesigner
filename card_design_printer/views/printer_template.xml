@@ -28,7 +28,7 @@
                             />
                             <field name="zebra_lang" 
                                 attrs="{
-                                    'required': [('print_type', '=', 'zebra')],
+                                    'required': [('print_type', '=', 'zebra'), ('enable_printer', '!=', False)],
                                     'invisible': ['|', ('enable_printer', '=', False), ('print_type', '!=', 'zebra')],
                                 }"
                             />
