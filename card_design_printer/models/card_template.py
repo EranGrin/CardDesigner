@@ -29,6 +29,14 @@ class CardTemplate(models.Model):
         "printer.lines",
         string=_("Printer"),
     )
+    dotDensity = fields.Char(string="dotDensity", default="single")
+    xml_tag = fields.Char(string="XML Tag", default="v7:Image")
+    pageHeight = fields.Integer(
+        string=_("Render Height")
+    )
+    pageWidth = fields.Integer(
+        string=_("Render Width"), default=480
+    )
     color_type = fields.Selection([
         ("color", "Color"),
         ("grayscale", "Grayscale"),
@@ -390,6 +398,10 @@ class CardTemplate(models.Model):
                         'format': self.data_format,
                         'options': {
                             'language': self.printer_lang,
+                            'dotDensity': self.dotDensity,
+                            'pageHeight': self.pageHeight,
+                            'pageWidth': self.pageWidth,
+                            'xmlTag': self.xml_tag,
                         },
                         'index': index
                     }

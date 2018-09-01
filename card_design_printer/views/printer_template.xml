@@ -83,34 +83,34 @@
                             </group>
                             <group attrs="{
                                 'invisible': [('enable_printer', '=', False)],
-                            }" invisible="1">
+                            }">
                                 <group>
-                                    <field name="color_type"
+                                    <field name="dotDensity"
                                         attrs="{
                                             'required': [('enable_printer', '!=', False)],
                                             'invisible': [('enable_printer', '=', False)],
                                         }"
                                     />
-                                    <field name="units"
+                                    <field name="xml_tag"
                                         attrs="{
                                             'required': [('enable_printer', '!=', False)],
                                             'invisible': [('enable_printer', '=', False)],
                                         }"
                                     />
-                                    <field name="density"
+                                    <field name="pageHeight"
                                         attrs="{
                                             'required': [('enable_printer', '!=', False)],
                                             'invisible': [('enable_printer', '=', False)],
                                         }"
                                     />
-                                    <field name="orientation"
+                                    <field name="pageWidth"
                                         attrs="{
                                             'required': [('enable_printer', '!=', False)],
                                             'invisible': [('enable_printer', '=', False)],
                                         }"
                                     />
                                 </group>
-                                <group>
+                                <group invisible="1">
                                     <field name="copies"
                                         attrs="{
                                             'required': [('enable_printer', '!=', False)],
