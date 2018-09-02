@@ -74,66 +74,7 @@
                                         }"
                                     />
                                 </group>
-                                <group name="add_size" attrs="{
-                                            'invisible': ['|', ('enable_printer', '=', False), ('type', '!=', 'label')],
-                                        }">
-                                    <field name="dotDensity"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
-                                            'invisible': ['|', ('enable_printer', '=', False), ('type', '!=', 'label')],
-                                        }"
-                                    />
-                                    <field name="xml_tag"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
-                                            'invisible': ['|',('enable_printer', '=', False), ('type', '!=', 'label')],
-                                        }"
-                                    />
-                                    <field name="pageHeight"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
-                                            'invisible': ['|',('enable_printer', '=', False), ('type', '!=', 'label')],
-                                        }"
-                                    />
-                                    <field name="pageWidth"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False), ('type', '=', 'label')],
-                                            'invisible': ['|',('enable_printer', '=', False), ('type', '!=', 'label')],
-                                        }"
-                                    />
-                                </group>
                             </group>
-                            <!-- <group attrs="{
-                                'invisible': [('enable_printer', '=', False)],
-                            }">
-                                
-                                <group invisible="1">
-                                    <field name="copies"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
-                                        }"
-                                    />
-                                    <field name="size"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
-                                        }"
-                                    />
-                                    <field name="margins"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
-                                        }"
-                                    />
-                                    <field name="interpolation"
-                                        attrs="{
-                                            'required': [('enable_printer', '!=', False)],
-                                            'invisible': [('enable_printer', '=', False)],
-                                        }"
-                                    />
-                                </group>
-                            </group> -->
                             <group attrs="{
                                 'invisible': [('enable_printer', '=', False)],
                             }">

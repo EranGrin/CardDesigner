@@ -193,7 +193,6 @@ class Printer(models.Model):
                     {
                         'type': 'raw',
                         'format': 'pdf',
-                        'flavor': 'file',
                         'data': data,
                         'options': {'language': language}
                     },
@@ -208,7 +207,6 @@ class Printer(models.Model):
                     {
                         'type': 'raw',
                         'format': 'pdf',
-                        'flavor': 'file',
                         'data': data,
                         'options': {'language': language}
                     },
@@ -226,7 +224,6 @@ class Printer(models.Model):
                     {
                         'type': 'raw',
                         'format': 'pdf',
-                        'flavor': 'file',
                         'data': data,
                         'options': {
                             'language': language
@@ -242,7 +239,6 @@ class Printer(models.Model):
                     {
                         'type': 'raw',
                         'format': 'pdf',
-                        'flavor': 'file',
                         'data': data,
                     },
                 ]

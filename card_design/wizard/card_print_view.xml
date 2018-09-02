@@ -9,7 +9,7 @@
                 <sheet>
                     <group>
                         <field name="model" invisible="1" />
-                        <field name="template_id" widget="selection"/> <!-- domain="[('model_id', '=', model )]" -->
+                        <field name="template_id" widget="selection"/>
                         <field name="position" widget="radio" options="{'horizontal': true}" />
                         <field name="file_config" widget="radio"
                             options="{'horizontal': true}"

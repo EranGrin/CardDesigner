@@ -84,14 +84,4 @@ class CardPrintWizard(models.TransientModel):
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
             }
-            if self.template_id.printer_lang == 'EPL':
-                action.update({
-                    'epl_x': self.template_id.epl_x,
-                    'epl_y': self.template_id.epl_y,
-                })
-            elif self.template_id.printer_lang == 'EVOLIS':
-                action.update({
-                    'precision': self.template_id.precision,
-                    'overlay': self.template_id.overlay,
-                })
             return action

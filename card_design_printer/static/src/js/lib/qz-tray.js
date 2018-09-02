@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @version 2.1.0
+ * @version 2.0.7;
  * @overview QZ Tray Connector
  * <p/>
  * Connects a web client to the QZ Tray software.
@@ -28,7 +28,7 @@ var qz = (function() {
 ///// PRIVATE METHODS /////
 
     var _qz = {
-        VERSION: "2.1.0",                              //must match @version above
+        VERSION: "2.0.7",                              //must match @version above
         DEBUG: false,
 
         log: {
@@ -45,7 +45,7 @@ var qz = (function() {
 
         //stream types
         streams: {
-            serial: 'SERIAL', usb: 'USB', hid: 'HID', file: 'FILE'
+            serial: 'SERIAL', usb: 'USB', hid: 'HID'
         },
 
 
@@ -130,27 +130,29 @@ var qz = (function() {
 
                         //called on successful connection to qz, begins setup of websocket calls and resolves connect promise after certificate is sent
                         _qz.websocket.connection.onopen = function(evt) {
-                            _qz.log.trace(evt);
-                            _qz.log.info("Established connection with QZ Tray on " + address);
+                            if (!_qz.websocket.connection.established) {
+                                _qz.log.trace(evt);
+                                _qz.log.info("Established connection with QZ Tray on " + address);
 
-                            _qz.websocket.setup.openConnection({ resolve: resolve, reject: reject });
+                                _qz.websocket.setup.openConnection({ resolve: resolve, reject: reject });
 
-                            if (config.keepAlive > 0) {
-                                var interval = setInterval(function() {
-                                    if (!qz.websocket.isActive()) {
-                                        clearInterval(interval);
-                                        return;
-                                    }
+                                if (config.keepAlive > 0) {
+                                    var interval = setInterval(function() {
+                                        if (!qz.websocket.isActive()) {
+                                            clearInterval(interval);
+                                            return;
+                                        }
 
-                                    _qz.websocket.connection.send("ping");
-                                }, config.keepAlive * 1000);
+                                        _qz.websocket.connection.send("ping");
+                                    }, config.keepAlive * 1000);
+                                }
                             }
                         };
 
                         //called during websocket close during setup
                         _qz.websocket.connection.onclose = function() {
                             // Safari compatibility fix to raise error event
-                            if (typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+                            if (_qz.websocket.connection && typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
                                 _qz.websocket.connection.onerror();
                             }
                         };
@@ -203,11 +205,20 @@ var qz = (function() {
 
                         if (obj.timestamp == undefined) {
                             obj.timestamp = Date.now();
+                            if (typeof obj.timestamp !== 'number') {
+                                obj.timestamp = new Date().getTime();
+                            }
                         }
                         if (obj.promise != undefined) {
                             obj.uid = _qz.websocket.setup.newUID();
                             _qz.websocket.pendingCalls[obj.uid] = obj.promise;
                         }
+
+                        // track requesting monitor
+                        obj.position = {
+                            x: screen ? ((screen.availWidth || screen.width) / 2) + (screen.left || screen.availLeft) : 0,
+                            y: screen ? ((screen.availHeight || screen.height) / 2) + (screen.top || screen.availTop) : 0
+                        };
 
                         try {
                             if (obj.call != undefined && obj.signature == undefined) {
@@ -278,9 +289,6 @@ var qz = (function() {
                                         break;
                                     case _qz.streams.hid:
                                         _qz.hid.callHid(JSON.parse(returned.event));
-                                        break;
-                                    case _qz.streams.file:
-                                        _qz.file.callFile(JSON.parse(returned.event));
                                         break;
                                     default:
                                         _qz.log.warn("Cannot determine stream type for callback", returned);
@@ -387,7 +395,7 @@ var qz = (function() {
                 orientation: null,
                 paperThickness: null,
                 printerTray: null,
-                rasterize: false,
+                rasterize: true,
                 rotation: 0,
                 scaleContent: true,
                 size: null,
@@ -449,22 +457,6 @@ var qz = (function() {
         },
 
 
-        file: {
-            /** List of functions called when receiving info regarding file changes. */
-            fileCallbacks: [],
-            /** Calls all functions registered to listen for file events. */
-            callFile: function(streamEvent) {
-                if (Array.isArray(_qz.file.fileCallbacks)) {
-                    for(var i = 0; i < _qz.file.fileCallbacks.length; i++) {
-                        _qz.file.fileCallbacks[i](streamEvent);
-                    }
-                } else {
-                    _qz.file.fileCallbacks(streamEvent);
-                }
-            }
-        },
-
-
         security: {
             /** Function used to resolve promise when acquiring site's public certificate. */
             certPromise: function(resolve, reject) { reject(); },
@@ -515,35 +507,6 @@ var qz = (function() {
                     return a.href;
                 }
                 return loc;
-            },
-
-            relative: function(data) {
-                for(var i = 0; i < data.length; i++) {
-                    if (data[i].constructor === Object) {
-                        var absolute = false;
-
-                        if (data[i].flavor) {
-                            //if flavor is known, we can directly check for absolute flavor types
-                            if (["FILE", "XML"].indexOf(data[i].flavor.toUpperCase()) > -1) {
-                                absolute = true;
-                            }
-                        } else if (data[i].format && ["HTML", "IMAGE", "PDF", "FILE", "XML"].indexOf(data[i].format.toUpperCase()) > -1) {
-                            //if flavor is not known, all valid pixel formats default to file flavor
-                            //previous v2.0 data also used format as what is now flavor, so we check for those values here too
-                            absolute = true;
-                        } else if (data[i].type && (["PIXEL", "IMAGE", "PDF"].indexOf(data[i].type.toUpperCase()) > -1
-                            || (data[i].type.toUpperCase() === "HTML" && (!data[i].format || data[i].format.toUpperCase() === "FILE")))) {
-                            //if all we know is pixel type, then it is image's file flavor
-                            //previous v2.0 data also used type as what is now format, so we check for those value here too
-                            absolute = true;
-                        }
-
-                        if (absolute) {
-                            //change relative links to absolute
-                            data[i].data = _qz.tools.absolute(data[i].data);
-                        }
-                    }
-                }
             },
 
             /** Performs deep copy to target from remaining params */
@@ -612,9 +575,9 @@ var qz = (function() {
 
         /**
          * Alter any of the printer options currently applied to this config.
-         * @param newOpts {Object} The options to change. See <code>qz.configs.setDefaults</code> docs for available values.
+         * @param newOpts {Object} The options to change. See <code>qz.config.setDefaults</code> docs for available values.
          *
-         * @see qz.configs.setDefaults
+         * @see qz.config.setDefaults
          */
         this.reconfigure = function(newOpts) {
             _qz.tools.extend(this.config, newOpts);
@@ -725,11 +688,16 @@ var qz = (function() {
                     }
 
                     var attempt = function(count) {
+                        var tried = false;
                         var nextAttempt = function() {
-                            if (options && count < options.retries) {
-                                attempt(count + 1);
-                            } else {
-                                reject.apply(null, arguments);
+                            if (!tried) {
+                                tried = true;
+
+                                if (options && count < options.retries) {
+                                    attempt(count + 1);
+                                } else {
+                                    reject.apply(null, arguments);
+                                }
                             }
                         };
 
@@ -791,23 +759,17 @@ var qz = (function() {
             },
 
             /**
-             * @deprecated Since 2.1.0.  Please use qz.networking.device() instead
-             *
              * @param {string} [hostname] Hostname to try to connect to when determining network interfaces, defaults to "google.com"
              * @param {number} [port] Port to use with custom hostname, defaults to 443
              *
-             * @returns {Promise<Object<{ipAddress: string, macAddress: string}>|Error>} Connected system's network information.
+             * @returns {Promise<Object<{ipAddress: String, macAddress: String}>|Error>} Connected system's network information.
              *
              * @memberof qz.websocket
              */
             getNetworkInfo: function(hostname, port) {
-                return _qz.tools.promise(function(resolve, reject) {
-                    _qz.websocket.dataPromise('networking.device', {
-                        hostname: hostname,
-                        port: port
-                    }).then(function(data) {
-                        resolve({ ipAddress: data.ip, macAddress: data.mac });
-                    }, reject);
+                return _qz.websocket.dataPromise('websocket.getNetworkInfo', {
+                    hostname: hostname,
+                    port: port
                 });
             },
 
@@ -824,6 +786,7 @@ var qz = (function() {
                     throw new Error("A connection to QZ has not been established yet");
                 }
             }
+
         },
 
 
@@ -851,17 +814,6 @@ var qz = (function() {
              */
             find: function(query) {
                 return _qz.websocket.dataPromise('printers.find', { query: query });
-            },
-
-            /**
-             * Provides a list, with additional information, for each printer available to QZ.
-             *
-             * @returns {Promise<Array<Object>|Object|Error>}
-             *
-             * @memberof qz.printers
-             */
-            details: function() {
-                return _qz.websocket.dataPromise('printers.detail');
             }
         },
 
@@ -893,9 +845,8 @@ var qz = (function() {
              *   @param {number} [options.margins.left=0]
              *  @param {string} [options.orientation=null] Valid values <code>[portrait | landscape | reverse-landscape]</code>
              *  @param {number} [options.paperThickness=null]
-             *  @param {string|number} [options.printerTray=null] Printer tray to pull from. The number N assumes string equivalent of 'Tray N'. Uses printer default if NULL.
-             *  @param {boolean} [options.rasterize=false] Whether documents should be rasterized before printing.
-             *                                             Specifying <code>[options.density]</code> for PDF print formats will set this to <code>true</code>.
+             *  @param {string} [options.printerTray=null] //TODO - string?
+             *  @param {boolean} [options.rasterize=true] Whether documents should be rasterized before printing. Forced TRUE if <code>[options.density]</code> is specified.
              *  @param {number} [options.rotation=0] Image rotation in degrees.
              *  @param {boolean} [options.scaleContent=true] Scales print content to page size, keeping ratio.
              *  @param {Object} [options.size=null] Paper size.
@@ -926,7 +877,7 @@ var qz = (function() {
              *
              * @returns {Config} The new config.
              *
-             * @see configs.setDefaults
+             * @see config.setDefaults
              *
              * @memberof qz.configs
              */
@@ -946,119 +897,57 @@ var qz = (function() {
          * following the format of the "call" and "params" keys in the API call, with the addition of a "timestamp" key in milliseconds
          * ex. <code>'{"call":"<callName>","params":{...},"timestamp":1450000000}'</code>
          *
-         * @param {Object<Config>|Array<Object<Config>>} configs Previously created config object or objects.
-         * @param {Array<Object|string>|Array<Array<Object|string>>} data Array of data being sent to the printer.<br/>
-         *      String values are interpreted as <code>{type: 'raw', format: 'command', flavor: 'plain', data: &lt;string>}</code>.
+         * @param {Object<Config>} config Previously created config object.
+         * @param {Array<Object|string>} data Array of data being sent to the printer. String values are interpreted the same as the default <code>[raw]</code> object value.
          *  @param {string} data.data
-         *  @param {string} data.type Printing type. Valid types are <code>[pixel | raw*]</code>. *Default
-         *  @param {string} data.format Format of data type used. *Default per type<p/>
-         *      For <code>[pixel]</code> types, valid formats are <code>[html | image* | pdf]</code>.<p/>
-         *      For <code>[raw]</code> types, valid formats are <code>[command* | html | image | pdf]</code>.
-         *  @param {string} data.flavor Flavor of data format used. *Default per format<p/>
-         *      For <code>[command]</code> formats, valid flavors are <code>[base64 | file | hex | plain* | xml]</code>.<p/>
-         *      For <code>[html]</code> formats, valid flavors are <code>[file* | plain]</code>.<p/>
-         *      For <code>[image]</code> formats, valid flavors are <code>[base64 | file*]</code>.<p/>
-         *      For <code>[pdf]</code> formats, valid flavors are <code>[base64 | file*]</code>.
+         *  @param {string} data.type Valid values <code>[html | image | pdf | raw]</code>
+         *  @param {string} [data.format] Format of data provided.<p/>
+         *      For <code>[html]</code> types, valid formats include <code>[file(default) | plain]</code>.<p/>
+         *      For <code>[image]</code> types, valid formats include <code>[base64 | file(default)]</code>.<p/>
+         *      For <code>[pdf]</code> types, valid format include <code>[base64 | file(default)]</code>.<p/>
+         *      For <code>[raw]</code> types, valid formats include <code>[base64 | file | hex | plain(default) | image | xml]</code>.
          *  @param {Object} [data.options]
-         *   @param {string} [data.options.language] Required with <code>[raw]</code> type + <code>[image]</code> format. Printer language.
-         *   @param {number} [data.options.x] Optional with <code>[raw]</code> type + <code>[image]</code> format. The X position of the image.
-         *   @param {number} [data.options.y] Optional with <code>[raw]</code> type + <code>[image]</code> format. The Y position of the image.
-         *   @param {string|number} [data.options.dotDensity] Optional with <code>[raw]</code> type + <code>[image]</code> format.
-         *   @param {string} [data.options.xmlTag] Required with <code>[xml]</code> flavor. Tag name containing base64 formatted data.
-         *   @param {number} [data.options.pageWidth] Optional with <code>[html | pdf]</code> formats. Width of the rendering.
-         *       Defaults to paper width.
-         *   @param {number} [data.options.pageHeight] Optional with <code>[html | pdf]</code> formats. Height of the rendering.
-         *       Defaults to paper height for <code>[pdf]</code>, or auto sized for <code>[html]</code>.
-         * @param {...*} [arguments] Additionally three more parameters can be specified:<p/>
-         *     <code>{boolean} [resumeOnError=false]</code> Whether the chain should continue printing if it hits an error on one the the prints.<p/>
-         *     <code>{string|Array<string>} [signature]</code> Pre-signed signature(s) of the JSON string for containing <code>call</code>, <code>params</code>, and <code>timestamp</code>.<p/>
-         *     <code>{number|Array<number>} [signingTimestamps]</code> Required to match with <code>signature</code>. Timestamps for each of the passed pre-signed content.
+         *   @param {string} [data.options.language] Required with <code>[raw]</code> type <code>[image]</code> format. Printer language.
+         *   @param {number} [data.options.x] Optional with <code>[raw]</code> type <code>[image]</code> format. The X position of the image.
+         *   @param {number} [data.options.y] Optional with <code>[raw]</code> type <code>[image]</code> format. The Y position of the image.
+         *   @param {string|number} [data.options.dotDensity] Optional with <code>[raw]</code> type <code>[image]</code> format.
+         *   @param {number} [data.precision=128] Optional with <code>[raw]</code> type <code>[image]</code> format. Bit precision of the ribbons.
+         *   @param {boolean|string|Array<Array<number>>} [data.options.overlay=false] Optional with <code>[raw]</code> type <code>[image]</code> format.
+         *      Boolean sets entire layer, string sets mask image, Array sets array of rectangles in format <code>[x1,y1,x2,y2]</code>.
+         *   @param {string} [data.options.xmlTag] Required with <code>[xml]</code> format. Tag name containing base64 formatted data.
+         *   @param {number} [data.options.pageWidth] Optional with <code>[html]</code> type printing. Width of the web page to render. Defaults to paper width.
+         *   @param {number} [data.options.pageHeight] Optional with <code>[html]</code> type printing. Height of the web page to render. Defaults to adjusted web page height.
+         * @param {boolean} [signature] Pre-signed signature of JSON string containing <code>call</code>, <code>params</code>, and <code>timestamp</code>.
+         * @param {number} [signingTimestamp] Required with <code>signature</code>. Timestamp used with pre-signed content.
          *
          * @returns {Promise<null|Error>}
          *
-         * @see qz.configs.create
+         * @see qz.config.create
          *
          * @memberof qz
          */
-        print: function(configs, data) {
-            var resumeOnError = false,
-                signatures = [],
-                signaturesTimestamps = [];
-
-            //find optional parameters
-            if (arguments.length >= 3) {
-                if (typeof arguments[2] === 'boolean') {
-                    resumeOnError = arguments[2];
-
-                    if (arguments.length >= 5) {
-                        signatures = arguments[3];
-                        signaturesTimestamps = arguments[4];
+        print: function(config, data, signature, signingTimestamp) {
+            //change relative links to absolute
+            for(var i = 0; i < data.length; i++) {
+                if (data[i].constructor === Object) {
+                    if ((!data[i].format && data[i].type && (data[i].type.toUpperCase() !== 'RAW' && data[i].type.toUpperCase() !== 'DIRECT')) //unspecified format and not raw -> assume file
+                        || (data[i].format && (data[i].format.toUpperCase() === 'FILE'
+                            || (data[i].format.toUpperCase() === 'IMAGE' && !(data[i].data.indexOf("data:image/") === 0 && data[i].data.indexOf(";base64,") !== 0))
+                            || data[i].format.toUpperCase() === 'XML'))) {
+                        data[i].data = _qz.tools.absolute(data[i].data);
                     }
-                } else if (arguments.length >= 4) {
-                    signatures = arguments[2];
-                    signaturesTimestamps = arguments[3];
+                    if (data[i].options && typeof data[i].options.overlay === 'string') {
+                        data[i].options.overlay = _qz.tools.absolute(data[i].options.overlay);
+                    }
                 }
-
-                //ensure values are arrays for consistency
-                if (signatures && !Array.isArray(signatures)) { signatures = [signatures]; }
-                if (signaturesTimestamps && !Array.isArray(signaturesTimestamps)) { signaturesTimestamps = [signaturesTimestamps]; }
             }
 
-            if (!Array.isArray(configs)) { configs = [configs]; } //single config -> array of configs
-            if (!Array.isArray(data[0])) { data = [data]; } //single data array -> array of data arrays
-
-            //clean up data formatting
-            for(var d = 0; d < data.length; d++) {
-                _qz.tools.relative(data[d]);
-            }
-
-            var sendToPrint = function(mapping) {
-                var params = {
-                    printer: mapping.config.getPrinter(),
-                    options: mapping.config.getOptions(),
-                    data: mapping.data
-                };
-
-                return _qz.websocket.dataPromise('print', params, mapping.signature, mapping.timestamp);
+            var params = {
+                printer: config.getPrinter(),
+                options: config.getOptions(),
+                data: data
             };
-
-            //chain instead of Promise.all, so resumeOnError can collect each error
-            var chain = [];
-            for(var i = 0; i < configs.length || i < data.length; i++) {
-                (function(i_) {
-                    var map = {
-                        config: configs[Math.min(i_, configs.length - 1)],
-                        data: data[Math.min(i_, data.length - 1)],
-                        signature: signatures[i_],
-                        timestamp: signaturesTimestamps[i_]
-                    };
-
-                    chain.push(function() { return sendToPrint(map) });
-                })(i);
-            }
-
-            //setup to catch errors if needed
-            var fallThrough = null;
-            if (resumeOnError) {
-                var fallen = [];
-                fallThrough = function(err) { fallen.push(err); };
-
-                //final promise to reject any errors as a group
-                chain.push(function() {
-                    return _qz.tools.promise(function(resolve, reject) {
-                        fallen.length ? reject(fallen) : resolve();
-                    });
-                });
-            }
-
-            var last = null;
-            chain.reduce(function(sequence, link) {
-                last = sequence.catch(fallThrough).then(link); //catch is ignored if fallThrough is null
-                return last;
-            }, _qz.tools.promise(function(r) { r(); })); //an immediately resolved promise to start off the chain
-
-            //return last promise so users can chain off final action or catch when stopping on error
-            return last;
+            return _qz.websocket.dataPromise('print', params, signature, signingTimestamp);
         },
 
 
@@ -1092,19 +981,24 @@ var qz = (function() {
 
             /**
              * @param {string} port Name of port to open.
-             * @param {Object} bounds Boundaries of serial port output.
-             *  @param {string} [bounds.start=0x0002] Character denoting start of serial response. Not used if <code>width</code is provided.
-             *  @param {string} [bounds.end=0x000D] Character denoting end of serial response. Not used if <code>width</code> is provided.
-             *  @param {number} [bounds.width] Used for fixed-width response serial communication.
+             * @param {Object} [options] Boundaries of serial port output.
+             *  @param {string} [options.start=0x0002] Character denoting start of serial response. Not used if <code>width</code is provided.
+             *  @param {string} [options.end=0x000D] Character denoting end of serial response. Not used if <code>width</code> is provided.
+             *  @param {number} [options.width] Used for fixed-width response serial communication.
+             *  @param {string} [options.baudRate=9600]
+             *  @param {string} [options.dataBits=8]
+             *  @param {string} [options.stopBits=1]
+             *  @param {string} [options.parity='NONE'] Valid values <code>[NONE| EVEN | ODD | MARK | SPACE]</code>
+             *  @param {string} [options.flowControl='NONE'] Valid values <code>[NONE | XONXOFF | XONXOFF_OUT | XONXOFF_IN | RTSCTS | RTSCTS_OUT | RTSCTS_IN]</code>
              *
              * @returns {Promise<null|Error>}
              *
              * @memberof qz.serial
              */
-            openPort: function(port, bounds) {
+            openPort: function(port, options) {
                 var params = {
                     port: port,
-                    bounds: bounds
+                    options: options
                 };
                 return _qz.websocket.dataPromise('serial.openPort', params);
             },
@@ -1115,12 +1009,12 @@ var qz = (function() {
              *
              * @param {string} port An open port to send data over.
              * @param {string} data The data to send to the serial device.
-             * @param {Object} [properties] Properties of data being sent over the serial port.
+             * @param {Object} [properties] DEPRECATED: Properties of data being sent over the serial port.
              *  @param {string} [properties.baudRate=9600]
              *  @param {string} [properties.dataBits=8]
              *  @param {string} [properties.stopBits=1]
              *  @param {string} [properties.parity='NONE'] Valid values <code>[NONE| EVEN | ODD | MARK | SPACE]</code>
-             *  @param {string} [properties.flowControl='NONE'] Valid values <code>[NONE | XONXOFF_OUT | XONXOFF_IN | RTSCTS_OUT | RTSCTS_IN]</code>
+             *  @param {string} [properties.flowControl='NONE'] Valid values <code>[NONE | XONXOFF | XONXOFF_OUT | XONXOFF_IN | RTSCTS | RTSCTS_OUT | RTSCTS_IN]</code>
              *
              * @returns {Promise<null|Error>}
              *
@@ -1129,6 +1023,10 @@ var qz = (function() {
              * @memberof qz.serial
              */
             sendData: function(port, data, properties) {
+                if (properties != null) {
+                    _qz.log.warn("Properties object is deprecated on sendData calls, use openPort instead.");
+                }
+
                 var params = {
                     port: port,
                     data: data,
@@ -1617,179 +1515,6 @@ var qz = (function() {
 
 
         /**
-         * Calls related to interactions with the filesystem
-         * @namespace qz.file
-         * @since 2.1
-         */
-        file: {
-            /**
-             * List of files available at the given directory.<br/>
-             * Due to security reasons, paths are limited to the qz data directory unless overridden via properties file.
-             *
-             * @param {string} path Relative or absolute directory path. Must reside in qz data directory or a white-listed location.
-             * @param {Object} [params] Object containing file access parameters
-             *  @param {boolean} [params.sandbox=true] If relative location from root is only available to the certificate's connection, otherwise all connections
-             *  @param {boolean} [params.shared=true] If relative location from root is accessible to all users on the system, otherwise just the current user
-             * @returns {Promise<Array<String>|Error>} Array of files at the given path
-             *
-             * @memberof qz.file
-             */
-            list: function(path, params) {
-                params = params || {};
-                params.path = path;
-                return _qz.websocket.dataPromise('file.list', params);
-            },
-
-            /**
-             * Reads contents of file at the given path.<br/>
-             * Due to security reasons, paths are limited to the qz data directory unless overridden via properties file.
-             *
-             * @param {string} path Relative or absolute file path. Must reside in qz data directory or a white-listed location.
-             * @param {Object} [params] Object containing file access parameters
-             *  @param {boolean} [params.sandbox=true] If relative location from root is only available to the certificate's connection, otherwise all connections
-             *  @param {boolean} [params.shared=true] If relative location from root is accessible to all users on the system, otherwise just the current user
-             * @returns {Promise<String|Error>} String containing the file contents
-             *
-             * @memberof qz.file
-             */
-            read: function(path, params) {
-                params = params || {};
-                params.path = path;
-                return _qz.websocket.dataPromise('file.read', params);
-            },
-
-            /**
-             * Writes data to the file at the given path.<br/>
-             * Due to security reasons, paths are limited to the qz data directory unless overridden via properties file.
-             *
-             * @param {string} path Relative or absolute file path. Must reside in qz data directory or a white-listed location.
-             * @param {Object} params Object containing file access parameters
-             *  @param {string} params.data File data to be written
-             *  @param {boolean} [params.sandbox=true] If relative location from root is only available to the certificate's connection, otherwise all connections
-             *  @param {boolean} [params.shared=true] If relative location from root is accessible to all users on the system, otherwise just the current user
-             *  @param {boolean} [params.append=false] Appends to the end of the file if set, otherwise overwrites existing contents
-             * @returns {Promise<null|Error>}
-             *
-             * @memberof qz.file
-             */
-            write: function(path, params) {
-                params.path = path;
-                return _qz.websocket.dataPromise('file.write', params);
-            },
-
-            /**
-             * Deletes a file at given path.<br/>
-             * Due to security reasons, paths are limited to the qz data directory unless overridden via properties file.
-             *
-             * @param {string} path Relative or absolute file path. Must reside in qz data directory or a white-listed location.
-             * @param {Object} [params] Object containing file access parameters
-             *  @param {boolean} [params.sandbox=true] If relative location from root is only available to the certificate's connection, otherwise all connections
-             *  @param {boolean} [params.shared=true] If relative location from root is accessible to all users on the system, otherwise just the current user
-             * @returns {Promise<null|Error>}
-             *
-             * @memberof qz.file
-             */
-            remove: function(path, params) {
-                params = params || {};
-                params.path = path;
-                return _qz.websocket.dataPromise('file.remove', params);
-            },
-
-            /**
-             * Provides a continuous stream of events (and optionally data) from a local file.
-             *
-             * @param {string} path Relative or absolute directory path. Must reside in qz data directory or a white-listed location.
-             * @param {Object} [params] Object containing file access parameters
-             *  @param {boolean} [params.sandbox=true] If relative location from root is only available to the certificate's connection, otherwise all connections
-             *  @param {boolean} [params.shared=true] If relative location from root is accessible to all users on the system, otherwise just the current user
-             *  @param {Object} [params.listener] If defined, file data will be returned on events
-             *   @param {number} [params.listener.bytes=-1] Number of bytes to return or -1 for all
-             *   @param {number} [params.listener.lines=-1] Number of lines to return or -1 for all
-             *   @param {boolean} [params.listener.reverse] Controls whether data should be returned from the bottom of the file.  Default value is true for line mode and false for byte mode.
-             * @returns {Promise<null|Error>}
-             * @since 2.1.0
-             *
-             * @see qz.file.setFileCallbacks
-             *
-             * @memberof qz.file
-             */
-            startListening: function(path, params) {
-                params = params || {};
-                params.path = path;
-                return _qz.websocket.dataPromise('file.startListening', params);
-            },
-
-            /**
-             * Closes listeners with the provided settings. Omitting the path parameter will result in all listeners closing.
-             *
-             * @param {string} [path] Previously opened directory path of listener to close, or omit to close all.
-             * @param {Object} [params] Object containing file access parameters
-             *  @param {boolean} [params.sandbox=true] If relative location from root is only available to the certificate's connection, otherwise all connections
-             *  @param {boolean} [params.shared=true] If relative location from root is accessible to all users on the system, otherwise just the current user
-             * @returns {Promise<null|Error>}
-             *
-             * @memberof qz.file
-             */
-            stopListening: function(path, params) {
-                params = params || {};
-                params.path = path;
-                return _qz.websocket.dataPromise('file.stopListening', params);
-            },
-
-            /**
-             * List of functions called for any response from a file listener.
-             *  For ERROR types event data will contain, <code>{string} message</code>.
-             *  For ACTION types event data will contain, <code>{string} file {string} eventType {string} [data]</code>.
-             *
-             * @param {Function|Array<Function>} calls Single or array of <code>Function({Object} eventData)</code> calls.
-             * @since 2.1.0
-             *
-             * @memberof qz.file
-             */
-            setFileCallbacks: function(calls) {
-                _qz.file.fileCallbacks = calls;
-            }
-        },
-
-        /**
-         * Calls related to networking information
-         * @namespace qz.networking
-         * @since 2.1.0
-         */
-        networking: {
-            /**
-             * @param {string} [hostname] Hostname to try to connect to when determining network interfaces, defaults to "google.com"
-             * @param {number} [port] Port to use with custom hostname, defaults to 443
-             * @returns {Promise<Object|Error>} Connected system's network information.
-             *
-             * @memberof qz.networking
-             * @since 2.1.0
-             */
-            device: function(hostname, port) {
-                return _qz.websocket.dataPromise('networking.device', {
-                    hostname: hostname,
-                    port: port
-                });
-            },
-
-            /**
-             * @param {string} [hostname] Hostname to try to connect to when determining network interfaces, defaults to "google.com"
-             * @param {number} [port] Port to use with custom hostname, defaults to 443
-             * @returns {Promise<Array<Object>|Error>} Connected system's network information.
-             *
-             * @memberof qz.networking
-             * @since 2.1.0
-             */
-            devices: function(hostname, port) {
-                return _qz.websocket.dataPromise('networking.devices', {
-                    hostname: hostname,
-                    port: port
-                });
-            }
-        },
-
-
-        /**
          * Calls related to signing connection requests.
          * @namespace qz.security
          */
@@ -1827,11 +1552,11 @@ var qz = (function() {
              * Show or hide QZ api debugging statements in the browser console.
              *
              * @param {boolean} show Whether the debugging logs for QZ should be shown. Hidden by default.
-             * @returns {boolean} Value of debugging flag
+             *
              * @memberof qz.api
              */
             showDebug: function(show) {
-                return (_qz.DEBUG = show);
+                _qz.DEBUG = show;
             },
 
             /**

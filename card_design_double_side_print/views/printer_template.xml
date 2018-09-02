@@ -24,16 +24,14 @@
                     'card'), ('duplex_type', '!=', 'normal')],
                 }</attribute>
             </button>
-            <xpath expr="//group[@name='add_size']" position="after">
-                    <group>
-                        <field name="duplex_type"
-                            attrs="{
-                                'required': [('type', '!=', 'label')],
-                                'invisible': ['|', ('type', '=', 'label'), ('back_side', '=', False)],
-                            }"
-                        />
-                    </group>
-            </xpath>
+             <field name="print_data_type" position="after">
+                <field name="duplex_type"
+                    attrs="{
+                        'required': [('type', '!=', 'label')],
+                        'invisible': ['|', ('type', '=', 'label'), ('back_side', '=', False)],
+                    }"
+                />
+            </field>
             <field name="footer_data" position="after">
                 <field name="double_print_back_data"
                     attrs="{

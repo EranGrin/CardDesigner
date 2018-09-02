@@ -6,65 +6,25 @@ _logger = logging.getLogger(__name__)
 import datetime
 from odoo import models, fields, _, api
 from ast import literal_eval
+from odoo.exceptions import UserError
 
 
 class CardTemplate(models.Model):
     _inherit = 'card.template'
 
-    # enable_double_printer = fields.Boolean(
-    #     string=_("Enable Evoils"),
-    # )
-    # precision = fields.Integer(
-    #     string=_("Precision"), default=128
-    # )
-    # double_print_data_type = fields.Char(
-    #     string=_("Data Type"), default="raw"
-    # )
-    # double_print_data_format = fields.Selection([
-    #     ("pdf", "PDF"),
-    #     ("image", "IMAGE")],
-    #     string=_("Data Format"), default="image"
-    # )
     duplex_type = fields.Selection([
         ("normal", "Normal"),
         ("duplex", "Duplex"),
         ("noduplex", "Non-Duplex")],
         string=_("Type"), default="normal"
     )
-    # data_type = fields.Selection([
-    #     ("path", "File Path"),
-    #     ("base64", "Base64")
-    # ], string=_("Printer Data Type"), default="path")
-    # header_data = fields.Text(
-    #     string=_("Front Side Data"),
-    #     default="Pps;0,Pwr;0,Pwr;0,Ss,Sr"
-    # )
     double_print_back_data = fields.Text(
         string=_("Back Side Data"),
         default="Sv"
     )
-    # footer_data = fields.Text(
-    #     string=_("Footer Data"),
-    #     default="Se"
-    # )
 
     manually_body_data_duplex = fields.Text(string="Manually Syntax")
     check_manually_data_duplex = fields.Text(string="Check Syntax")
-
-    # @api.onchange('printer_lang')
-    # def onchange_printer_lang(self):
-    #     super(CardTemplate, self).onchange_printer_lang()
-    #     for rec in self:
-    #         if rec.printer_lang == 'EVOLIS':
-    #             rec.enable_double_printer = True
-    #         else:
-    #             rec.enable_double_printer = False
-
-    # @api.onchange('enable_printer')
-    # def onchange_enable_printer(self):
-    #     for rec in self:
-    #         if not rec.enable_printer:
-    #             rec.enable_double_printer = False
 
     def get_evolis_string_back(self):
         print_data = ''
@@ -81,18 +41,9 @@ class CardTemplate(models.Model):
             print_data_dict['options'].update({
                 'language': 'EVOLIS',
                 'precision': self.precision,
-                'overlay': overlay
+                'overlay': overlay,
+                'data': '$value',
             })
-            if self.print_data_type == 'path':
-                print_data_dict.update({
-                    'flavor': 'file',
-                    'data': '$value',
-                })
-            else:
-                print_data_dict.update({
-                    'flavor': 'base64',
-                    'data': '$value',
-                })
             print_data += '%s\n' % print_data_dict
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
@@ -137,18 +88,9 @@ class CardTemplate(models.Model):
             print_data_dict['options'].update({
                 'language': 'EVOLIS',
                 'precision': self.precision,
-                'overlay': overlay
+                'overlay': overlay,
+                'data': '$value',
             })
-            if self.print_data_type == 'path':
-                print_data_dict.update({
-                    'flavor': 'file',
-                    'data': '$value',
-                })
-            else:
-                print_data_dict.update({
-                    'flavor': 'base64',
-                    'data': '$value',
-                })
             print_data += '%s\n' % print_data_dict
 
             backarray = self.double_print_back_data.split(',')
@@ -164,18 +106,9 @@ class CardTemplate(models.Model):
             print_data_dict['options'].update({
                 'language': 'EVOLIS',
                 'precision': self.precision,
-                'overlay': back_overlay
+                'overlay': back_overlay,
+                'data': '$value',
             })
-            if self.print_data_type == 'path':
-                print_data_dict.update({
-                    'flavor': 'file',
-                    'data': '$value',
-                })
-            else:
-                print_data_dict.update({
-                    'flavor': 'base64',
-                    'data': '$value',
-                })
             print_data += '%s\n' % print_data_dict
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
@@ -203,17 +136,8 @@ class CardTemplate(models.Model):
                 'precision': self.precision,
                 'overlay': overlay,
                 'language': 'EVOLIS',
+                'data': '$value',
             })
-            if self.print_data_type == 'path':
-                print_data_dict.update({
-                    'flavor': 'file',
-                    'data': '$value',
-                })
-            else:
-                print_data_dict.update({
-                    'flavor': 'base64',
-                    'data': '$value',
-                })
             print_data += '%s\n' % print_data_dict
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
@@ -229,13 +153,6 @@ class CardTemplate(models.Model):
                 print_data = self.get_manually_print_data([
                     front_side_data, front_side_data
                 ])
-                # print_evl_front_data_dict.update({
-                #     'index': index
-                # })
-                # print_evl_front_data_dict['options'].update({
-                #     'precision': rec.precision,
-                #     'overlay': True
-                # })
             else:
                 headerarray = rec.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
@@ -271,6 +188,7 @@ class CardTemplate(models.Model):
                 print_evl_back_data_dict = {
                     'type': rec.data_type,
                     'format': rec.data_format,
+                    'data': front_side_data,
                     'options': {
                         'language': 'EVOLIS',
                         'precision': rec.precision,
@@ -278,33 +196,15 @@ class CardTemplate(models.Model):
                     },
                     'index': index
                 }
-
-                if rec.print_data_type == 'path':
-                    print_evl_front_data_dict.update({
-                        'flavor': 'file',
-                        'data': front_side_data
-                    })
-                else:
-                    print_evl_front_data_dict.update({
-                        'flavor': 'base64',
-                        'data': front_side_data,
-                    })
                 print_data.append(print_evl_front_data_dict)
 
                 backarray = rec.double_print_back_data.split(',')
                 for bindex, i in enumerate(backarray):
                     print_data.append('\x1B' + backarray[bindex] + '\x0D')
 
-                if rec.print_data_type == 'path':
-                    print_evl_back_data_dict.update({
-                        'flavor': 'file',
-                        'data': back_side_data
-                    })
-                else:
-                    print_evl_back_data_dict.update({
-                        'flavor': 'base64',
-                        'data': back_side_data,
-                    })
+                print_evl_back_data_dict.update({
+                    'data': back_side_data,
+                })
                 print_data.append(print_evl_back_data_dict)
 
                 footerarray = rec.footer_data.split(',')
@@ -366,7 +266,7 @@ class CardTemplate(models.Model):
     def get_back_manually_print_data(self, datas):
         print_data = []
         if not self.is_manually:
-            raise("Please select the manually print data.")
+            raise UserError("Please select the manually print data.")
         try:
             for data in self.check_manually_data_duplex.split("\n"):
                 try:
@@ -374,12 +274,10 @@ class CardTemplate(models.Model):
                         data_dict = literal_eval(data)
                         if self.print_data_type == 'path':
                             data_dict.update({
-                                'flavor': 'file',
                                 'data': datas[0].encode("utf-8"),
                             })
                         else:
                             data_dict.update({
-                                'flavor': 'base64',
                                 'data': datas[1],
                             })
                         print_data.append(data_dict)
@@ -389,7 +287,7 @@ class CardTemplate(models.Model):
                     if data:
                         print_data.append(data.replace("#x1B", "\x1B").replace("#x0D", "\x0D").encode("utf-8"))
         except:
-            raise("Manually data is not correctly data. please check and try again.")
+            raise UserError("Manually data is not correctly data. please check and try again.")
         return print_data
 
     def create_json_nonduplex_back_data(self, side_data):
@@ -411,6 +309,7 @@ class CardTemplate(models.Model):
             print_evl_back_data_dict = {
                 'type': self.data_type,
                 'format': self.data_format,
+                'data': side_data,
                 'options': {
                     'language': 'EVOLIS',
                     'precision': self.precision,
@@ -418,29 +317,6 @@ class CardTemplate(models.Model):
                 },
                 'index': index
             }
-
-            if self.data_type == 'path':
-                if self.data_format == 'pdf':
-                    print_evl_back_data_dict.update({
-                        'flavor': 'file',
-                        'data': side_data
-                    })
-                else:
-                    print_evl_back_data_dict.update({
-                        'flavor': 'file',
-                        'data': side_data
-                    })
-            else:
-                if self.data_format == 'pdf':
-                    print_evl_back_data_dict.update({
-                        'flavor': 'base64',
-                        'data': side_data,
-                    })
-                else:
-                    print_evl_back_data_dict.update({
-                        'flavor': 'base64',
-                        'data': side_data,
-                    })
             print_data.append(print_evl_back_data_dict)
 
             footerarray = self.footer_data.split(',')
@@ -478,6 +354,7 @@ class CardTemplate(models.Model):
             print_evl_front_data_dict = {
                 'type': self.data_type,
                 'format': self.data_format,
+                'data': side_data,
                 'options': {
                     'language': 'EVOLIS',
                     'precision': self.precision,
@@ -485,17 +362,6 @@ class CardTemplate(models.Model):
                 },
                 'index': index
             }
-
-            if self.data_type == 'path':
-                print_evl_front_data_dict.update({
-                    'flavor': 'file',
-                    'data': side_data
-                })
-            else:
-                print_evl_front_data_dict.update({
-                    'flavor': 'base64',
-                    'data': side_data,
-                })
             print_data.append(print_evl_front_data_dict)
 
             footerarray = self.footer_data.split(',')

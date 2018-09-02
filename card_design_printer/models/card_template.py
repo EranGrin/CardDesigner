@@ -6,6 +6,7 @@ _logger = logging.getLogger(__name__)
 import datetime
 from odoo import models, fields, _, api
 from ast import literal_eval
+from odoo.exceptions import UserError
 
 
 class CardTemplate(models.Model):
@@ -17,10 +18,6 @@ class CardTemplate(models.Model):
     ], string="Type",
         default="label", required="1"
     )
-    # print_type = fields.Selection([
-    #     ("zebra", "Zebra"),
-    #     ("evolis", "Evolis"),
-    # ], string="Printer Type", default="zebra")
     zebra_lang = fields.Selection([
         ("ZPL", "ZPL"),
         ("EPL", "EPL"),
@@ -35,53 +32,7 @@ class CardTemplate(models.Model):
         "printer.lines",
         string=_("Printer"),
     )
-    dotDensity = fields.Char(string="dotDensity", default="single")
-    xml_tag = fields.Char(string="XML Tag", default="v7:Image")
-    pageHeight = fields.Integer(
-        string=_("Render Height")
-    )
-    pageWidth = fields.Integer(
-        string=_("Render Width"), default=480
-    )
-    color_type = fields.Selection([
-        ("color", "Color"),
-        ("grayscale", "Grayscale"),
-        ("blackwhite", "Black & White")
-    ], string=_("Color Type"), default="color")
-    copies = fields.Integer(
-        string=_("Copies"),
-        default=1,
-        required=True
-    )
-    units = fields.Selection([
-        ("in", "Inches (IN)"),
-        ("mm", "Millimeters (mm)"),
-        ("cm", "Centimeters (cm)")
-    ], string=_("Units"), default="in")
-    density = fields.Integer(
-        string=_("Pixel Density"),
-        default=300,
-    )
-    size = fields.Char(
-        string=_("Size"),
-        default="400,400",
-    )
-    margins = fields.Char(
-        string=_("Margins"),
-        default="0, 0, 0, 0",
-    )
-    orientation = fields.Selection([
-        ("default", "Default"),
-        ("portrati", "Portrait"),
-        ("landscape", "Landscape"),
-        ("reverse-landscape", "Reverse Landscape")
-    ], string=_("Orientation"), default="default")
-    interpolation = fields.Selection([
-        ("default", "Default"),
-        ("bicubic", "Bicubic"),
-        ("bilinear", "Bilinear"),
-        ("nearest-neighbor", "Nearest-Neighbor")
-    ], string=_("Interpolation"), default="default")
+
     printer_lang = fields.Selection([
         ("ZPL", "ZPL"),
         ("EPL", "EPL"),
@@ -152,17 +103,6 @@ class CardTemplate(models.Model):
                     rec.mag_strip_track2 = 12459
                     rec.mag_strip_track3 = 55555
 
-    @api.multi
-    def change_template_size(self):
-        res = super(CardTemplate, self).change_template_size()
-        for rec in self:
-            if rec.template_size and \
-                rec.enable_printer and \
-                    rec.printer_lang != 'EVOLIS':
-                        rec.pageHeight = rec.template_size.size_height_px
-                        rec.pageWidth = rec.template_size.size_width_px
-        return res
-
     @api.onchange('zebra_lang')
     def onchange_zebra_lang(self):
         for rec in self:
@@ -205,10 +145,6 @@ class CardTemplate(models.Model):
         print_data = ''
         print_data += "('type', '%s')," % self.data_type
         print_data += "('format', '%s')," % self.data_format
-        if self.print_data_type == 'path':
-            print_data += "('flavor', 'file'),"
-        else:
-            print_data += "('flavor', 'base64'),"
         print_data += "('data', '$Value'),"
         print_data += "('options', {'language': '%s'})," % self.printer_lang
         return print_data
@@ -243,17 +179,8 @@ class CardTemplate(models.Model):
             'precision': self.precision,
             'overlay': overlay,
             'language': 'EVOLIS',
+            'data': '$value',
         })
-        if self.print_data_type == 'path':
-            print_data_dict.update({
-                'flavor': 'file',
-                'data': '$value',
-            })
-        else:
-            print_data_dict.update({
-                'flavor': 'base64',
-                'data': '$value',
-            })
         print_data += '%s\n' % print_data_dict
         footerarray = self.footer_data.split(',')
         for findex, j in enumerate(footerarray):
@@ -273,23 +200,11 @@ class CardTemplate(models.Model):
                     print_data_dict = rec.get_manually_data()
                     print_data_dict = print_data_dict and print_data_dict[0] or {}
                     print_data_dict.get('options', False).update({
-                        'dotDensity': rec.dotDensity.encode("utf-8"),
-                        'pageHeight': rec.pageHeight,
-                        'pageWidth': rec.pageWidth,
-                        'xmlTag': rec.xml_tag.encode("utf-8"),
+                        'language': 'EPL',
                         'x': rec.epl_x,
-                        'y': rec.epl_y
+                        'y': rec.epl_y,
+                        'data': '$value',
                     })
-                    if rec.print_data_type == 'path':
-                        print_data_dict.update({
-                            'flavor': 'file',
-                            'data': '$value',
-                        })
-                    else:
-                        print_data_dict.update({
-                            'flavor': 'base64',
-                            'data': '$value',
-                        })
                     print_data += '%s\n' % print_data_dict
                     footerarray = rec.footer_data.split(',')
                     for findex, j in enumerate(footerarray):
@@ -301,21 +216,9 @@ class CardTemplate(models.Model):
                     print_data_dict = rec.get_manually_data()
                     print_data_dict = print_data_dict and print_data_dict[0] or {}
                     print_data_dict.get('options', False).update({
-                        'dotDensity': rec.dotDensity.encode("utf-8"),
-                        'pageHeight': rec.pageHeight,
-                        'pageWidth': rec.pageWidth,
-                        'xmlTag': rec.xml_tag.encode("utf-8"),
+                        'language': 'ZPL',
+                        'data': '$value',
                     })
-                    if rec.print_data_type == 'path':
-                        print_data_dict.update({
-                            'flavor': 'file',
-                            'data': '$value',
-                        })
-                    else:
-                        print_data_dict.update({
-                            'flavor': 'base64',
-                            'data': '$value',
-                        })
                     print_data += '%s\n' % print_data_dict
                     footerarray = rec.footer_data.split(',')
                     for findex, j in enumerate(footerarray):
@@ -329,7 +232,7 @@ class CardTemplate(models.Model):
     def get_manually_print_data(self, datas):
         print_data = []
         if not self.is_manually:
-            raise("Please select the manually print data.")
+            raise UserError("Please select the manually print data.")
         try:
             for data in self.check_manually_data.split("\n"):
                 if self.printer_lang in ['EPL', 'ZPL']:
@@ -337,12 +240,10 @@ class CardTemplate(models.Model):
                         data_dict = literal_eval(data)
                         if self.print_data_type == 'path':
                             data_dict.update({
-                                'flavor': 'file',
                                 'data': datas[0].encode("utf-8"),
                             })
                         else:
                             data_dict.update({
-                                'flavor': 'base64',
                                 'data': datas[1],
                             })
                         print_data.append(data_dict)
@@ -355,12 +256,10 @@ class CardTemplate(models.Model):
                             data_dict = literal_eval(data)
                             if self.print_data_type == 'path':
                                 data_dict.update({
-                                    'flavor': 'file',
                                     'data': datas[0].encode("utf-8"),
                                 })
                             else:
                                 data_dict.update({
-                                    'flavor': 'base64',
                                     'data': datas[1],
                                 })
                             print_data.append(data_dict)
@@ -370,14 +269,14 @@ class CardTemplate(models.Model):
                         if data:
                             print_data.append(data.replace("#x1B", "\x1B").replace("#x0D", "\x0D").encode("utf-8"))
         except:
-            raise("Manually data is not correctly data. please check and try again.")
+            raise UserError("Manually data is not correctly data. please check and try again.")
         return print_data
 
     @api.one
     def get_manually_data(self):
         print_data_dict = {}
         if not self.is_manually:
-            raise("Please select the manually print data.")
+            raise UserError("Please select the manually print data.")
         try:
             datas = literal_eval(self.manually_body_data)
             for data in datas:
@@ -385,7 +284,7 @@ class CardTemplate(models.Model):
                     data[0]: data[1]
                 })
         except:
-            raise("Manually data is not correctly data. please check and try again.")
+            raise UserError("Manually data is not correctly data. please check and try again.")
         return print_data_dict
 
     def create_json_print_data(self, datas=[]):
@@ -405,10 +304,6 @@ class CardTemplate(models.Model):
                             'type': self.data_type,
                             'format': self.data_format,
                             'options': {
-                                'dotDensity': self.dotDensity.encode("utf-8"),
-                                'pageHeight': int(self.pageHeight),
-                                'pageWidth': int(self.pageWidth),
-                                'xmlTag': self.xml_tag.encode("utf-8"),
                                 'language': 'EPL',
                                 'x': int(self.epl_x),
                                 'y': int(self.epl_y),
@@ -417,12 +312,10 @@ class CardTemplate(models.Model):
                         }
                         if self.print_data_type == 'path':
                             print_epl_data_dict.update({
-                                'flavor': 'file',
                                 'data': data[0]
                             })
                         else:
                             print_epl_data_dict.update({
-                                'flavor': 'base64',
                                 'data': data[1]
                             })
                         print_data.append(print_epl_data_dict)
@@ -446,35 +339,17 @@ class CardTemplate(models.Model):
                             'format': self.data_format,
                             'options': {
                                 'language': 'ZPL',
-                                'dotDensity': self.dotDensity,
-                                'pageHeight': int(self.pageHeight),
-                                'pageWidth': int(self.pageWidth),
-                                'xmlTag': self.xml_tag,
                             },
                             'index': index
                         }
-                        if self.print_data_type == 'path':
-                            if self.data_format == 'pdf':
-                                print_zpl_data_dict.update({
-                                    'flavor': 'file',
-                                    'data': data[0]
-                                })
-                            else:
-                                print_zpl_data_dict.update({
-                                    'flavor': 'file',
-                                    'data': data[0]
-                                })
+                        if self.data_format == 'pdf':
+                            print_zpl_data_dict.update({
+                                'data': data[0]
+                            })
                         else:
-                            if self.data_format == 'pdf':
-                                print_zpl_data_dict.update({
-                                    'flavor': 'base64',
-                                    'data': data[1],
-                                })
-                            else:
-                                print_zpl_data_dict.update({
-                                    'flavor': 'base64',
-                                    'data': data[1]
-                                })
+                            print_zpl_data_dict.update({
+                                'data': data[1]
+                            })
                         print_data.append(print_zpl_data_dict)
                         footerarray = self.footer_data.split(',')
                         for findex, j in enumerate(footerarray):
@@ -521,12 +396,10 @@ class CardTemplate(models.Model):
                     }
                     if self.print_data_type == 'path':
                         print_evl_data_dict.update({
-                            'flavor': 'file',
                             'data': data[0]
                         })
                     else:
                         print_evl_data_dict.update({
-                            'flavor': 'base64',
                             'data': data[1],
                         })
                     print_data.append(print_evl_data_dict)
@@ -588,16 +461,6 @@ class CardTemplate(models.Model):
                 "footer_data": rec.footer_data,
                 "jobName": rec.name,
             }
-            if rec.printer_lang == 'EPL':
-                action.update({
-                    'epl_x': rec.epl_x,
-                    'epl_y': rec.epl_y,
-                })
-            elif rec.printer_lang == 'EVOLIS':
-                action.update({
-                    'precision': rec.precision,
-                    'overlay': rec.overlay,
-                })
             return action
 
     @api.multi
@@ -644,14 +507,4 @@ class CardTemplate(models.Model):
                 "footer_data": rec.footer_data,
                 "jobName": rec.name,
             }
-            if rec.printer_lang == 'EPL':
-                action.update({
-                    'epl_x': rec.epl_x,
-                    'epl_y': rec.epl_y,
-                })
-            elif rec.printer_lang == 'EVOLIS':
-                action.update({
-                    'precision': rec.precision,
-                    'overlay': rec.overlay,
-                })
             return action

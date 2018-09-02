@@ -13,20 +13,6 @@ import datetime
 class CardPrintWizard(models.TransientModel):
     _name = 'card.print.wizard'
 
-    # @api.model
-    # def _get_model(self):
-    #     model = self._context.get('active_model')
-    #     model_id = self.env['ir.model'].search([('model', '=', model)], limit=1)
-    #     return model_id
-
-    # @api.model
-    # def get_template(self):
-    #     card_template = self.env['card.template'].search(
-    #         [('card_model', '=', self._context.get('active_model'))],
-    #         limit=1
-    #     )
-    #     return card_template
-
     @api.model
     def default_get(self, fields):
         res = super(CardPrintWizard, self).default_get(fields)
