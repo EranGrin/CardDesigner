@@ -395,7 +395,7 @@ class CardTemplate(models.Model):
     def create_json_nonduplex_back_data(self, side_data):
         index = 0
         print_data = []
-        if self.duplex_type == 'noduplex':
+        if self.duplex_type == 'noduplex' and self.is_manually:
             print_data = self.get_back_manually_print_data([
                 side_data, side_data
             ])
