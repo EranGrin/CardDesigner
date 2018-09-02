@@ -29,24 +29,16 @@
                         <field name="duplex_type"
                             attrs="{
                                 'required': [('type', '!=', 'label')],
-                                'invisible': [('type', '=', 'label')],
+                                'invisible': ['|', ('type', '=', 'label'), ('back_side', '=', False)],
                             }"
                         />
                     </group>
             </xpath>
-            <field name="header_data" position="after">
-                <field name="double_print_overlay"
-                    attrs="{
-                        'required': [('type', '!=', 'label')],
-                        'invisible': ['|', '|', ('type', '=', 'label'), ('duplex_type', '=', 'normal'), ('duplex_type', '=', False)],
-                    }"
-                />
-            </field>
             <field name="footer_data" position="after">
                 <field name="double_print_back_data"
                     attrs="{
                         'required': [('type', '!=', 'label')],
-                        'invisible': ['|', '|', ('duplex_type', '=', False), ('type', '=', 'label'), ('duplex_type', '=', 'normal')],
+                        'invisible': ['|', '|', '|', ('duplex_type', '=', False), ('type', '=', 'label'), ('duplex_type', '=', 'normal'), ('back_side', '=', False)],
                     }" invisible="1"
                 />
             </field>
@@ -54,15 +46,30 @@
                 <button name="qz_double_nonduplex_front_print" type="object" string="Non-Duplex Print"
                     class="oe_highlight" icon="fa-print" style="background: teal;border-color: teal;"
                     attrs="{
-                        'invisible': ['|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'),
-                        ('duplex_type', 'in', ['normal', 'duplex'])],
+                        'invisible': ['|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'),
+                        ('duplex_type', 'in', ['normal', 'duplex']), ('back_side', '=', False)],
                     }"/>
                 <button name="qz_double_duplex_print" type="object" string="Duplex Print"
                     class="oe_highlight" icon="fa-print" style="background: teal;border-color: teal;"
                     attrs="{
-                        'invisible': ['|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('duplex_type', 'in', ['normal', 'noduplex'])],
+                        'invisible': ['|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('back_side', '=', False), ('duplex_type', 'in', ['normal', 'noduplex'])],
                     }"/>
             </button>
+            <xpath expr="//group[@name='check_manually_data']" position="after">
+                <div attrs="{
+                            'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('back_side', '=', False), ('duplex_type', '!=', 'noduplex'),
+                            ('is_manually', '=', False)],
+                        }">
+                    <button name="check_manually_body_data_duplex" type="object"
+                        string="Check Manually Back Data"/>
+                </div>
+                <group attrs="{
+                    'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('back_side', '=', False), ('duplex_type', '!=', 'noduplex'), ('is_manually', '=', False)],
+                }">
+                    <field nolabel="1" name="check_manually_data_duplex" attrs="{
+                    }"  style="min-height:300px"/>
+                </group>
+            </xpath>
         </field>
     </record>
 

@@ -17,9 +17,6 @@ class CardTemplate(models.Model):
     # precision = fields.Integer(
     #     string=_("Precision"), default=128
     # )
-    double_print_overlay = fields.Text(
-        string=_("Back Overlay"), default="[0, 0, 439, 1016],[588, 0, 648, 1016]"
-    )
     # double_print_data_type = fields.Char(
     #     string=_("Data Type"), default="raw"
     # )
@@ -50,9 +47,9 @@ class CardTemplate(models.Model):
     #     string=_("Footer Data"),
     #     default="Se"
     # )
-    # is_manually_duplex = fields.Boolean(string="Manually Syntax")
-    # manually_body_data_duplex = fields.Text(string="Manually Syntax")
-    # check_manually_data_duplex = fields.Text(string="Check Syntax")
+
+    manually_body_data_duplex = fields.Text(string="Manually Syntax")
+    check_manually_data_duplex = fields.Text(string="Check Syntax")
 
     # @api.onchange('printer_lang')
     # def onchange_printer_lang(self):
@@ -68,6 +65,11 @@ class CardTemplate(models.Model):
     #     for rec in self:
     #         if not rec.enable_printer:
     #             rec.enable_double_printer = False
+
+    @api.onchange('back_side')
+    def onchange_back_side(self):
+        for rec in self:
+            rec.duplex_type = 'normal'
 
     def get_evolis_string(self):
         print_data = ''

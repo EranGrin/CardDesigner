@@ -98,8 +98,19 @@ class CardTemplate(models.Model):
     precision = fields.Integer(
         string=_("Precision"), default=128
     )
-    overlay = fields.Boolean(
-        string=_("Overlay"), default=True
+    front_overlay_type = fields.Selection([
+        ("full", "Full"),
+        ("custom", "Custom"),
+    ], string=_("Front Overlay"), default="full")
+    back_overlay_type = fields.Selection([
+        ("full", "Full"),
+        ("custom", "Custom"),
+    ], string=_("Back Overlay"), default="full")
+    front_custom_overlay = fields.Text(
+        string=_("Custom"), default="[0, 0, 439, 1016],[588, 0, 648, 1016]"
+    )
+    back_custom_overlay = fields.Text(
+        string=_("Custom"), default="[0, 0, 439, 1016],[588, 0, 648, 1016]"
     )
     data_type = fields.Char(
         string=_("Data Type"), default="raw"
@@ -132,6 +143,14 @@ class CardTemplate(models.Model):
         for rec in self:
             if rec.type == 'label':
                 rec.back_side = False
+                rec.onchange_printer_lang()
+            else:
+                rec.header_data = "Pps;0,Pwr;0,Wcb;k;0,Ss"
+                rec.footer_data = "Se"
+                if rec.is_mag_strip:
+                    rec.mag_strip_track1 = 'foo'
+                    rec.mag_strip_track2 = 12459
+                    rec.mag_strip_track3 = 55555
 
     @api.multi
     def change_template_size(self):
@@ -177,9 +196,9 @@ class CardTemplate(models.Model):
             self.header_data = "Pps;0,Pwr;0,Wcb;k;0,Ss"
             self.footer_data = "Se"
             if self.is_mag_strip:
-                self.mag_strip_track1 = 'Dm;1;foo'
-                self.mag_strip_track2 = 'Dm;1;12459'
-                self.mag_strip_track3 = 'Dm;1;55555'
+                self.mag_strip_track1 = 'foo'
+                self.mag_strip_track2 = 12459
+                self.mag_strip_track3 = 55555
 
     @api.one
     def update_manually_json(self):
