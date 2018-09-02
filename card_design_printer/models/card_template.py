@@ -128,8 +128,8 @@ class CardTemplate(models.Model):
     )
     is_mag_strip = fields.Boolean("Enable  Magnetic Stripe")
     mag_strip_track1 = fields.Char("Track1")
-    mag_strip_track2 = fields.Char("Track2")
-    mag_strip_track3 = fields.Char("Track3")
+    mag_strip_track2 = fields.Integer("Track2")
+    mag_strip_track3 = fields.Integer("Track3")
     print_data_type = fields.Selection([
         ("path", "File Path"),
         ("base64", "Base64")
@@ -226,15 +226,23 @@ class CardTemplate(models.Model):
         for hindex, i in enumerate(headerarray):
             print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
         if self.is_mag_strip:
-            print_data += '#x1B' + self.mag_strip_track1 + '#x0D\n'
-            print_data += '#x1B' + self.mag_strip_track2 + '#x0D\n'
-            print_data += '#x1B' + self.mag_strip_track3 + '#x0D\n'
-            print_data += '#x1B' + 'smw' + '#x0D\n'
+            if self.mag_strip_track1:
+                print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
+            if self.mag_strip_track2:
+                print_data += '#x1BDm;2;' + str(self.mag_strip_track2) + '#x0D\n'
+            if self.mag_strip_track3:
+                print_data += '#x1BDm;3;' + str(self.mag_strip_track3) + '#x0D\n'
+            if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
+                print_data += '#x1B' + 'smw' + '#x0D\n'
         print_data_dict = self.get_manually_data()
         print_data_dict = print_data_dict and print_data_dict[0] or {}
+        overlay = True
+        if self.front_overlay_type == 'custom':
+            overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
         print_data_dict['options'].update({
             'precision': self.precision,
-            'overlay': self.overlay,
+            'overlay': overlay,
+            'language': 'EVOLIS',
         })
         if self.print_data_type == 'path':
             print_data_dict.update({
@@ -257,61 +265,62 @@ class CardTemplate(models.Model):
         for rec in self:
             rec.update_manually_data()
             print_data = ''
-            if rec.printer_lang == 'EPL':
-                headerarray = self.header_data.split(',')
-                for hindex, i in enumerate(headerarray):
-                    print_data += "#n" + headerarray[hindex] + "#n\n"
-                print_data_dict = rec.get_manually_data()
-                print_data_dict = print_data_dict and print_data_dict[0] or {}
-                print_data_dict.get('options', False).update({
-                    'dotDensity': rec.dotDensity.encode("utf-8"),
-                    'pageHeight': rec.pageHeight,
-                    'pageWidth': rec.pageWidth,
-                    'xmlTag': rec.xml_tag.encode("utf-8"),
-                    'x': rec.epl_x,
-                    'y': rec.epl_y
-                })
-                if rec.print_data_type == 'path':
-                    print_data_dict.update({
-                        'flavor': 'file',
-                        'data': '$value',
+            if rec.type == 'label':
+                if rec.printer_lang == 'EPL':
+                    headerarray = self.header_data.split(',')
+                    for hindex, i in enumerate(headerarray):
+                        print_data += "#n" + headerarray[hindex] + "#n\n"
+                    print_data_dict = rec.get_manually_data()
+                    print_data_dict = print_data_dict and print_data_dict[0] or {}
+                    print_data_dict.get('options', False).update({
+                        'dotDensity': rec.dotDensity.encode("utf-8"),
+                        'pageHeight': rec.pageHeight,
+                        'pageWidth': rec.pageWidth,
+                        'xmlTag': rec.xml_tag.encode("utf-8"),
+                        'x': rec.epl_x,
+                        'y': rec.epl_y
                     })
-                else:
-                    print_data_dict.update({
-                        'flavor': 'base64',
-                        'data': '$value',
+                    if rec.print_data_type == 'path':
+                        print_data_dict.update({
+                            'flavor': 'file',
+                            'data': '$value',
+                        })
+                    else:
+                        print_data_dict.update({
+                            'flavor': 'base64',
+                            'data': '$value',
+                        })
+                    print_data += '%s\n' % print_data_dict
+                    footerarray = rec.footer_data.split(',')
+                    for findex, j in enumerate(footerarray):
+                        print_data += "#n" + footerarray[findex] + "#n\n"
+                elif rec.printer_lang == 'ZPL':
+                    headerarray = rec.header_data.split(',')
+                    for hindex, i in enumerate(headerarray):
+                        print_data += headerarray[hindex] + "#n\n"
+                    print_data_dict = rec.get_manually_data()
+                    print_data_dict = print_data_dict and print_data_dict[0] or {}
+                    print_data_dict.get('options', False).update({
+                        'dotDensity': rec.dotDensity.encode("utf-8"),
+                        'pageHeight': rec.pageHeight,
+                        'pageWidth': rec.pageWidth,
+                        'xmlTag': rec.xml_tag.encode("utf-8"),
                     })
-                print_data += '%s\n' % print_data_dict
-                footerarray = rec.footer_data.split(',')
-                for findex, j in enumerate(footerarray):
-                    print_data += "#n" + footerarray[findex] + "#n\n"
-            elif rec.printer_lang == 'ZPL':
-                headerarray = rec.header_data.split(',')
-                for hindex, i in enumerate(headerarray):
-                    print_data += headerarray[hindex] + "#n\n"
-                print_data_dict = rec.get_manually_data()
-                print_data_dict = print_data_dict and print_data_dict[0] or {}
-                print_data_dict.get('options', False).update({
-                    'dotDensity': rec.dotDensity.encode("utf-8"),
-                    'pageHeight': rec.pageHeight,
-                    'pageWidth': rec.pageWidth,
-                    'xmlTag': rec.xml_tag.encode("utf-8"),
-                })
-                if rec.print_data_type == 'path':
-                    print_data_dict.update({
-                        'flavor': 'file',
-                        'data': '$value',
-                    })
-                else:
-                    print_data_dict.update({
-                        'flavor': 'base64',
-                        'data': '$value',
-                    })
-                print_data += '%s\n' % print_data_dict
-                footerarray = rec.footer_data.split(',')
-                for findex, j in enumerate(footerarray):
-                    print_data += footerarray[findex]+"#n\n"
-            elif rec.printer_lang == 'EVOLIS':
+                    if rec.print_data_type == 'path':
+                        print_data_dict.update({
+                            'flavor': 'file',
+                            'data': '$value',
+                        })
+                    else:
+                        print_data_dict.update({
+                            'flavor': 'base64',
+                            'data': '$value',
+                        })
+                    print_data += '%s\n' % print_data_dict
+                    footerarray = rec.footer_data.split(',')
+                    for findex, j in enumerate(footerarray):
+                        print_data += footerarray[findex]+"#n\n"
+            elif rec.type == 'card':
                 print_data = rec.get_evolis_string()
             rec.check_manually_data = print_data
         return True
@@ -383,128 +392,130 @@ class CardTemplate(models.Model):
         print_data_dict = {}
         index = 0
         for index, data in enumerate(datas):
-            if self.printer_lang == 'EPL':
-                print_data = []
-                if self.is_manually:
-                    print_data = self.get_manually_print_data(data)
-                    # print_epl_data_dict.update({
-                    #     'index': index
-                    # })
-                    # print_epl_data_dict['options'].update({
-                    #     'x': self.epl_x,
-                    #     'y': self.epl_y
-                    # })
-                else:
-                    headerarray = self.header_data.split(',')
-                    for hindex, i in enumerate(headerarray):
-                        print_data.append("\n"+headerarray[hindex]+"\n")
-                    print_epl_data_dict = {
-                        'type': self.data_type,
-                        'format': self.data_format,
-                        'options': {
-                            'language': self.printer_lang,
-                            'x': self.epl_x,
-                            'y': self.epl_y
-                        },
-                        'index': index
-                    }
-                    if self.print_data_type == 'path':
-                        print_epl_data_dict.update({
-                            'flavor': 'file',
-                            'data': data[0]
-                        })
+            if self.type == 'label':
+                if self.printer_lang == 'EPL':
+                    print_data = []
+                    if self.is_manually:
+                        print_data = self.get_manually_print_data(data)
                     else:
-                        print_epl_data_dict.update({
-                            'flavor': 'base64',
-                            'data': data[1]
-                        })
-                    print_data.append(print_epl_data_dict)
-                    footerarray = self.footer_data.split(',')
-                    for findex, j in enumerate(footerarray):
-                        print_data.append("\n"+footerarray[findex]+"\n")
-                print_data_dict.update({
-                    index: print_data
-                })
-            elif self.printer_lang == 'ZPL':
-                print_data = []
-                if self.is_manually:
-                    print_data = self.get_manually_print_data(data)
-                else:
-                    headerarray = self.header_data.split(',')
-                    for hindex, i in enumerate(headerarray):
-                        print_data.append(headerarray[hindex]+"\n")
-
-                    print_zpl_data_dict = {
-                        'type': self.data_type,
-                        'format': self.data_format,
-                        'options': {
-                            'language': self.printer_lang,
-                            'dotDensity': self.dotDensity,
-                            'pageHeight': self.pageHeight,
-                            'pageWidth': self.pageWidth,
-                            'xmlTag': self.xml_tag,
-                        },
-                        'index': index
-                    }
-                    if self.print_data_type == 'path':
-                        if self.data_format == 'pdf':
-                            print_zpl_data_dict.update({
+                        headerarray = self.header_data.split(',')
+                        for hindex, i in enumerate(headerarray):
+                            print_data.append("\n"+headerarray[hindex]+"\n")
+                        print_epl_data_dict = {
+                            'type': self.data_type,
+                            'format': self.data_format,
+                            'options': {
+                                'dotDensity': self.dotDensity.encode("utf-8"),
+                                'pageHeight': int(self.pageHeight),
+                                'pageWidth': int(self.pageWidth),
+                                'xmlTag': self.xml_tag.encode("utf-8"),
+                                'language': 'EPL',
+                                'x': int(self.epl_x),
+                                'y': int(self.epl_y),
+                            },
+                            'index': index
+                        }
+                        if self.print_data_type == 'path':
+                            print_epl_data_dict.update({
                                 'flavor': 'file',
                                 'data': data[0]
                             })
                         else:
-                            print_zpl_data_dict.update({
-                                'flavor': 'file',
-                                'data': data[0]
-                            })
-                    else:
-                        if self.data_format == 'pdf':
-                            print_zpl_data_dict.update({
-                                'flavor': 'base64',
-                                'data': data[1],
-                            })
-                        else:
-                            print_zpl_data_dict.update({
+                            print_epl_data_dict.update({
                                 'flavor': 'base64',
                                 'data': data[1]
                             })
-                    print_data.append(print_zpl_data_dict)
-                    footerarray = self.footer_data.split(',')
-                    for findex, j in enumerate(footerarray):
-                        print_data.append(footerarray[findex]+"\n")
-                print_data_dict.update({
-                    index: print_data
-                })
-            elif self.printer_lang == 'EVOLIS':
+                        print_data.append(print_epl_data_dict)
+                        footerarray = self.footer_data.split(',')
+                        for findex, j in enumerate(footerarray):
+                            print_data.append("\n"+footerarray[findex]+"\n")
+                    print_data_dict.update({
+                        index: print_data
+                    })
+                elif self.printer_lang == 'ZPL':
+                    print_data = []
+                    if self.is_manually:
+                        print_data = self.get_manually_print_data(data)
+                    else:
+                        headerarray = self.header_data.split(',')
+                        for hindex, i in enumerate(headerarray):
+                            print_data.append(headerarray[hindex]+"\n")
+
+                        print_zpl_data_dict = {
+                            'type': self.data_type,
+                            'format': self.data_format,
+                            'options': {
+                                'language': 'ZPL',
+                                'dotDensity': self.dotDensity,
+                                'pageHeight': int(self.pageHeight),
+                                'pageWidth': int(self.pageWidth),
+                                'xmlTag': self.xml_tag,
+                            },
+                            'index': index
+                        }
+                        if self.print_data_type == 'path':
+                            if self.data_format == 'pdf':
+                                print_zpl_data_dict.update({
+                                    'flavor': 'file',
+                                    'data': data[0]
+                                })
+                            else:
+                                print_zpl_data_dict.update({
+                                    'flavor': 'file',
+                                    'data': data[0]
+                                })
+                        else:
+                            if self.data_format == 'pdf':
+                                print_zpl_data_dict.update({
+                                    'flavor': 'base64',
+                                    'data': data[1],
+                                })
+                            else:
+                                print_zpl_data_dict.update({
+                                    'flavor': 'base64',
+                                    'data': data[1]
+                                })
+                        print_data.append(print_zpl_data_dict)
+                        footerarray = self.footer_data.split(',')
+                        for findex, j in enumerate(footerarray):
+                            print_data.append(footerarray[findex]+"\n")
+                    print_data_dict.update({
+                        index: print_data
+                    })
+            elif self.type == 'card':
                 context = dict(self.env.context or {})
                 print_data = []
                 if self.is_manually:
                     print_data = self.get_manually_print_data(data)
-                    # print_evl_data_dict.update({
-                    #     'index': index
-                    # })
-                    # print_evl_data_dict['options'].update({
-                    #     'precision': self.precision,
-                    #     'overlay': self.overlay
-                    # })
                 else:
                     headerarray = self.header_data.split(',')
                     for hindex, i in enumerate(headerarray):
                         print_data.append('\x1B' + headerarray[hindex] + "\x0D")
-
                     if self.is_mag_strip and context.get('front_side', False):
-                        print_data.append('\x1B' + self.mag_strip_track1 + '\x0D')
-                        print_data.append('\x1B' + self.mag_strip_track2 + '\x0D')
-                        print_data.append('\x1B' + self.mag_strip_track3 + '\x0D')
-                        print_data.append('\x1B' + 'smw' + '\x0D')
+                        if self.mag_strip_track1:
+                            print_data.append('\x1BDm;1;' + str(self.mag_strip_track1) + '\x0D')
+                        if self.mag_strip_track2:
+                            print_data.append('\x1BDm;2;' + str(self.mag_strip_track2) + '\x0D')
+                        if self.mag_strip_track3:
+                            print_data.append('\x1BDm;3;' + str(self.mag_strip_track3) + '\x0D')
+                        if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
+                            print_data.append('\x1B' + 'smw' + '\x0D')
+
+                    overlay = True
+                    if context.get('front_side', False):
+                        if self.front_overlay_type == 'custom':
+                            overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
+                    else:
+                        if self.back_overlay_type == 'custom':
+                            overlay = [literal_eval(self.back_custom_overlay)[0], literal_eval(self.back_custom_overlay)[1]]
 
                     print_evl_data_dict = {
                         'type': self.data_type,
                         'format': self.data_format,
                         'options': {
-                            'language': self.printer_lang,
+                            'language': 'EVOLIS',
                             'precision': self.precision,
-                            'overlay': self.overlay
+                            'overlay': overlay
                         },
                         'index': index
                     }
@@ -522,42 +533,9 @@ class CardTemplate(models.Model):
                     footerarray = self.footer_data.split(',')
                     for findex, j in enumerate(footerarray):
                         print_data.append('\x1B' + footerarray[findex] + "\x0D")
-                print_data_dict.update({
-                    index: print_data
-                })
-            else:
-                print_data = []
-                print_nl_data_dict = {
-                    'type': self.data_type,
-                    'format': self.data_format,
-                    'index': index
-                }
-                if self.print_data_type == 'path':
-                    if self.data_format == 'pdf':
-                        print_nl_data_dict.update({
-                            'flavor': 'file',
-                            'data': data[0]
-                        })
-                    else:
-                        print_nl_data_dict.update({
-                            'flavor': 'file',
-                            'data': data[0]
-                        })
-                else:
-                    if self.data_format == 'pdf':
-                        print_nl_data_dict.update({
-                            'flavor': 'base64',
-                            'data': data[1]
-                        })
-                    else:
-                        print_nl_data_dict.update({
-                            'flavor': 'base64',
-                            'data': data[1]
-                        })
-                print_data.append(print_nl_data_dict)
-                print_data_dict.update({
-                    index: print_data
-                })
+            print_data_dict.update({
+                index: print_data
+            })
         return index, print_data_dict
 
     @api.multi

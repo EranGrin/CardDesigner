@@ -66,6 +66,46 @@ class CardTemplate(models.Model):
     #         if not rec.enable_printer:
     #             rec.enable_double_printer = False
 
+    def get_evolis_string_back(self):
+        print_data = ''
+        if self.duplex_type == 'noduplex' and self.type == 'card' and self.back_side:
+            headerarray = self.header_data.split(',')
+            for hindex, i in enumerate(headerarray):
+                print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
+            print_data_dict = self.get_manually_data()
+            print_data_dict = print_data_dict and print_data_dict[0] or {}
+            overlay = True
+            if self.back_overlay_type == 'custom':
+                overlay = [literal_eval(self.back_custom_overlay)[0], literal_eval(self.back_custom_overlay)[1]]
+
+            print_data_dict['options'].update({
+                'language': 'EVOLIS',
+                'precision': self.precision,
+                'overlay': overlay
+            })
+            if self.print_data_type == 'path':
+                print_data_dict.update({
+                    'flavor': 'file',
+                    'data': '$value',
+                })
+            else:
+                print_data_dict.update({
+                    'flavor': 'base64',
+                    'data': '$value',
+                })
+            print_data += '%s\n' % print_data_dict
+            footerarray = self.footer_data.split(',')
+            for findex, j in enumerate(footerarray):
+                print_data += '#x1B' + footerarray[findex] + "#x0D\n"
+        return print_data
+
+    @api.multi
+    def check_manually_body_data_duplex(self):
+        for rec in self:
+            print_data = rec.get_evolis_string_back()
+            rec.check_manually_data_duplex = print_data
+        return True
+
     @api.onchange('back_side')
     def onchange_back_side(self):
         for rec in self:
@@ -80,15 +120,24 @@ class CardTemplate(models.Model):
             for hindex, i in enumerate(headerarray):
                 print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
             if self.is_mag_strip:
-                print_data += '#x1B' + self.mag_strip_track1 + '#x0D\n'
-                print_data += '#x1B' + self.mag_strip_track2 + '#x0D\n'
-                print_data += '#x1B' + self.mag_strip_track3 + '#x0D\n'
-                print_data += '#x1B' + 'smw' + '#x0D\n'
+                if self.mag_strip_track1:
+                    print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
+                if self.mag_strip_track2:
+                    print_data += '#x1BDm;2;' + str(self.mag_strip_track2) + '#x0D\n'
+                if self.mag_strip_track3:
+                    print_data += '#x1BDm;3;' + str(self.mag_strip_track3) + '#x0D\n'
+                if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
+                    print_data += '#x1B' + 'smw' + '#x0D\n'
             print_data_dict = self.get_manually_data()
             print_data_dict = print_data_dict and print_data_dict[0] or {}
+            overlay = True
+            if self.front_overlay_type == 'custom':
+                overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
+
             print_data_dict['options'].update({
+                'language': 'EVOLIS',
                 'precision': self.precision,
-                'overlay': self.overlay
+                'overlay': overlay
             })
             if self.print_data_type == 'path':
                 print_data_dict.update({
@@ -108,9 +157,14 @@ class CardTemplate(models.Model):
 
             print_data_dict = self.get_manually_data()
             print_data_dict = print_data_dict and print_data_dict[0] or {}
+            back_overlay = True
+            if self.back_overlay_type == 'custom':
+                back_overlay = [literal_eval(self.back_custom_overlay)[0], literal_eval(self.back_custom_overlay)[1]]
+
             print_data_dict['options'].update({
+                'language': 'EVOLIS',
                 'precision': self.precision,
-                'overlay': [literal_eval(self.double_print_overlay)[0], literal_eval(self.double_print_overlay)[1]]
+                'overlay': back_overlay
             })
             if self.print_data_type == 'path':
                 print_data_dict.update({
@@ -131,15 +185,24 @@ class CardTemplate(models.Model):
             for hindex, i in enumerate(headerarray):
                 print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
             if self.is_mag_strip:
-                print_data += '#x1B' + self.mag_strip_track1 + '#x0D\n'
-                print_data += '#x1B' + self.mag_strip_track2 + '#x0D\n'
-                print_data += '#x1B' + self.mag_strip_track3 + '#x0D\n'
-                print_data += '#x1B' + 'smw' + '#x0D\n'
+                if self.mag_strip_track1:
+                    print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
+                if self.mag_strip_track2:
+                    print_data += '#x1BDm;2;' + str(self.mag_strip_track2) + '#x0D\n'
+                if self.mag_strip_track3:
+                    print_data += '#x1BDm;3;' + str(self.mag_strip_track3) + '#x0D\n'
+                if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
+                    print_data += '#x1B' + 'smw' + '#x0D\n'
             print_data_dict = self.get_manually_data()
             print_data_dict = print_data_dict and print_data_dict[0] or {}
+            overlay = True
+            if self.front_overlay_type == 'custom':
+                overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
+
             print_data_dict['options'].update({
                 'precision': self.precision,
-                'overlay': True
+                'overlay': overlay,
+                'language': 'EVOLIS',
             })
             if self.print_data_type == 'path':
                 print_data_dict.update({
@@ -179,10 +242,17 @@ class CardTemplate(models.Model):
                     print_data.append('\x1B' + headerarray[hindex] + '\x0D')
 
                 if rec.is_mag_strip:
-                    print_data.append('\x1B' + rec.mag_strip_track1 + '\x0D')
-                    print_data.append('\x1B' + rec.mag_strip_track2 + '\x0D')
-                    print_data.append('\x1B' + rec.mag_strip_track3 + '\x0D')
-                    print_data.append('\x1B' + 'smw' + '\x0D')
+                    if rec.mag_strip_track1:
+                        print_data += '#x1BDm;1;' + str(rec.mag_strip_track1) + '#x0D\n'
+                    if rec.mag_strip_track2:
+                        print_data += '#x1BDm;2;' + str(rec.mag_strip_track2) + '#x0D\n'
+                    if rec.mag_strip_track3:
+                        print_data += '#x1BDm;3;' + str(rec.mag_strip_track3) + '#x0D\n'
+                    if rec.mag_strip_track1 or rec.mag_strip_track2 or rec.mag_strip_track3:
+                        print_data += '#x1B' + 'smw' + '#x0D\n'
+                overlay = True
+                if rec.front_overlay_type == 'custom':
+                    overlay = [literal_eval(rec.front_custom_overlay)[0], literal_eval(rec.front_custom_overlay)[1]]
 
                 print_evl_front_data_dict = {
                     'type': rec.data_type,
@@ -190,10 +260,13 @@ class CardTemplate(models.Model):
                     'options': {
                         'language': 'EVOLIS',
                         'precision': rec.precision,
-                        'overlay': True
+                        'overlay': overlay
                     },
                     'index': index
                 }
+                back_overlay = True
+                if rec.back_overlay_type == 'custom':
+                    back_overlay = [literal_eval(rec.back_custom_overlay)[0], literal_eval(rec.back_custom_overlay)[1]]
 
                 print_evl_back_data_dict = {
                     'type': rec.data_type,
@@ -201,7 +274,7 @@ class CardTemplate(models.Model):
                     'options': {
                         'language': 'EVOLIS',
                         'precision': rec.precision,
-                        'overlay': [literal_eval(rec.double_print_overlay)[0], literal_eval(rec.double_print_overlay)[1]]
+                        'overlay': back_overlay
                     },
                     'index': index
                 }
@@ -289,52 +362,90 @@ class CardTemplate(models.Model):
             }
             return action
 
+    @api.one
+    def get_back_manually_print_data(self, datas):
+        print_data = []
+        if not self.is_manually:
+            raise("Please select the manually print data.")
+        try:
+            for data in self.check_manually_data_duplex.split("\n"):
+                try:
+                    if type(literal_eval(data)) is dict:
+                        data_dict = literal_eval(data)
+                        if self.print_data_type == 'path':
+                            data_dict.update({
+                                'flavor': 'file',
+                                'data': datas[0].encode("utf-8"),
+                            })
+                        else:
+                            data_dict.update({
+                                'flavor': 'base64',
+                                'data': datas[1],
+                            })
+                        print_data.append(data_dict)
+                    else:
+                        print_data.append(literal_eval(data))
+                except:
+                    if data:
+                        print_data.append(data.replace("#x1B", "\x1B").replace("#x0D", "\x0D").encode("utf-8"))
+        except:
+            raise("Manually data is not correctly data. please check and try again.")
+        return print_data
+
     def create_json_nonduplex_back_data(self, side_data):
         index = 0
         print_data = []
-
-        headerarray = self.header_data.split(',')
-        for hindex, i in enumerate(headerarray):
-            print_data.append('\x1B' + headerarray[hindex] + '\x0D')
-
-        print_evl_back_data_dict = {
-            'type': self.data_type,
-            'format': self.data_format,
-            'options': {
-                'language': 'EVOLIS',
-                'precision': self.precision,
-                'overlay': [literal_eval(self.double_print_overlay)[0], literal_eval(self.double_print_overlay)[1]]
-            },
-            'index': index
-        }
-
-        if self.data_type == 'path':
-            if self.data_format == 'pdf':
-                print_evl_back_data_dict.update({
-                    'flavor': 'file',
-                    'data': side_data
-                })
-            else:
-                print_evl_back_data_dict.update({
-                    'flavor': 'file',
-                    'data': side_data
-                })
+        if self.duplex_type == 'noduplex':
+            print_data = self.get_back_manually_print_data([
+                side_data, side_data
+            ])
         else:
-            if self.data_format == 'pdf':
-                print_evl_back_data_dict.update({
-                    'flavor': 'base64',
-                    'data': side_data,
-                })
-            else:
-                print_evl_back_data_dict.update({
-                    'flavor': 'base64',
-                    'data': side_data,
-                })
-        print_data.append(print_evl_back_data_dict)
+            headerarray = self.header_data.split(',')
+            for hindex, i in enumerate(headerarray):
+                print_data.append('\x1B' + headerarray[hindex] + '\x0D')
 
-        footerarray = self.footer_data.split(',')
-        for findex, j in enumerate(footerarray):
-            print_data.append('\x1B' + footerarray[findex] + '\x0D')
+            back_overlay = True
+            if self.back_overlay_type == 'custom':
+                back_overlay = [literal_eval(self.back_custom_overlay)[0], literal_eval(self.back_custom_overlay)[1]]
+
+            print_evl_back_data_dict = {
+                'type': self.data_type,
+                'format': self.data_format,
+                'options': {
+                    'language': 'EVOLIS',
+                    'precision': self.precision,
+                    'overlay': back_overlay
+                },
+                'index': index
+            }
+
+            if self.data_type == 'path':
+                if self.data_format == 'pdf':
+                    print_evl_back_data_dict.update({
+                        'flavor': 'file',
+                        'data': side_data
+                    })
+                else:
+                    print_evl_back_data_dict.update({
+                        'flavor': 'file',
+                        'data': side_data
+                    })
+            else:
+                if self.data_format == 'pdf':
+                    print_evl_back_data_dict.update({
+                        'flavor': 'base64',
+                        'data': side_data,
+                    })
+                else:
+                    print_evl_back_data_dict.update({
+                        'flavor': 'base64',
+                        'data': side_data,
+                    })
+            print_data.append(print_evl_back_data_dict)
+
+            footerarray = self.footer_data.split(',')
+            for findex, j in enumerate(footerarray):
+                print_data.append('\x1B' + footerarray[findex] + '\x0D')
 
         return index, print_data
 
@@ -345,23 +456,24 @@ class CardTemplate(models.Model):
             print_data = self.get_manually_print_data([
                 side_data, side_data
             ])
-            # print_evl_front_data_dict.update({
-            #     'index': index
-            # })
-            # print_evl_front_data_dict['options'].update({
-            #     'precision': self.precision,
-            #     'overlay': True
-            # })
         else:
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 print_data.append('\x1B' + headerarray[hindex] + '\x0D')
 
             if self.is_mag_strip:
-                print_data.append('\x1B' + self.mag_strip_track1 + '\x0D')
-                print_data.append('\x1B' + self.mag_strip_track2 + '\x0D')
-                print_data.append('\x1B' + self.mag_strip_track3 + '\x0D')
-                print_data.append('\x1B' + 'smw' + '\x0D')
+                if self.mag_strip_track1:
+                    print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
+                if self.mag_strip_track2:
+                    print_data += '#x1BDm;2;' + str(self.mag_strip_track2) + '#x0D\n'
+                if self.mag_strip_track3:
+                    print_data += '#x1BDm;3;' + str(self.mag_strip_track3) + '#x0D\n'
+                if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
+                    print_data += '#x1B' + 'smw' + '#x0D\n'
+
+            overlay = True
+            if print_data.front_overlay_type == 'custom':
+                overlay = [literal_eval(print_data.front_custom_overlay)[0], literal_eval(print_data.front_custom_overlay)[1]]
 
             print_evl_front_data_dict = {
                 'type': self.data_type,
@@ -369,7 +481,7 @@ class CardTemplate(models.Model):
                 'options': {
                     'language': 'EVOLIS',
                     'precision': self.precision,
-                    'overlay': True
+                    'overlay': overlay
                 },
                 'index': index
             }

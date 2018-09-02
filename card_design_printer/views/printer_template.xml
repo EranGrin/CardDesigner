@@ -147,7 +147,7 @@
                                     <field name="epl_x"
                                         attrs="{
                                             'required': [('printer_lang', '=', 'EPL')],
-                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
+                                            'invisible': ['|', '|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL'), ('type', '=', 'card')],
                                         }"
                                     />
                                     <field name="precision"
@@ -167,7 +167,7 @@
                                     <field name="epl_y"
                                         attrs="{
                                             'required': [('printer_lang', '=', 'EPL')],
-                                            'invisible': ['|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL')],
+                                            'invisible': ['|', '|', ('enable_printer', '=', False), ('printer_lang', '!=', 'EPL'), ('type', '=', 'card')],
                                         }"
                                     />
                                 </group>
