@@ -328,6 +328,7 @@ class CardTemplate(models.Model):
                     print_data = []
                     if self.is_manually:
                         print_data = self.get_manually_print_data(data)
+                        print_data = print_data and print_data[0] or ''
                     else:
                         headerarray = self.header_data.split(',')
                         for hindex, i in enumerate(headerarray):
@@ -358,9 +359,10 @@ class CardTemplate(models.Model):
                     })
             elif self.type == 'card':
                 context = dict(self.env.context or {})
-                    print_data = []
+                print_data = []
                 if self.is_manually:
                     print_data = self.get_manually_print_data(data)
+                    print_data = print_data and print_data[0] or []
                 else:
                     headerarray = self.header_data.split(',')
                     for hindex, i in enumerate(headerarray):
