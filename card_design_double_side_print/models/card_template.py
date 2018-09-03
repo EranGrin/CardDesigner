@@ -149,6 +149,7 @@ class CardTemplate(models.Model):
                 print_data = self.get_manually_print_data([
                     front_side_data, front_side_data
                 ])
+                print_data = print_data and print_data[0] or ''
             else:
                 headerarray = rec.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
@@ -293,6 +294,7 @@ class CardTemplate(models.Model):
             print_data = self.get_back_manually_print_data([
                 side_data, side_data
             ])
+            print_data = print_data and print_data[0] or ''
         else:
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
@@ -328,6 +330,7 @@ class CardTemplate(models.Model):
             print_data = self.get_manually_print_data([
                 side_data, side_data
             ])
+            print_data = print_data and print_data[0] or ''
         else:
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
