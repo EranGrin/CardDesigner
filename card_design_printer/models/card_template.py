@@ -179,7 +179,6 @@ class CardTemplate(models.Model):
             'precision': self.precision,
             'overlay': overlay,
             'language': 'EVOLIS',
-            'data': '$value',
         })
         print_data += '%s\n' % print_data_dict
         footerarray = self.footer_data.split(',')
@@ -203,7 +202,6 @@ class CardTemplate(models.Model):
                         'language': 'EPL',
                         'x': rec.epl_x,
                         'y': rec.epl_y,
-                        'data': '$value',
                     })
                     print_data += '%s\n' % print_data_dict
                     footerarray = rec.footer_data.split(',')
@@ -217,7 +215,6 @@ class CardTemplate(models.Model):
                     print_data_dict = print_data_dict and print_data_dict[0] or {}
                     print_data_dict.get('options', False).update({
                         'language': 'ZPL',
-                        'data': '$value',
                     })
                     print_data += '%s\n' % print_data_dict
                     footerarray = rec.footer_data.split(',')
@@ -342,7 +339,7 @@ class CardTemplate(models.Model):
                             },
                             'index': index
                         }
-                        if self.data_format == 'pdf':
+                        if self.print_data_type == 'path':
                             print_zpl_data_dict.update({
                                 'data': data[0]
                             })
