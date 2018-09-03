@@ -228,6 +228,7 @@ class CardTemplate(models.Model):
     @api.one
     def get_manually_print_data(self, datas):
         print_data = []
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         if not self.is_manually:
             raise UserError("Please select the manually print data.")
         try:
@@ -237,7 +238,7 @@ class CardTemplate(models.Model):
                         data_dict = literal_eval(data)
                         if self.print_data_type == 'path':
                             data_dict.update({
-                                'data': datas[0].encode("utf-8"),
+                                'data': URL + datas[0].encode("utf-8"),
                             })
                         else:
                             data_dict.update({
@@ -253,7 +254,7 @@ class CardTemplate(models.Model):
                             data_dict = literal_eval(data)
                             if self.print_data_type == 'path':
                                 data_dict.update({
-                                    'data': datas[0].encode("utf-8"),
+                                    'data': URL + datas[0].encode("utf-8"),
                                 })
                             else:
                                 data_dict.update({

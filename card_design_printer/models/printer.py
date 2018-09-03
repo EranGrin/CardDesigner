@@ -249,8 +249,6 @@ class Printer(models.Model):
 
     @api.multi
     def test_language(self):
-        import pdb
-        pdb.set_trace()
         context = dict(self.env.context or {})
         for printer in self:
             if not printer.default_printer:
