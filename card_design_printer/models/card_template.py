@@ -233,21 +233,22 @@ class CardTemplate(models.Model):
             raise UserError("Please select the manually print data.")
         try:
             for data in self.check_manually_data.split("\n"):
-                if self.printer_lang in ['EPL', 'ZPL']:
-                    try:
-                        data_dict = literal_eval(data)
-                        if self.print_data_type == 'path':
-                            data_dict.update({
-                                'data': URL + datas[0].encode("utf-8"),
-                            })
-                        else:
-                            data_dict.update({
-                                'data': datas[1],
-                            })
-                        print_data.append(data_dict)
-                    except:
-                        if data:
-                            print_data.append(data.replace("#n", "\n").encode("utf-8"))
+                if self.type == 'label':
+                    if self.printer_lang in ['EPL', 'ZPL']:
+                        try:
+                            data_dict = literal_eval(data)
+                            if self.print_data_type == 'path':
+                                data_dict.update({
+                                    'data': URL + datas[0].encode("utf-8"),
+                                })
+                            else:
+                                data_dict.update({
+                                    'data': datas[1],
+                                })
+                            print_data.append(data_dict)
+                        except:
+                            if data:
+                                print_data.append(data.replace("#n", "\n").encode("utf-8"))
                 else:
                     try:
                         if type(literal_eval(data)) is dict:
