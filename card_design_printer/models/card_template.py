@@ -286,11 +286,8 @@ class CardTemplate(models.Model):
         return print_data_dict
 
     def create_json_print_data(self, datas=[]):
-        import pdb
-        pdb.set_trace()
         print_data_dict = {}
         index = 0
-        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for index, data in enumerate(datas):
             if self.type == 'label':
                 if self.printer_lang == 'EPL':
