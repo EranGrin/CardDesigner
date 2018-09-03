@@ -194,7 +194,7 @@ class Printer(models.Model):
                         'type': 'raw',
                         'format': 'pdf',
                         'data': data,
-                        'options': {'language': language}
+                        'options': {'language': 'ZPL'}
                     },
                     '^XZ\n'
                 ]
@@ -208,7 +208,7 @@ class Printer(models.Model):
                         'type': 'raw',
                         'format': 'pdf',
                         'data': data,
-                        'options': {'language': language}
+                        'options': {'language': 'EPL'}
                     },
                     '\nP1\n'
                 ]
@@ -226,7 +226,7 @@ class Printer(models.Model):
                         'format': 'pdf',
                         'data': data,
                         'options': {
-                            'language': language
+                            'language': 'EVOLIS',
                         }
                     },
                     '\x1BSe\x0D'
@@ -249,6 +249,8 @@ class Printer(models.Model):
 
     @api.multi
     def test_language(self):
+        import pdb
+        pdb.set_trace()
         context = dict(self.env.context or {})
         for printer in self:
             if not printer.default_printer:
