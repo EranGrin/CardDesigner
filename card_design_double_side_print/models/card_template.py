@@ -42,7 +42,6 @@ class CardTemplate(models.Model):
                 'language': 'EVOLIS',
                 'precision': self.precision,
                 'overlay': overlay,
-                'data': '$value',
             })
             print_data += '%s\n' % print_data_dict
             footerarray = self.footer_data.split(',')
@@ -89,7 +88,6 @@ class CardTemplate(models.Model):
                 'language': 'EVOLIS',
                 'precision': self.precision,
                 'overlay': overlay,
-                'data': '$value',
             })
             print_data += '%s\n' % print_data_dict
 
@@ -107,7 +105,6 @@ class CardTemplate(models.Model):
                 'language': 'EVOLIS',
                 'precision': self.precision,
                 'overlay': back_overlay,
-                'data': '$value',
             })
             print_data += '%s\n' % print_data_dict
             footerarray = self.footer_data.split(',')
@@ -136,7 +133,6 @@ class CardTemplate(models.Model):
                 'precision': self.precision,
                 'overlay': overlay,
                 'language': 'EVOLIS',
-                'data': '$value',
             })
             print_data += '%s\n' % print_data_dict
             footerarray = self.footer_data.split(',')
