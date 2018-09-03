@@ -140,6 +140,7 @@ class CardPrintWizard(models.TransientModel):
             dict_context = dict(self.env.context or {})
             dict_context.update({'is_gift_card': True})
             dict_context.update({'gift_card_ids': context.get('active_ids')})
+            printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.multi.printnonduplex",
                 "res_model": self._name,
@@ -149,6 +150,7 @@ class CardPrintWizard(models.TransientModel):
                 'print_data_len': i,
                 "printer_config_dict": printer_config_dict,
                 "context": dict_context,
+                "printer_option": printer_option,
             }
             return action
 
@@ -267,6 +269,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 'coupon_id': rec.coupon_id.id,
                 'next_ids': context.get('next_ids', [])
             })
+            printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.multi.nonbulk",
                 "res_model": self._name,
@@ -276,6 +279,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 'print_data_len': 1,
                 "printer_config_dict": printer_config_dict,
                 "context": context,
+                "printer_option": printer_option,
             }
             return action
 
@@ -333,6 +337,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 'coupon_id': next_id,
                 'next_ids': next_ids
             })
+            printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.multi.nonbulk",
                 "res_model": self._name,
@@ -342,5 +347,6 @@ class WizardnondupluexPrint(models.TransientModel):
                 'print_data_len': 1,
                 "printer_config_dict": printer_config_dict,
                 "context": context,
+                "printer_option": printer_option,
             }
             return action

@@ -44,12 +44,13 @@ class CardTemplate(models.Model):
                         svg_file_name, rec.back_body_html, '_back_side'
                     )
                 if rec.print_data_type == 'path':
-                    index, print_data = self.create_json_nonduplex_back_data(back_path)
+                    index, print_data = rec.create_json_nonduplex_back_data(back_path)
                 else:
-                    index, print_data = self.create_json_nonduplex_back_data(back_base64_datas)
+                    index, print_data = rec.create_json_nonduplex_back_data(back_base64_datas)
                 print_data_dict.update({
                     index + i: print_data
                 })
+            printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.multi.backnonduplex",
                 "res_model": self._name,
@@ -59,5 +60,6 @@ class CardTemplate(models.Model):
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "jobName": rec.name,
+                "printer_option": printer_option,
             }
             return action

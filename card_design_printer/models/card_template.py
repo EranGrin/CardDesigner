@@ -447,6 +447,7 @@ class CardTemplate(models.Model):
                 'front_side': True,
             })
             index, print_data = rec.with_context(context).create_json_print_data(data_list)
+            printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
@@ -462,6 +463,7 @@ class CardTemplate(models.Model):
                 "header_data": rec.header_data,
                 "footer_data": rec.footer_data,
                 "jobName": rec.name,
+                "printer_option": printer_option,
             }
             return action
 
@@ -493,6 +495,7 @@ class CardTemplate(models.Model):
             base64_data = base64_datas
             data_list.append((path_data, base64_data))
             index, print_data = self.create_json_print_data(data_list)
+            printer_option = self.get_printer_option()
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
@@ -508,5 +511,6 @@ class CardTemplate(models.Model):
                 "header_data": rec.header_data,
                 "footer_data": rec.footer_data,
                 "jobName": rec.name,
+                "printer_option": printer_option,
             }
             return action

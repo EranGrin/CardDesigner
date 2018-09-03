@@ -184,6 +184,23 @@
                                 </group>
                             </group>
                         </page>
+                        <page name="options" string="Printer Option">
+                            <group>
+                                <group>
+                                    <field name="colorType" />
+                                    <field name="interpolation"/>
+                                    <field name="paperThickness"/>
+                                    <field name="printerTray"/>
+                                </group>
+                                <group>
+                                    <field name="scaleContent" />
+                                    <field name="rotation" />
+                                    <field name="encoding" />
+                                    <field name="endOfDoc" />
+                                    <field name="perSpool" />
+                                </group>
+                            </group>
+                        </page>
                     </notebook>
                     <br/>
                     <br/>

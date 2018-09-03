@@ -243,9 +243,10 @@ class CardTemplate(models.Model):
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 back_path, back_data_file, back_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
             if rec.print_data_type == 'path':
-                index, print_data = self.create_json_duplex_data(front_path, back_path)
+                index, print_data = rec.create_json_duplex_data(front_path, back_path)
             else:
-                index, print_data = self.create_json_duplex_data(front_base64_datas, back_base64_datas)
+                index, print_data = rec.create_json_duplex_data(front_base64_datas, back_base64_datas)
+            printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.multi.printduplex",
                 "res_model": self._name,
@@ -256,6 +257,7 @@ class CardTemplate(models.Model):
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "jobName": rec.name,
+                "printer_option": printer_option,
             }
             return action
 
@@ -398,6 +400,7 @@ class CardTemplate(models.Model):
                 index, print_data = self.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = self.create_json_nonduplex_front_data(front_base64_datas)
+            printer_option = self.get_printer_option()
             action = {
                 "type": "ir.actions.multi.printnonduplex",
                 "res_model": self._name,
@@ -407,6 +410,7 @@ class CardTemplate(models.Model):
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "jobName": rec.name,
+                "printer_option": printer_option,
             }
             return action
 
@@ -442,6 +446,7 @@ class CardTemplate(models.Model):
                 index, print_data = self.create_json_nonduplex_back_data(back_path)
             else:
                 index, print_data = self.create_json_nonduplex_back_data(back_base64_datas)
+            printer_option = self.get_printer_option()
             action = {
                 "type": "ir.actions.multi.backnonduplex",
                 "res_model": self._name,
@@ -451,5 +456,6 @@ class CardTemplate(models.Model):
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "jobName": rec.name,
+                "printer_option": printer_option,
             }
             return action

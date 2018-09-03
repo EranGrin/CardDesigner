@@ -74,6 +74,7 @@ class CardPrintWizard(models.TransientModel):
                     'front_side': True,
                 })
             index, print_data = self.template_id.with_context(context).create_json_print_data(data_list)
+            printer_option = self.template_id.get_printer_option()
             action = {
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
@@ -83,5 +84,6 @@ class CardPrintWizard(models.TransientModel):
                 'print_data_len': index,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
+                "printer_option": printer_option,
             }
             return action

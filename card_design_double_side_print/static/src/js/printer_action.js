@@ -10,7 +10,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
             var model = new WebModel(action.res_model);
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
-                    action.printer_name
+                    action.printer_name, action.printer_option
                 );
                 for(var i = 0; i <= action.print_data_len; i++) {
                     var print_data = action.print_data[i];
@@ -38,7 +38,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
                 });
                 connected.then(function() {
                     var config = qz.configs.create(
-                        action.printer_name
+                        action.printer_name, action.printer_option
                     );
                     for(var i = 0; i <= action.print_data_len; i++) {
                         var print_data = action.print_data[i];
@@ -74,7 +74,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
             var model = new WebModel(action.res_model);
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
-                    action.printer_name
+                    action.printer_name, action.printer_option
                 );
                 for(var i = 0; i <= action.print_data_len; i++) {
                     var print_data = action.print_data[i];
@@ -102,7 +102,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
                 });
                 connected.then(function() {
                     var config = qz.configs.create(
-                        action.printer_name
+                        action.printer_name, action.printer_option
                     );
                     for(var i = 0; i <= action.print_data_len; i++) {
                         var print_data = action.print_data[i];
@@ -151,7 +151,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
             var model = new WebModel(action.res_model);
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
-                    action.printer_name
+                    action.printer_name, action.printer_option
                 );
                 for(var i = 0; i <= action.print_data_len; i++) {
                     var print_data = action.print_data[i];
@@ -179,7 +179,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
                 });
                 connected.then(function() {
                     var config = qz.configs.create(
-                        action.printer_name
+                        action.printer_name, action.printer_option
                     );
                     var print_data = action.print_data;
                     for(var i = 0; i <= action.print_data_len; i++) {

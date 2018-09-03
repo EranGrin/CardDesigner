@@ -13,6 +13,7 @@ class template_size(models.Model):
     size_unit = fields.Selection([
         ('cm', 'cm'),
         ('in', 'inches'),
+        ('px', 'pixel'),
     ], string="Size Units", default='cm', inverse="_calculate_pixel", required=1)
     dpi = fields.Integer(string=_("DPI"), inverse="_calculate_pixel", required=1)
     size_width_px = fields.Integer(string=_("Width"), required=1)
@@ -23,22 +24,28 @@ class template_size(models.Model):
         largest_tile_dimension_wide = 1000
         largest_tile_dimension_high = 1000
         CMINCH = 0.393700787  # 1 centimeter = 0.393700787 inch
+        cells_wide = 0
+        cells_high = 0
+        if mode == 'in':
+            w_in_px = width
+            h_in_px = height
+        else:
+            if mode == 'cm':
+                width_in_inches = width * CMINCH
+                height_in_inches = height * CMINCH
+            elif mode == 'in':
+                width_in_inches = width
+                height_in_inches = height
+            # [ ] todo verify if rounding up here is cool
+            w_in_px = width_in_inches*DPI
+            h_in_px = height_in_inches*DPI
+            w_in_px = math.floor(w_in_px)
+            h_in_px = math.floor(h_in_px)
 
-        if mode == 'cm':
-            width_in_inches = width * CMINCH
-            height_in_inches = height * CMINCH
-        elif mode == 'in':
-            width_in_inches = width
-            height_in_inches = height
-        # [ ] todo verify if rounding up here is cool
-        w_in_px = width_in_inches*DPI
-        h_in_px = height_in_inches*DPI
-        w_in_px = math.floor(w_in_px)
-        h_in_px = math.floor(h_in_px)
+            # determine number of tiles wide / high
+            cells_wide = math.ceil(w_in_px / largest_tile_dimension_wide)
+            cells_high = math.ceil(h_in_px / largest_tile_dimension_high)
 
-        # determine number of tiles wide / high
-        cells_wide = math.ceil(w_in_px / largest_tile_dimension_wide)
-        cells_high = math.ceil(h_in_px / largest_tile_dimension_high)
         return cells_wide, cells_high, w_in_px, h_in_px
 
     @api.multi
