@@ -26,7 +26,7 @@ class template_size(models.Model):
         CMINCH = 0.393700787  # 1 centimeter = 0.393700787 inch
         cells_wide = 0
         cells_high = 0
-        if mode == 'in':
+        if mode == 'px':
             w_in_px = width
             h_in_px = height
         else:
