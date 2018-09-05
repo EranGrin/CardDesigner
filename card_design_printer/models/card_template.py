@@ -80,7 +80,7 @@ class CardTemplate(models.Model):
     is_mag_strip = fields.Boolean("Enable  Magnetic Stripe")
     mag_strip_track1 = fields.Char("Track1", size=79, index=True)
     mag_strip_track2 = fields.Integer("Track2", size=40)
-    mag_strip_track3 = fields.Integer("Track3", size=4)
+    mag_strip_track3 = fields.Integer("Track3", size=107)
     print_data_type = fields.Selection([
         ("path", "File Path"),
         ("base64", "Base64")
