@@ -340,13 +340,13 @@ class CardTemplate(models.Model):
 
             if self.is_mag_strip:
                 if self.mag_strip_track1:
-                    print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
+                    print_data.append('\x1BDm;1;' + str(self.mag_strip_track1) + '\x0D')
                 if self.mag_strip_track2:
-                    print_data += '#x1BDm;2;' + str(self.mag_strip_track2) + '#x0D\n'
+                    print_data.append('\x1BDm;2;' + str(self.mag_strip_track2) + '\x0D')
                 if self.mag_strip_track3:
-                    print_data += '#x1BDm;3;' + str(self.mag_strip_track3) + '#x0D\n'
+                    print_data.append('\x1BDm;3;' + str(self.mag_strip_track3) + '\x0D')
                 if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
-                    print_data += '#x1B' + 'smw' + '#x0D\n'
+                    print_data.append('\x1Bsmw\x0D')
 
             overlay = True
             if self.front_overlay_type == 'custom':
@@ -406,7 +406,8 @@ class CardTemplate(models.Model):
                 "res_model": self._name,
                 "res_id": rec.id,
                 "printer_name": printer_name,
-                "print_data": print_data,
+                "print_data": {index: print_data},
+                'print_data_len': index,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "jobName": rec.name,
@@ -452,7 +453,8 @@ class CardTemplate(models.Model):
                 "res_model": self._name,
                 "res_id": rec.id,
                 "printer_name": printer_name,
-                "print_data": print_data,
+                "print_data": {index: print_data},
+                'print_data_len': index,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "jobName": rec.name,

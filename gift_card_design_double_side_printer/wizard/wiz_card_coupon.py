@@ -130,7 +130,7 @@ class CardPrintWizard(models.TransientModel):
                     front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )
-                if rec.template_id.data_type == 'path':
+                if rec.template_id.print_data_type == 'path':
                     index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
                 else:
                     index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
@@ -140,7 +140,7 @@ class CardPrintWizard(models.TransientModel):
             dict_context = dict(self.env.context or {})
             dict_context.update({'is_gift_card': True})
             dict_context.update({'gift_card_ids': context.get('active_ids')})
-            printer_option = rec.get_printer_option()
+            printer_option = rec.template_id.get_printer_option()
             action = {
                 "type": "ir.actions.multi.printnonduplex",
                 "res_model": self._name,
@@ -255,7 +255,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                     svg_file_name, rec.template_id.body_html, '_front_side'
                 )
-            if rec.template_id.data_type == 'path':
+            if rec.template_id.print_data_type == 'path':
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
@@ -269,7 +269,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 'coupon_id': rec.coupon_id.id,
                 'next_ids': context.get('next_ids', [])
             })
-            printer_option = rec.get_printer_option()
+            printer_option = rec.template_id.get_printer_option()
             action = {
                 "type": "ir.actions.multi.nonbulk",
                 "res_model": self._name,
@@ -316,7 +316,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 front_path, front_data_file, front_base64_datas = rec.template_id.with_context(context).render_png(
                     svg_file_name, rec.template_id.back_body_html, '_back_side'
                 )
-            if rec.template_id.data_type == 'path':
+            if rec.template_id.print_data_type == 'path':
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
@@ -337,7 +337,7 @@ class WizardnondupluexPrint(models.TransientModel):
                 'coupon_id': next_id,
                 'next_ids': next_ids
             })
-            printer_option = rec.get_printer_option()
+            printer_option = rec.template_id.get_printer_option()
             action = {
                 "type": "ir.actions.multi.nonbulk",
                 "res_model": self._name,

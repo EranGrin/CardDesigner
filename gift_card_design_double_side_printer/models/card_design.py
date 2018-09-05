@@ -10,6 +10,7 @@ class CardTemplate(models.Model):
 
     @api.multi
     def qz_double_nonduplex_gift(self):
+        index = 0
         for rec in self:
             printer = rec.printer_id.printer_id
             printer_config_dict = {
@@ -26,6 +27,7 @@ class CardTemplate(models.Model):
             printer_name = printer.default_printer.name
             print_data_dict = {}
             dict_context = dict(self.env.context or {})
+            i = 0
             for i, coupon in enumerate(self.env['product.coupon'].browse(dict_context.get('gift_card_ids'))):
                 context = dict(self.env.context or {})
                 context.update({
@@ -50,6 +52,7 @@ class CardTemplate(models.Model):
                 print_data_dict.update({
                     index + i: print_data
                 })
+
             printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.multi.backnonduplex",
@@ -57,6 +60,7 @@ class CardTemplate(models.Model):
                 "res_id": rec.id,
                 "printer_name": printer_name,
                 "print_data": print_data_dict,
+                "print_data_len": i,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
                 "jobName": rec.name,
