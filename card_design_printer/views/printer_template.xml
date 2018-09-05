@@ -191,8 +191,23 @@
                                     <field name="interpolation"/>
                                     <field name="paperThickness"/>
                                     <field name="printerTray"/>
+                                    <field name="copies" />
+                                    <field name="top_margin" />
+                                    <field name="bottom_margin" />
+                                    <field name="left_margin" />
+                                    <field name="right_margin" />
+                                    <field name="width" />
+                                    <field name="height" />
                                 </group>
                                 <group>
+                                    <field name="density" />
+                                    <field name="duplex" />
+                                    <field name="fallbackDensity" />
+                                    <field name="units"/>
+                                    <field name="jobName" />
+                                    <field name="orientation" />
+                                    <field name="rasterize" />
+                                    <field name="altPrinting"/>
                                     <field name="scaleContent" />
                                     <field name="rotation" />
                                     <field name="encoding" />
