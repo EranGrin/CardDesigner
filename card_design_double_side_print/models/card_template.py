@@ -349,7 +349,7 @@ class CardTemplate(models.Model):
                     print_data += '#x1B' + 'smw' + '#x0D\n'
 
             overlay = True
-            if print_data.front_overlay_type == 'custom':
+            if self.front_overlay_type == 'custom':
                 overlay = [literal_eval(print_data.front_custom_overlay)[0], literal_eval(print_data.front_custom_overlay)[1]]
 
             print_evl_front_data_dict = {
