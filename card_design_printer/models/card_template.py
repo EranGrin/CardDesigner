@@ -89,30 +89,6 @@ class CardTemplate(models.Model):
     manually_body_data = fields.Text(string="Manually Syntax")
     check_manually_data = fields.Text(string="Check Syntax")
 
-    #constraint
-    @api.constrains('mag_strip_track1')
-    @api.one
-    def _check_mag_strip_track1(self):
-        mag_strip_track1 = self.mag_strip_track1
-        if mag_strip_track1 and len(str(abs(mag_strip_track1))) > 79:
-            raise UserError(_('Number of character must on exceed 79'))
-
-    #constraint
-    @api.constrains('mag_strip_track2')
-    @api.one
-    def _check_mag_strip_track2(self):
-        mag_strip_track2 = self.mag_strip_track2
-        if mag_strip_track2 and len(str(abs(mag_strip_track2))) > 40:
-            raise UserError(_('Number of digits must on exceed 40'))
-
-    #constraint
-    @api.constrains('mag_strip_track3')
-    @api.one
-    def _check_mag_strip_track3(self):
-        mag_strip_track3 = self.mag_strip_track3
-        if mag_strip_track3 and len(str(abs(mag_strip_track3))) > 107:
-            raise UserError(_('Number of digits must on exceed 107'))
-
     @api.onchange('type')
     def onchange_type(self):
         for rec in self:
