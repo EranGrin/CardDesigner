@@ -271,10 +271,24 @@ class CardTemplate(models.Model):
                                 style_dict.update({
                                     attr_list[0].strip(): attr_list[1].strip()
                                 })
-                        style_dict.update({
-                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
-                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
-                        })
+                        if rec.template_size and rec.template_size.size_unit == 'px':
+                            width = rec.template_size.width
+                            height = rec.template_size.height
+                            try:
+                                width = str(round(((width / 0.393700787) / rec.template_size.dpi), 2)) + 'cm'
+                                height = str(round(((height / 0.393700787) / self.template_size.dpi), 2)) + 'cm'
+                            except:
+                                pass
+
+                            style_dict.update({
+                                'height': height,
+                                'width': width,
+                            })
+                        else:
+                            style_dict.update({
+                                'height': str(rec.template_size.height) + rec.template_size.size_unit,
+                                'width': str(rec.template_size.width) + rec.template_size.size_unit,
+                            })
                         div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
                     break
                 rec.body_html = str(soup)
@@ -291,10 +305,24 @@ class CardTemplate(models.Model):
                                 style_dict.update({
                                     attr_list[0].strip(): attr_list[1].strip()
                                 })
-                        style_dict.update({
-                            'height': str(rec.template_size.height) + rec.template_size.size_unit,
-                            'width': str(rec.template_size.width) + rec.template_size.size_unit,
-                        })
+                        if rec.template_size and rec.template_size.size_unit == 'px':
+                            width = rec.template_size.width
+                            height = rec.template_size.height
+                            try:
+                                width = str(round(((width / 0.393700787) / rec.template_size.dpi), 2)) + 'cm'
+                                height = str(round(((height / 0.393700787) / self.template_size.dpi), 2)) + 'cm'
+                            except:
+                                pass
+
+                            style_dict.update({
+                                'height': height,
+                                'width': width
+                            })
+                        else:
+                            style_dict.update({
+                                'height': str(rec.template_size.height) + rec.template_size.size_unit,
+                                'width': str(rec.template_size.width) + rec.template_size.size_unit,
+                            })
                         div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
                     break
                 rec.back_body_html = str(soup)
@@ -836,6 +864,12 @@ class CardTemplate(models.Model):
         data = str(soup)
         html = HTML(string=data)
         font_config = FontConfiguration()
+        if self.template_size and self.template_size.size_unit == 'px':
+            try:
+                width = str(round(((float(width.replace('px', '')) / 0.393700787) / self.template_size.dpi), 2)) + 'cm'
+                height = str(round(((float(height.replace('px', '')) / 0.393700787) / self.template_size.dpi), 2)) + 'cm'
+            except:
+                pass
         style = '''
             @page { size: %s %s ; margin: -8px; overflow: hidden !important;}
             div { overflow: hidden !important;  float: left; width: %s;}
@@ -848,7 +882,12 @@ class CardTemplate(models.Model):
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
-        html.write_png(current_path + svg_file_name, stylesheets=[css], font_config=font_config, resolution=resolution)
+        html.write_png(
+            current_path + svg_file_name,
+            stylesheets=[css],
+            font_config=font_config,
+            resolution=resolution,
+        )
         im = Image.open(current_path + svg_file_name)
         im.save(current_path + svg_file_name, dpi=(resolution, resolution))
         data_file = open(current_path + svg_file_name, 'r')
