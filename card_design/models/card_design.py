@@ -888,8 +888,8 @@ class CardTemplate(models.Model):
             font_config=font_config,
             resolution=resolution,
         )
-        im = Image.open(current_path + svg_file_name)
-        im.save(current_path + svg_file_name, dpi=(resolution, resolution))
+        # im = Image.open(current_path + svg_file_name)
+        # im.save(current_path + svg_file_name, dpi=(resolution, resolution))
         data_file = open(current_path + svg_file_name, 'r')
         temp_file_name = current_path + svg_file_name
         date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]

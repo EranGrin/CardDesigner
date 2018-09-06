@@ -75,8 +75,9 @@ class CardPrintWizard(models.TransientModel):
                 })
             index, print_data = self.template_id.with_context(context).create_json_print_data(data_list)
             printer_option = self.template_id.get_printer_option()
+            action_type = self.get_action_type()
             action = {
-                "type": "ir.actions.print.data",
+                "type": action_type,
                 "res_model": self._name,
                 "res_id": printer.id,
                 "printer_name": printer_name,
@@ -87,3 +88,6 @@ class CardPrintWizard(models.TransientModel):
                 "printer_option": printer_option,
             }
             return action
+
+    def get_action_type(self):
+        return "ir.actions.print.data"

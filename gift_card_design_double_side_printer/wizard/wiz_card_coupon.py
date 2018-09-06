@@ -25,6 +25,11 @@ class CardPrintWizard(models.TransientModel):
         readonly=True
     )
 
+    def get_action_type(self):
+        if self.nondulpex_type and self.type != 'label' and self.nondulpex_type == 'bulk':
+            return 'ir.actions.multibulk.printduplex'
+        return super(CardPrintWizard, self).get_action_type()
+
     @api.multi
     def print_douplex(self):
         for rec in self:
