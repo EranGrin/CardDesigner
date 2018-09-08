@@ -42,10 +42,10 @@ class CardTemplate(models.Model):
     rasterize = fields.Boolean(
         string=_("Rasterize"),
         help="Whether documents should be rasterized before printing. \
-        Forced TRUE if [options.density] is specified."
+        Forced TRUE if [options.density] is specified.", default=True
     )
     scaleContent = fields.Boolean(
-        string=_("Scale Content"),
+        string=_("Scale Content"), default=True,
         help="Scales print content to page size, keeping ratio."
     )
     encoding = fields.Char(
@@ -155,17 +155,17 @@ class CardTemplate(models.Model):
             "orientation": orientation,
             "paperThickness": self.paperThickness or '',
             "printerTray": self.printerTray or '',
-            "rotation": self.rotation or 0,
+            "rotation": self.rotation and str(self.rotation) or str(0),
             "scaleContent": self.scaleContent or False,
-            "encoding": self.encoding or '',
+            "encoding": self.encoding and str(self.encoding) or '',
             "endOfDoc": self.endOfDoc or '',
-            "perSpool": self.perSpool or 1,
-            "copies": self.copies or 1,
-            "density": self.density or '',
+            "perSpool": self.perSpool and str(self.perSpool) or str(1),
+            "copies": self.copies and str(self.copies) or str(1),
+            "density": self.density and str(self.density) or '',
             "duplex": self.duplex or False,
-            "fallbackDensity": self.fallbackDensity or '',
-            "margins": margins or 0,
-            "size": size and size or '',
+            "fallbackDensity": self.fallbackDensity and str(self.fallbackDensity) or '',
+            "margins": margins and str(margins) or str(0),
+            "size": size and str(size) or None,
             "units": self.units or 'in',
             "jobName": self.jobName or self.name or 'Demo',
             "altPrinting": self.altPrinting or False,
