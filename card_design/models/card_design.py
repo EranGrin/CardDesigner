@@ -871,10 +871,9 @@ class CardTemplate(models.Model):
             except:
                 pass
         style = '''
-            @page { size: %s %s ; margin: -8px; overflow: hidden !important;}
-            div { overflow: hidden !important;  float: left; width: %s;}
-            .pdf_overflow { margin-bottom:-2px;}
-        ''' % (width, height, '100%')
+            @page { size: %s %s ; margin: -6px; overflow: hidden !important;}
+            div { overflow: hidden !important; margin-top:-2px;margin-left:-1px;}
+        ''' % (width, height)
         css = CSS(string=style, font_config=font_config)
         current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
         current_date = fields.date.today().strftime('%Y_%m_%d')
