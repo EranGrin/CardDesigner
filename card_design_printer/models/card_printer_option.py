@@ -40,9 +40,9 @@ class CardTemplate(models.Model):
         help="Image rotation in degrees."
     )
     rasterize = fields.Boolean(
-        string=_("Rasterize"),
+        string=_("Rasterize"), default=True,
         help="Whether documents should be rasterized before printing. \
-        Forced TRUE if [options.density] is specified.", default=True
+        Forced TRUE if [options.density] is specified."
     )
     scaleContent = fields.Boolean(
         string=_("Scale Content"), default=True,
@@ -163,7 +163,7 @@ class CardTemplate(models.Model):
             "copies": self.copies and str(self.copies) or str(1),
             "density": self.density and str(self.density) or '',
             "duplex": self.duplex or False,
-            "fallbackDensity": self.fallbackDensity and str(self.fallbackDensity) or '',
+            "fallbackDensity": self.fallbackDensity and str(self.fallbackDensity) or None,
             "margins": margins and str(margins) or str(0),
             "size": size and str(size) or None,
             "units": self.units or 'in',
