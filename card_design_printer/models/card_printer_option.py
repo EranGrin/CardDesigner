@@ -167,7 +167,6 @@ class CardTemplate(models.Model):
             "margins": margins and str(margins) or str(0),
             "size": size and str(size) or None,
             "units": self.units or 'in',
-            "jobName": self.jobName or self.name or 'Demo',
             "altPrinting": self.altPrinting or False,
             "rasterize": self.rasterize or False,
             "legacy": self.legacy or False,
