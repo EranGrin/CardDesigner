@@ -31,7 +31,10 @@ class CardTemplate(models.Model):
         if self.duplex_type == 'noduplex' and self.type == 'card' and self.back_side:
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
-                print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
+                if headerarray[hindex] == 'Pwr;0':
+                    print_data += '#x1BPwr;' + self.back_rotation + "#x0D\n"
+                else:
+                    print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
             print_data_dict = self.get_manually_data()
             print_data_dict = print_data_dict and print_data_dict[0] or {}
             overlay = True
@@ -70,7 +73,10 @@ class CardTemplate(models.Model):
         if self.duplex_type == 'duplex' and self.type == 'card':
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
-                print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
+                if headerarray[hindex] == 'Pwr;0':
+                    print_data += '#x1BPwr;' + self.front_rotation + "#x0D\n"
+                else:
+                    print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
             if self.is_mag_strip:
                 if self.mag_strip_track1:
                     print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
@@ -119,7 +125,10 @@ class CardTemplate(models.Model):
         else:
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
-                print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
+                if headerarray[hindex] == 'Pwr;0':
+                    print_data += '#x1BPwr;' + self.front_rotation + "#x0D\n"
+                else:
+                    print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
             if self.is_mag_strip:
                 if self.mag_strip_track1:
                     print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
@@ -161,7 +170,10 @@ class CardTemplate(models.Model):
             else:
                 headerarray = rec.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
-                    print_data.append('\x1B' + headerarray[hindex] + '\x0D')
+                    if headerarray[hindex] == 'Pwr;0':
+                        print_data.append('\x1BPwr;' + self.front_rotation + "\x0D")
+                    else:
+                        print_data.append('\x1B' + headerarray[hindex] + "\x0D")
 
                 if rec.is_mag_strip:
                     if rec.mag_strip_track1:
@@ -315,7 +327,10 @@ class CardTemplate(models.Model):
         else:
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
-                print_data.append('\x1B' + headerarray[hindex] + '\x0D')
+                if headerarray[hindex] == 'Pwr;0':
+                    print_data.append('\x1BPwr;' + self.back_rotation + "\x0D")
+                else:
+                    print_data.append('\x1B' + headerarray[hindex] + "\x0D")
 
             back_overlay = True
             if self.back_overlay_type == 'custom':
@@ -353,7 +368,10 @@ class CardTemplate(models.Model):
         else:
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
-                print_data.append('\x1B' + headerarray[hindex] + '\x0D')
+                if headerarray[hindex] == 'Pwr;0':
+                    print_data.append('\x1BPwr;' + self.front_rotation + "\x0D")
+                else:
+                    print_data.append('\x1B' + headerarray[hindex] + "\x0D")
 
             if self.is_mag_strip:
                 if self.mag_strip_track1:

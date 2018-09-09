@@ -32,7 +32,6 @@ class CardTemplate(models.Model):
         "printer.lines",
         string=_("Printer"),
     )
-
     printer_lang = fields.Selection([
         ("ZPL", "ZPL"),
         ("EPL", "EPL"),
@@ -46,6 +45,18 @@ class CardTemplate(models.Model):
         string=_("Footer Data"),
         default="^XZ"
     )
+    front_rotation = fields.Selection([
+        ("0", "0"),
+        ("90", "90"),
+        ("180", "180"),
+        ("270", "270")
+    ], string=_("Front Rotation"), default="0")
+    back_rotation = fields.Selection([
+        ("0", "0"),
+        ("90", "90"),
+        ("180", "180"),
+        ("270", "270")
+    ], string=_("Back Rotation"), default="0")
     precision = fields.Integer(
         string=_("Precision"), default=128
     )
@@ -160,7 +171,10 @@ class CardTemplate(models.Model):
         print_data = ''
         headerarray = self.header_data.split(',')
         for hindex, i in enumerate(headerarray):
-            print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
+            if headerarray[hindex] == 'Pwr;0':
+                print_data += '#x1BPwr;' + self.front_rotation + "#x0D\n"
+            else:
+                print_data += '#x1B' + headerarray[hindex] + "#x0D\n"
         if self.is_mag_strip:
             if self.mag_strip_track1:
                 print_data += '#x1BDm;1;' + str(self.mag_strip_track1) + '#x0D\n'
@@ -370,7 +384,13 @@ class CardTemplate(models.Model):
                 else:
                     headerarray = self.header_data.split(',')
                     for hindex, i in enumerate(headerarray):
-                        print_data.append('\x1B' + headerarray[hindex] + "\x0D")
+                        if headerarray[hindex] == 'Pwr;0':
+                            if context.get('front_side', False):
+                                print_data.append('\x1BPwr;' + self.front_rotation + "\x0D")
+                            else:
+                                print_data.append('\x1BPwr;' + self.back_rotation + "\x0D")
+                        else:
+                            print_data.append('\x1B' + headerarray[hindex] + "\x0D")
                     if self.is_mag_strip and context.get('front_side', False):
                         if self.mag_strip_track1:
                             print_data.append('\x1BDm;1;' + str(self.mag_strip_track1) + '\x0D')

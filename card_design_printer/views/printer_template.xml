@@ -85,6 +85,12 @@
                                             'invisible': [('enable_printer', '=', False)],
                                         }"
                                     />
+                                    <field name="front_rotation"
+                                        attrs="{
+                                            'required': [('type', '=', 'card'),('enable_printer', '!=', False)],
+                                            'invisible': ['|', ('type', '=', 'label'), ('enable_printer', '=', False)],
+                                        }"  
+                                    />
                                     <field name="epl_x"
                                         attrs="{
                                             'required': [('printer_lang', '=', 'EPL')],
@@ -103,6 +109,12 @@
                                         attrs="{
                                             'required': [('enable_printer', '!=', False)],
                                             'invisible': [('enable_printer', '=', False)],
+                                        }"
+                                    />
+                                    <field name="back_rotation"
+                                        attrs="{
+                                            'required': [('type', '=', 'card'),('enable_printer', '!=', False), ('back_side', '!=', False)],
+                                            'invisible': ['|', '|', ('type', '=', 'label'), ('enable_printer', '=', False), ('back_side', '=', False)],
                                         }"
                                     />
                                     <field name="epl_y"
