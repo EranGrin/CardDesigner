@@ -13,4 +13,21 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="card_design_print_error_wizard">
+        <field name="name">card_print_error_wizard</field>
+        <field name="model">card.print.error.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Print Card">
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1" nolabel="1" style="color: red !important;"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Close" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
 </odoo>

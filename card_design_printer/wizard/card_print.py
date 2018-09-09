@@ -4,6 +4,12 @@
 from odoo import models, fields
 
 
+class CardPrintErrorWizard(models.TransientModel):
+    _name = 'card.print.error.wizard'
+
+    name = fields.Text(string="Name")
+
+
 class CardPrintWizard(models.TransientModel):
     _inherit = 'card.print.wizard'
 

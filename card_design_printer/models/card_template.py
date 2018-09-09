@@ -174,7 +174,10 @@ class CardTemplate(models.Model):
         print_data_dict = print_data_dict and print_data_dict[0] or {}
         overlay = True
         if self.front_overlay_type == 'custom':
-            overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
+            try:
+                overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
+            except:
+                raise UserError(_("overlay customer data is not proper. please enter like data [0],[0] "))
         print_data_dict['options'].update({
             'precision': self.precision,
             'overlay': overlay,
@@ -381,11 +384,16 @@ class CardTemplate(models.Model):
                     overlay = True
                     if context.get('front_side', False):
                         if self.front_overlay_type == 'custom':
-                            overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
+                            try:
+                                overlay = [literal_eval(self.front_custom_overlay)[0], literal_eval(self.front_custom_overlay)[1]]
+                            except:
+                                raise UserError(_("overlay customer data is not proper. please enter like data [0],[0] "))
                     else:
                         if self.back_overlay_type == 'custom':
-                            overlay = [literal_eval(self.back_custom_overlay)[0], literal_eval(self.back_custom_overlay)[1]]
-
+                            try:
+                                overlay = [literal_eval(self.back_custom_overlay)[0], literal_eval(self.back_custom_overlay)[1]]
+                            except:
+                                raise UserError(_("overlay customer data is not proper. please enter like data [0],[0] "))
                     print_evl_data_dict = {
                         'type': self.data_type,
                         'format': self.data_format,
@@ -452,17 +460,11 @@ class CardTemplate(models.Model):
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
                 "res_id": printer.id,
-                "printer_name": printer_name,
+                "printer_name": rec.printer_id.name,
                 "print_data": print_data,
                 'print_data_len': index,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
-                "language": rec.printer_lang,
-                "data_type": rec.data_type,
-                "data_format": rec.data_format,
-                "header_data": rec.header_data,
-                "footer_data": rec.footer_data,
-                "jobName": rec.name,
                 "printer_option": printer_option,
             }
             return action
@@ -500,17 +502,11 @@ class CardTemplate(models.Model):
                 "type": "ir.actions.print.data",
                 "res_model": self._name,
                 "res_id": printer.id,
-                "printer_name": printer_name,
+                "printer_name": rec.printer_id.name,
                 "print_data": print_data,
                 'print_data_len': index,
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
-                "language": rec.printer_lang,
-                "data_type": rec.data_type,
-                "data_format": rec.data_format,
-                "header_data": rec.header_data,
-                "footer_data": rec.footer_data,
-                "jobName": rec.name,
                 "printer_option": printer_option,
             }
             return action

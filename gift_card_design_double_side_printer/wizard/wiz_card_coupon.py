@@ -25,11 +25,6 @@ class CardPrintWizard(models.TransientModel):
         readonly=True
     )
 
-    def get_action_type(self):
-        if self.nondulpex_type and self.type != 'label' and self.nondulpex_type == 'bulk':
-            return 'ir.actions.multibulk.printduplex'
-        return super(CardPrintWizard, self).get_action_type()
-
     @api.multi
     def print_douplex(self):
         for rec in self:
@@ -84,8 +79,15 @@ class CardPrintWizard(models.TransientModel):
                 print_data_dict.update({
                     index + i: print_data[0]
                 })
+
+            action_type = "ir.actions.multi.printduplex"
+            context = dict(self.env.context or {})
+            if context.get('active_ids', []):
+                if len(context.get('active_ids')) >= 2:
+                    action_type = 'ir.actions.print.multiduplex'
+
             action = {
-                "type": "ir.actions.multi.printduplex",
+                "type": action_type,
                 "res_model": self._name,
                 "res_id": printer.id,
                 "printer_name": printer_name,
@@ -146,8 +148,14 @@ class CardPrintWizard(models.TransientModel):
             dict_context.update({'is_gift_card': True})
             dict_context.update({'gift_card_ids': context.get('active_ids')})
             printer_option = rec.template_id.get_printer_option()
+            action_type = "ir.actions.multi.printnonduplex"
+            context = dict(self.env.context or {})
+            if context.get('active_ids', []):
+                if len(context.get('active_ids')) >= 2:
+                    action_type = 'ir.actions.multi.printmultinonduplex'
+
             action = {
-                "type": "ir.actions.multi.printnonduplex",
+                "type": action_type,
                 "res_model": self._name,
                 "res_id": rec.template_id.id,
                 "printer_name": printer_name,

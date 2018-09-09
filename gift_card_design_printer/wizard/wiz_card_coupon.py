@@ -90,4 +90,9 @@ class CardPrintWizard(models.TransientModel):
             return action
 
     def get_action_type(self):
-        return "ir.actions.print.data"
+        action = "ir.actions.print.data"
+        context = dict(self.env.context or {})
+        if context.get('active_ids', []):
+            if len(context.get('active_ids')) >= 2:
+                action = 'ir.actions.print.multidata'
+        return action

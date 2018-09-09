@@ -58,7 +58,7 @@ class CardTemplate(models.Model):
                 "type": "ir.actions.multi.backnonduplex",
                 "res_model": self._name,
                 "res_id": rec.id,
-                "printer_name": printer_name,
+                "printer_name": rec.printer_id.name,
                 "print_data": print_data_dict,
                 "print_data_len": i,
                 "printer_config_dict": printer_config_dict,

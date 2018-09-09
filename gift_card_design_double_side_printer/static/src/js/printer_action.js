@@ -14,16 +14,19 @@ odoo.define('gift_card_design_double_side_printer.action', function(require) {
                 );
                 for(var i = 0; i < action.print_data_len; i++) {
                     var print_data = action.print_data[i];
-                    qz.print(config, print_data).catch(function(e) {
-                        model.call("write", [
-                            action.res_id,
-                            {
-                                "error": error.toString(),
-                                "is_error": true
-                            }
-                        ]);
-                        self.inner_widget.active_view.controller.reload();
-                        return $.when();
+                    qz.print(config, print_data).catch(function(error) {
+                        var res_action = {
+                            type: 'ir.actions.act_window',
+                            res_model: 'card.print.error.wizard',
+                            view_mode: 'form',
+                            view_type: 'form',
+                            views: [[false, 'form']],
+                            target: 'new',
+                            context: {
+                                'default_name': error.toString(),
+                            },
+                        }
+                        return  self.do_action(res_action);
                     });
                 }
             }
@@ -42,28 +45,34 @@ odoo.define('gift_card_design_double_side_printer.action', function(require) {
                     );
                     for(var i = 0; i < action.print_data_len; i++) {
                         var print_data = action.print_data[i];
-                        qz.print(config, print_data).catch(function(e) {
-                            model.call("write", [
-                                action.res_id,
-                                {
-                                    "error": error.toString(),
-                                    "is_error": true
-                                }
-                            ]);
-                            self.inner_widget.active_view.controller.reload();
-                            return $.when();
+                        qz.print(config, print_data).catch(function(error) {
+                            var res_action = {
+                                type: 'ir.actions.act_window',
+                                res_model: 'card.print.error.wizard',
+                                view_mode: 'form',
+                                view_type: 'form',
+                                views: [[false, 'form']],
+                                target: 'new',
+                                context: {
+                                    'default_name': error.toString(),
+                                },
+                            }
+                            return  self.do_action(res_action);
                         });
                     }
                 }).catch(function(error) {
-                    model.call("write", [
-                        action.res_id, 
-                        {
-                            "error": error.toString(),
-                            "is_error": true
-                        }
-                    ]);
-                    self.inner_widget.active_view.controller.reload();
-                    return $.when();
+                    var res_action = {
+                        type: 'ir.actions.act_window',
+                        res_model: 'card.print.error.wizard',
+                        view_mode: 'form',
+                        view_type: 'form',
+                        views: [[false, 'form']],
+                        target: 'new',
+                        context: {
+                            'default_name': error.toString(),
+                        },
+                    }
+                    return  self.do_action(res_action);
                 });
             }
             if (!action.context.next_ids.length > 0){
@@ -119,8 +128,19 @@ odoo.define('gift_card_design_double_side_printer.action', function(require) {
                 }, firstLink);
 
                 //this will be the very last link in the chain
-                lastLink.catch(function(err) {
-                    console.error(err);
+                lastLink.catch(function(error) {
+                    var res_action = {
+                        type: 'ir.actions.act_window',
+                        res_model: 'card.print.error.wizard',
+                        view_mode: 'form',
+                        view_type: 'form',
+                        views: [[false, 'form']],
+                        target: 'new',
+                        context: {
+                            'default_name': error.toString(),
+                        },
+                    }
+                    return  self.do_action(res_action);
                 });
             }
             else {
@@ -159,20 +179,34 @@ odoo.define('gift_card_design_double_side_printer.action', function(require) {
                     }, firstLink);
 
                     //this will be the very last link in the chain
-                    lastLink.catch(function(err) {
-                        console.error(err);
+                    lastLink.catch(function(error) {
+                        var res_action = {
+                            type: 'ir.actions.act_window',
+                            res_model: 'card.print.error.wizard',
+                            view_mode: 'form',
+                            view_type: 'form',
+                            views: [[false, 'form']],
+                            target: 'new',
+                            context: {
+                                'default_name': error.toString(),
+                            },
+                        }
+                        return  self.do_action(res_action);
                     });
 
                 }).catch(function(error) {
-                    model.call("write", [
-                        action.res_id, 
-                        {
-                            "error": error.toString(),
-                            "is_error": true
-                        }
-                    ]);
-                    self.inner_widget.active_view.controller.reload();
-                    return $.when();
+                    var res_action = {
+                        type: 'ir.actions.act_window',
+                        res_model: 'card.print.error.wizard',
+                        view_mode: 'form',
+                        view_type: 'form',
+                        views: [[false, 'form']],
+                        target: 'new',
+                        context: {
+                            'default_name': error.toString(),
+                        },
+                    }
+                    return  self.do_action(res_action);
                 });
             }
             self.inner_widget.active_view.controller.reload();
