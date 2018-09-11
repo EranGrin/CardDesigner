@@ -1,29 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record model="ir.ui.view" id="card_design_print_wizard">
+    <record model="ir.ui.view" id="card_design_action_export_wizard">
         <field name="name">card_print_wizard</field>
         <field name="model">card.print.wizard</field>
         <field name="arch" type="xml">
             <form string="Print Card">
                 <sheet>
                     <group>
+                        <group>
+                            <field name="template_id" widget="selection"/>
+                        </group>
+                    </group>
+                    <group>
                         <field name="model" invisible="1" />
-                        <field name="template_id" widget="selection"/>
                         <field name="position" widget="radio" options="{'horizontal': true}" />
+                        <field name="file_separator" widget="radio" options="{'horizontal': true}"  invisible="1"/>
                         <field name="file_config" widget="radio"
                             options="{'horizontal': true}"
                             attrs="{'invisible': [('position', '!=', 'both')]}"/>
                     </group>
-                    <field name="body"/>
+                    <notebook>
+                        <page string="Front">
+                            <field name="body"/>
+                        </page>
+                        <page string="Back" attrs="{'invisible': [('position', '=', 'f')]}">
+                            <field name="back_body"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <footer>
-                    <button name="print_pdf" type="object" string="Export as PDF"
-                                class="oe_highlight" icon="fa-file-pdf-o"/>
-                    <button name="print_png" type="object" string="Export Image"
-                                class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
-                    <button string="Cancel" class="btn-default"
-                            special="cancel" style="margin-left:15px;"/>
+                    <button name="print_pdf" type="object"
+                        string="Export as PDF"
+                        class="oe_highlight"
+                        icon="fa-file-pdf-o"
+                    />
+                    <button name="print_png"
+                        type="object"
+                        string="Export Image"
+                        class="oe_highlight"
+                        icon="fa-image"
+                        style="margin-left:15px;"
+                    />
+                    <button string="Cancel"
+                        class="btn-default"
+                        special="cancel"
+                        style="margin-left:15px;"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="card_design_action_email_wizard">
+        <field name="name">card.print.wizard</field>
+        <field name="model">card.print.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Send mail">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="template_id" widget="selection"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="position"
+                            widget="radio"
+                            options="{'horizontal': true}"
+                        />
+                        <field name="file_separator" widget="radio" options="{'horizontal': true}" invisible="1"/>
+                        <field name="file_config" widget="radio"
+                            options="{'horizontal': true}"
+                            attrs="{'invisible': [('position', '!=', 'both')]}"/>
+                    </group>
+                    <notebook>
+                        <page string="Front">
+                            <field name="body"/>
+                        </page>
+                        <page string="Back" attrs="{'invisible': [('position', '=', 'f')]}">
+                            <field name="back_body"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_send_email"
+                        type="object"
+                        string="Send by Email"
+                        class="btn-primary"/>
+                    <button string="Cancel"
+                        class="btn-default"
+                        special="cancel"
+                    />
                 </footer>
             </form>
         </field>

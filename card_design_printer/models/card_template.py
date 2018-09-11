@@ -49,13 +49,13 @@ class CardTemplate(models.Model):
         ("0", "0"),
         ("90", "90"),
         ("180", "180"),
-        ("270", "270")
+        ("270", "270"),
     ], string=_("Front Rotation"), default="0")
     back_rotation = fields.Selection([
         ("0", "0"),
         ("90", "90"),
         ("180", "180"),
-        ("270", "270")
+        ("270", "270"),
     ], string=_("Back Rotation"), default="0")
     precision = fields.Integer(
         string=_("Precision"), default=128

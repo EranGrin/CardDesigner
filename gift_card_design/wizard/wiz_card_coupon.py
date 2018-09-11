@@ -82,21 +82,16 @@ class CardCouponWizard(models.TransientModel):
         context = dict(self.env.context or {})
         context.update({'product_coupon': True})
         for rec in self.env['product.coupon'].browse(context.get('active_ids')):
-            if self.template_id and self.template_id.combine_pdf_page:
+            if self.position == 'f' or self.position == 'both':
                 context.update({'product_coupon_name': rec.name})
-                attachment = self.template_id.with_context(context).print_merge_pdf_export(rec.name)
+                attachment = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side')
                 attachment_list.append(attachment.id)
-            else:
-                if self.position == 'f' or self.position == 'both':
-                    context.update({'product_coupon_name': rec.name})
-                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.body_html, '_front_side')
-                    attachment_list.append(attachment.id)
-                if (self.position == 'b' or self.position == 'both') and self.template_id.back_side:
-                    context.update({'product_coupon_name': rec.name})
-                    attachment = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side')
-                    attachment_list.append(attachment.id)
-                elif self.position == 'b' and not self.template_id.back_side:
-                    raise UserError(_("Please select back side design in template"))
+            if (self.position == 'b' or self.position == 'both') and self.template_id.back_side:
+                context.update({'product_coupon_name': rec.name})
+                attachment = self.template_id.with_context(context).pdf_generate(self.template_id.back_body_html, '_back_side')
+                attachment_list.append(attachment.id)
+            elif self.position == 'b' and not self.template_id.back_side:
+                raise UserError(_("Please select back side design in template"))
         template = self.env['mail.template'].browse(template_id)
         URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         body_html = template.body_html

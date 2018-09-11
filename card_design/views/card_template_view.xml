@@ -126,8 +126,10 @@
                     <notebook>
                         <page string="General Information" name="info">
                             <group>
-                                <field name="ref_ir_act_window_id" readonly="1"/>
-                                <field name="ref_ir_value_id" readonly="1"/>
+                                <field name="email_ref_ir_act_window_id" readonly="1"/>
+                                <field name="email_ref_ir_value_id" readonly="1"/>
+                                <field name="export_ref_ir_act_window_id" readonly="1"/>
+                                <field name="export_ref_ir_value_id" readonly="1"/>
                             </group>
                         </page>
                         <page string="Template Design">

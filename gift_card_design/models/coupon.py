@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # See LICENSE file for copyright and licensing details.
-from odoo import _, models, fields
+from odoo import _, models
 
 
 class ProductCoupon(models.Model):
@@ -11,8 +11,6 @@ class ProductCoupon(models.Model):
 
 class card_template(models.Model):
     _inherit = 'card.template'
-
-    combine_pdf_page = fields.Boolean('Combine Pdf Page')
 
     def get_name(self, value, extension):
         context = dict(self.env.context or {})

@@ -223,17 +223,47 @@ class CardTemplate(models.Model):
     back_side = fields.Boolean('Back Side')
     position = fields.Selection([('f', 'Front'), ('b', 'Back')], "Position", default='f')
     default = fields.Boolean('Default')
-    ref_ir_act_window_id = fields.Many2one(
+    # print_ref_ir_act_window_id = fields.Many2one(
+    #     'ir.actions.act_window',
+    #     'Sidebar action',
+    #     readonly=True,
+    #     help="Action to make this "
+    #     "template available on "
+    #     "records of the related "
+    #     "document model."
+    # )
+    # print_ref_ir_value_id = fields.Many2one(
+    #     'ir.values', 'Sidebar button',
+    #     readonly=True,
+    #     help="Sidebar button to open "
+    #     "the sidebar action."
+    # )
+    email_ref_ir_act_window_id = fields.Many2one(
         'ir.actions.act_window',
-        'Sidebar action',
+        'Email Sidebar action',
         readonly=True,
         help="Action to make this "
         "template available on "
         "records of the related "
         "document model."
     )
-    ref_ir_value_id = fields.Many2one(
-        'ir.values', 'Sidebar button',
+    email_ref_ir_value_id = fields.Many2one(
+        'ir.values', 'Email Sidebar',
+        readonly=True,
+        help="Sidebar button to open "
+        "the sidebar action."
+    )
+    export_ref_ir_act_window_id = fields.Many2one(
+        'ir.actions.act_window',
+        'Export Sidebar action',
+        readonly=True,
+        help="Action to make this "
+        "template available on "
+        "records of the related "
+        "document model."
+    )
+    export_ref_ir_value_id = fields.Many2one(
+        'ir.values', 'Export Sidebar button',
         readonly=True,
         help="Sidebar button to open "
         "the sidebar action."
@@ -572,25 +602,65 @@ class CardTemplate(models.Model):
         action_obj = self.env['ir.actions.act_window']
         src_obj = self.card_model
         select_name = dict(self._fields['card_model'].selection(self)).get(self.card_model)
-        button_name = _('Print Card for %s') % select_name
-        action = action_obj.search([('src_model', '=', src_obj), ('name', '=', button_name)], limit=1)
+        # print_button_name = _('Print Card for %s') % select_name
+        email_button_name = _('Send by Email Card for %s') % select_name
+        export_button_name = _('Export Card for %s') % select_name
+        action = action_obj.search([
+            ('src_model', '=', src_obj),
+            ('name', '=', export_button_name)
+        ], limit=1)
         if len(action):  # if action found than it will not create new action for model
             return True
-        vals['ref_ir_act_window_id'] = action_obj.create({
-            'name': button_name,
+        # vals['print_ref_ir_act_window_id'] = action_obj.create({
+        #     'name': print_button_name,
+        #     'type': 'ir.actions.act_window',
+        #     'res_model': 'card.print.wizard',
+        #     'src_model': src_obj,
+        #     'view_type': 'form',
+        #     'view_mode': 'form',
+        #     'view_id': self.env.ref(""),
+        #     'target': 'new',
+        # }).id
+        # vals['print_ref_ir_value_id'] = self.env['ir.values'].sudo().create({
+        #     'name': print_button_name,
+        #     'model': src_obj,
+        #     'key2': 'client_action_multi',
+        #     'value': "ir.actions.act_window," +
+        #              str(vals['print_ref_ir_act_window_id']),
+        # }).id
+        vals['email_ref_ir_act_window_id'] = action_obj.create({
+            'name': email_button_name,
             'type': 'ir.actions.act_window',
             'res_model': 'card.print.wizard',
             'src_model': src_obj,
             'view_type': 'form',
             'view_mode': 'form',
+            'view_id': self.env.ref("card_design.card_design_action_email_wizard").id,
             'target': 'new',
         }).id
-        vals['ref_ir_value_id'] = self.env['ir.values'].sudo().create({
-            'name': button_name,
+        vals['email_ref_ir_value_id'] = self.env['ir.values'].sudo().create({
+            'name': email_button_name,
             'model': src_obj,
             'key2': 'client_action_multi',
             'value': "ir.actions.act_window," +
-                     str(vals['ref_ir_act_window_id']),
+                     str(vals['email_ref_ir_act_window_id']),
+        }).id
+        vals['export_ref_ir_act_window_id'] = action_obj.create({
+            'name': export_button_name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'card.print.wizard',
+            'src_model': src_obj,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': self.env.ref("card_design.card_design_action_export_wizard").id,
+            'target': 'new',
+        }).id
+        vals['export_ref_ir_value_id'] = self.env['ir.values'].sudo().create({
+            'name': export_button_name,
+            'model': src_obj,
+            'key2': 'client_action_multi',
+            'value': "ir.actions.act_window," +
+                     str(vals['export_ref_ir_act_window_id']),
         }).id
         self.write(vals)
         return True
@@ -609,8 +679,10 @@ class CardTemplate(models.Model):
 
     @api.multi
     def unlink_action(self):
-        self.mapped('ref_ir_act_window_id').sudo().unlink()
-        self.mapped('ref_ir_value_id').sudo().unlink()
+        self.mapped('email_ref_ir_act_window_id').sudo().unlink()
+        self.mapped('email_ref_ir_value_id').sudo().unlink()
+        self.mapped('export_ref_ir_act_window_id').sudo().unlink()
+        self.mapped('export_ref_ir_value_id').sudo().unlink()
         return True
 
     @api.multi
@@ -1001,13 +1073,13 @@ class CardTemplate(models.Model):
             path = '/tmp'
         pdf_datas = []
         pdfs = []
-        attachment_id = self.pdf_generate(self.body_html, 'front_side')
+        attachment_id = self.pdf_generate(self.body_html, '_front_side')
         pdf_datas.append(attachment_id.datas)
         if self.back_side:
-            attachment_id = self.pdf_generate(self.back_body_html, 'back_side')
+            attachment_id = self.pdf_generate(self.back_body_html, '_back_side')
             pdf_datas.append(attachment_id.datas)
 
-        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         for inx, data in enumerate(pdf_datas):
             pdf_name = path + '/' + current_obj_name + svg_file_name + str(inx) + '.pdf'
             pdfs.append(pdf_name)
@@ -1015,7 +1087,8 @@ class CardTemplate(models.Model):
                 pdf.write(base64.b64decode(data))
 
         merger = PdfFileMerger()
-        current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        current_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
         current_date = fields.date.today().strftime('%Y_%m_%d')
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
@@ -1023,11 +1096,11 @@ class CardTemplate(models.Model):
         for pdf_data in pdfs:
             merger.append(open(pdf_data, 'rb'))
 
-        with open(current_path + current_obj_name + svg_file_name + '.pdf', 'wb') as fout:
+        with open(current_path + svg_file_name, 'wb') as fout:
             merger.write(fout)
 
-        data_file = open(current_path + current_obj_name + svg_file_name + '.pdf', 'r')
-        temp_file_name = current_path + current_obj_name + svg_file_name + '.pdf'
+        data_file = open(current_path + svg_file_name, 'r')
+        temp_file_name = current_path + svg_file_name
         date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)

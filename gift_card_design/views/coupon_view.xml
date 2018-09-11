@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <act_window
+    <!-- <act_window
         id="act_send_mail_card_design_coupon"
         name="Send by Email"
         context="{'product_coupon': True}"
@@ -10,21 +10,6 @@
         view_mode="form"
         target="new"
         key2="client_action_multi"
-    />
-
-    <record model="ir.ui.view" id="card_desgin_template_form_view">
-        <field name="name">card.template.form.inherit</field>
-        <field name="model">card.template</field>
-        <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
-        <field name="arch" type="xml">
-            <field name="ref_ir_value_id" position="after">
-                <field name="combine_pdf_page" attrs="{
-                        'invisible': ['|',
-                            ('type', '=', 'label'), ('back_side', '=', False)
-                        ],
-                    }"/>
-            </field>
-        </field>
-    </record>
+    /> -->
 
 </odoo>
