@@ -12,6 +12,21 @@ from odoo.exceptions import UserError
 class CardTemplate(models.Model):
     _inherit = 'card.template'
 
+    print_ref_ir_act_window_id = fields.Many2one(
+        'ir.actions.act_window',
+        'Print Sidebar action',
+        readonly=True,
+        help="Action to make this "
+        "template available on "
+        "records of the related "
+        "document model."
+    )
+    print_ref_ir_value_id = fields.Many2one(
+        'ir.values', 'Print Sidebar button',
+        readonly=True,
+        help="Sidebar button to open "
+        "the sidebar action."
+    )
     type = fields.Selection([
         ("card", "Card"),
         ("label", "Label"),
@@ -99,6 +114,43 @@ class CardTemplate(models.Model):
     is_manually = fields.Boolean(string="Manually Syntax")
     manually_body_data = fields.Text(string="Manually Syntax")
     check_manually_data = fields.Text(string="Check Syntax")
+
+    @api.multi
+    def create_action(self):
+        res = super(CardTemplate, self).create_action()
+        vals = {}
+        action_obj = self.env['ir.actions.act_window']
+        src_obj = self.card_model
+        select_name = dict(
+            self._fields['card_model'].selection(self)).get(
+                self.card_model
+            )
+        print_button_name = _('Print Card for %s') % select_name
+        action = action_obj.search([
+            ('src_model', '=', src_obj),
+            ('name', '=', print_button_name)
+        ], limit=1)
+        if len(action):  # if action found than it will not create new action for model
+            return True
+        vals['print_ref_ir_act_window_id'] = action_obj.create({
+            'name': print_button_name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'card.print.wizard',
+            'src_model': src_obj,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': self.env.ref("card_design_printer.card_design_action_print_wizard").id,
+            'target': 'new',
+        }).id
+        vals['print_ref_ir_value_id'] = self.env['ir.values'].sudo().create({
+            'name': print_button_name,
+            'model': src_obj,
+            'key2': 'client_action_multi',
+            'value': "ir.actions.act_window," +
+                     str(vals['print_ref_ir_act_window_id']),
+        }).id
+        self.write(vals)
+        return res
 
     @api.onchange('type')
     def onchange_type(self):

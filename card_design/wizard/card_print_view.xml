@@ -5,7 +5,7 @@
         <field name="name">card_print_wizard</field>
         <field name="model">card.print.wizard</field>
         <field name="arch" type="xml">
-            <form string="Print Card">
+            <form string="Export Card">
                 <sheet>
                     <group>
                         <group>

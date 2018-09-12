@@ -4,9 +4,9 @@
     <record model="ir.ui.view" id="card_design_print_wizard">
         <field name="name">card.print.wizard</field>
         <field name="model">card.print.wizard</field>
-        <field name="inherit_id" ref="card_design.card_design_print_wizard"/>
+        <field name="inherit_id" ref="card_design_printer.card_design_action_print_wizard"/>
         <field name="arch" type="xml">
-            <xpath expr="//footer/button[@name='print_png']" posotiontion="after">
+            <xpath expr="//footer/button[@name='print_coupons']" posotiontion="after">
                 <button string="Print Gift Card"  class="oe_highlight"
                     name="print_coupons" type="object" icon="fa-print"
                     style="margin-left:15px;background: dimgray;border-color:dimgray;"

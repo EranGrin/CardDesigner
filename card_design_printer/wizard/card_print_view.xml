@@ -1,15 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record model="ir.ui.view" id="card_design_print_wizard">
+    <record model="ir.ui.view" id="card_design_action_print_wizard">
         <field name="name">card_print_wizard</field>
         <field name="model">card.print.wizard</field>
-        <field name="inherit_id" ref="card_design.card_design_print_wizard"/>
         <field name="arch" type="xml">
-            <field name="template_id" position="after">
+            <form string="Print Card">
                 <field name="printer_lang" invisible="1"/>
                 <field name="enable_printer" invisible="1"/>
-            </field>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="template_id" widget="selection"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="model" invisible="1" />
+                            <field name="position" widget="radio" options="{'horizontal': true}" />
+                            <field name="printer_id"
+                                options="{
+                                    'no_create': True,
+                                    'no_open': True
+                                }"
+                                attrs="{
+                                    'invisible': [('enable_printer', '=', False)],
+                                }"
+                            />
+                            <field name="file_separator" widget="radio" options="{'horizontal': true}"  invisible="1"/>
+                            <field name="file_config" widget="radio" invisible="1"
+                                options="{'horizontal': true}"
+                                attrs="{'invisible': [('position', '!=', 'both')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Front">
+                            <field name="body"/>
+                        </page>
+                        <page string="Back" attrs="{'invisible': [('position', '=', 'f')]}">
+                            <field name="back_body"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button string="Print Card"  class="oe_highlight"
+                        name="print_coupons" type="object" icon="fa-print"
+                        style="background: dimgray;border-color:dimgray;"
+                        attrs="{
+                            'invisible': [('enable_printer', '=', False)],
+                        }"
+                    />
+                    <button string="Cancel"
+                        class="btn-default"
+                        special="cancel"
+                    />
+                </footer>
+            </form>
         </field>
     </record>
 
