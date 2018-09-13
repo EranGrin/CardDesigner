@@ -3,11 +3,33 @@ odoo.define('card_design_printer.action', function(require) {
 
     var WebActionManager = require('web.ActionManager');
     var WebModel = require("web.Model");
+    var ajax = require("web.ajax");
+
 
     WebActionManager.include({
         ir_actions_printer_connect: function(action, options) { 
             var self = this;
-            var model = new WebModel(action.res_model);
+            var model = new WebModel(action.res_model); 
+
+            if (action.printer_config_dict.keypair) {
+                // set the certificate used for privileged calls
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    if (action.printer_config_dict.keypair.keys) {
+                        // use supplied certificate
+                        resolve(action.printer_config_dict.keypair.keys);
+                    }
+                });
+
+                // set the signing function for privileged calls
+                qz.security.setSignaturePromise(function(toSign) {
+                    //LOG: Authorizing
+                    return function(resolve, reject) {
+                        // POST to the signing route. CSRF token is passed automatically by Odoo's ajax.post()
+                        resolve();
+                    }
+                });
+            }
+
             if (qz.websocket.isActive()) {
                  model.call("write", [
                     action.res_id, 
@@ -20,7 +42,7 @@ odoo.define('card_design_printer.action', function(require) {
                 self.inner_widget.active_view.controller.reload();
                 return $.when();
             }
-
+            
             var connected = qz.websocket.connect({
                 host: action.printer_config_dict.hostname,
                 port: action.printer_config_dict.port,
@@ -59,6 +81,26 @@ odoo.define('card_design_printer.action', function(require) {
         ir_actions_printer_list: function(action, options) {
             var self = this;
             var model = new WebModel(action.res_model);
+
+            if (action.printer_config_dict.keypair) {
+                // set the certificate used for privileged calls
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    if (action.printer_config_dict.keypair.keys) {
+                        // use supplied certificate
+                        resolve(action.printer_config_dict.keypair.keys);
+                    }
+                });
+
+                // set the signing function for privileged calls
+                qz.security.setSignaturePromise(function(toSign) {
+                    //LOG: Authorizing
+                    return function(resolve, reject) {
+                        // POST to the signing route. CSRF token is passed automatically by Odoo's ajax.post()
+                        resolve();
+                    }
+                });
+            }
+
             if (qz.websocket.isActive()) {
                 var found = qz.printers.find();
                 found.then(function(printer_names) {
@@ -116,6 +158,26 @@ odoo.define('card_design_printer.action', function(require) {
         ir_actions_print_data: function(action, options) {
             var self = this;
             var model = new WebModel(action.res_model);
+
+            if (action.printer_config_dict.keypair) {
+                // set the certificate used for privileged calls
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    if (action.printer_config_dict.keypair.keys) {
+                        // use supplied certificate
+                        resolve(action.printer_config_dict.keypair.keys);
+                    }
+                });
+
+                // set the signing function for privileged calls
+                qz.security.setSignaturePromise(function(toSign) {
+                    //LOG: Authorizing
+                    return function(resolve, reject) {
+                        // POST to the signing route. CSRF token is passed automatically by Odoo's ajax.post()
+                        resolve();
+                    }
+                });
+            }
+
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
                     action.printer_name, action.printer_option
@@ -190,6 +252,25 @@ odoo.define('card_design_printer.action', function(require) {
         ir_actions_print_multidata: function(action, options) { 
             var self = this;
             var model = new WebModel(action.res_model);
+            if (action.printer_config_dict.keypair) {
+                // set the certificate used for privileged calls
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    if (action.printer_config_dict.keypair.keys) {
+                        // use supplied certificate
+                        resolve(action.printer_config_dict.keypair.keys);
+                    }
+                });
+
+                // set the signing function for privileged calls
+                qz.security.setSignaturePromise(function(toSign) {
+                    //LOG: Authorizing
+                    return function(resolve, reject) {
+                        // POST to the signing route. CSRF token is passed automatically by Odoo's ajax.post()
+                        resolve();
+                    }
+                });
+            }
+
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
                     action.printer_name, action.printer_option

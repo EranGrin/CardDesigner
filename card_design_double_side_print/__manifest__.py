@@ -3,7 +3,7 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Double Side Print Data",
-    'version': '10.0.2018.08.30.1',
+    'version': '10.0.2018.09.14.1',
     'summary': """
         Double Side Print Data""",
     'description': """

@@ -31,6 +31,10 @@ class CardPrintWizard(models.TransientModel):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = rec.printer_id.name
             context = dict(self.env.context or {})
             data_list = []

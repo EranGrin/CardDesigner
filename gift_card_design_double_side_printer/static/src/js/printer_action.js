@@ -8,6 +8,25 @@ odoo.define('gift_card_design_double_side_printer.action', function(require) {
         ir_actions_multi_nonbulk: function(action, options) { 
             var self = this;
             var model = new WebModel(action.res_model);
+            if (action.printer_config_dict.keypair) {
+                // set the certificate used for privileged calls
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    if (action.printer_config_dict.keypair.keys) {
+                        // use supplied certificate
+                        resolve(action.printer_config_dict.keypair.keys);
+                    }
+                });
+
+                // set the signing function for privileged calls
+                qz.security.setSignaturePromise(function(toSign) {
+                    //LOG: Authorizing
+                    return function(resolve, reject) {
+                        // POST to the signing route. CSRF token is passed automatically by Odoo's ajax.post()
+                        resolve();
+                    }
+                });
+            }
+
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
                     action.printer_name, action.printer_option
@@ -101,6 +120,25 @@ odoo.define('gift_card_design_double_side_printer.action', function(require) {
         ir_actions_multibulk_printduplex: function(action, options) { 
             var self = this;
             var model = new WebModel(action.res_model);
+            if (action.printer_config_dict.keypair) {
+                // set the certificate used for privileged calls
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    if (action.printer_config_dict.keypair.keys) {
+                        // use supplied certificate
+                        resolve(action.printer_config_dict.keypair.keys);
+                    }
+                });
+
+                // set the signing function for privileged calls
+                qz.security.setSignaturePromise(function(toSign) {
+                    //LOG: Authorizing
+                    return function(resolve, reject) {
+                        // POST to the signing route. CSRF token is passed automatically by Odoo's ajax.post()
+                        resolve();
+                    }
+                });
+            }
+
             if (qz.websocket.isActive()) {
                 var config = qz.configs.create(
                     action.printer_name, action.printer_option

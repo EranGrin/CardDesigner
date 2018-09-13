@@ -255,6 +255,10 @@ class CardTemplate(models.Model):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = printer.default_printer.name
             current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
@@ -423,6 +427,10 @@ class CardTemplate(models.Model):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = printer.default_printer.name
             current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False
@@ -467,6 +475,10 @@ class CardTemplate(models.Model):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = printer.default_printer.name
             current_obj_name = rec.name.replace(' ', '_').replace('.', '_').lower() + '_'
             print_data = False

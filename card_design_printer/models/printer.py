@@ -6,6 +6,13 @@ _logger = logging.getLogger(__name__)
 from odoo import models, fields, _, api
 
 
+class PrinterKeypair(models.Model):
+    _name = 'printer.keypair'
+
+    name = fields.Char(string="Name", required=True)
+    certificate = fields.Text("Certificate", required=True)
+
+
 class PrinterLines(models.Model):
     _name = 'printer.lines'
 
@@ -59,6 +66,9 @@ class Printer(models.Model):
         string=_("Secure Port"),
         required=True,
         default="8181, 8282, 8383, 8484"
+    )
+    keypair_id = fields.Many2one(
+        "printer.keypair", string="keypair"
     )
     insecure_port = fields.Char(
         string=_("Insecure Port"),
@@ -130,6 +140,10 @@ class Printer(models.Model):
                 "retries": rec.retries,
                 "delay": rec.delay,
             }
+            if rec.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': rec.keypair_id.certificate},
+                })
             return {
                 "type": "ir.actions.printer.connect",
                 "res_model": self._name,
@@ -153,6 +167,10 @@ class Printer(models.Model):
                 "retries": rec.retries,
                 "delay": rec.delay,
             }
+            if rec.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': rec.keypair_id.certificate},
+                })
             return {
                 "type": "ir.actions.printer.list",
                 "res_model": self._name,
@@ -264,6 +282,10 @@ class Printer(models.Model):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = printer.default_printer.name
             URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data = URL + '/card_design_printer/static/src/file/test_card.pdf'

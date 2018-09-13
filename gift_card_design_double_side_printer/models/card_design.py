@@ -24,6 +24,10 @@ class CardTemplate(models.Model):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = printer.default_printer.name
             print_data_dict = {}
             dict_context = dict(self.env.context or {})

@@ -3,7 +3,7 @@
 # Part of LICENSE file for copyright and licensing details.
 {
     'name': "Print Card Template",
-    'version': '10.0.2018.08.30.1',
+    'version': '10.0.2018.09.14.1',
     'summary': """Print Card Template""",
     'description': """Print Card Template""",
     'author': "Inceptus.io",
@@ -14,6 +14,7 @@
     ],
     'data': [
         "security/ir.model.access.csv",
+        "datas/qz_data.xml",
         "views/printer_template.xml",
         "views/printer_view.xml",
         "wizard/card_print_view.xml",

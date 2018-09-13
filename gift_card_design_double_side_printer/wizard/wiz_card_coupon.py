@@ -44,6 +44,10 @@ class CardPrintWizard(models.TransientModel):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = rec.printer_id.name
             context = dict(self.env.context or {})
             print_data_dict = {}
@@ -117,6 +121,10 @@ class CardPrintWizard(models.TransientModel):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = rec.printer_id.name
             context = dict(self.env.context or {})
             print_data_dict = {}
@@ -250,6 +258,10 @@ class WizardnondupluexPrint(models.TransientModel):
                 "retries": printer.retries,
                 "delay": printer.delay,
             }
+            if printer.keypair_id:
+                printer_config_dict.update({
+                    'keypair': {'keys': printer.keypair_id.certificate},
+                })
             printer_name = rec.printer_id.name
             print_data_dict = {}
             context = dict(self.env.context or {})
