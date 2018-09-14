@@ -32,6 +32,27 @@ class CardPrintWizard(models.TransientModel):
         readonly=True,
         default=False
     )
+    label_front = fields.Selection([
+        ("f", "Front"),
+    ], string="Position", default="f")
+    card_type = fields.Selection(
+        related='template_id.type',
+        string="Printer Lang",
+        store=True,
+        readonly=True
+    )
+
+    @api.onchange('template_id')
+    def _preview_body(self):
+        res = super(CardPrintWizard, self)._preview_body()
+        for rec in self:
+            if rec.template_id and rec.template_id.type == 'label':
+                rec.position = 'f'
+            else:
+                rec.position = 'f'
+            rec.file_config = 'f'
+            rec.file_separator = "single"
+        return res
 
     @api.multi
     def print_coupons(self):

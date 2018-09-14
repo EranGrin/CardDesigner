@@ -222,22 +222,6 @@ class CardTemplate(models.Model):
     front_side = fields.Boolean('Front Side', default=True)
     back_side = fields.Boolean('Back Side')
     position = fields.Selection([('f', 'Front'), ('b', 'Back')], "Position", default='f')
-    default = fields.Boolean('Default')
-    # print_ref_ir_act_window_id = fields.Many2one(
-    #     'ir.actions.act_window',
-    #     'Sidebar action',
-    #     readonly=True,
-    #     help="Action to make this "
-    #     "template available on "
-    #     "records of the related "
-    #     "document model."
-    # )
-    # print_ref_ir_value_id = fields.Many2one(
-    #     'ir.values', 'Sidebar button',
-    #     readonly=True,
-    #     help="Sidebar button to open "
-    #     "the sidebar action."
-    # )
     email_ref_ir_act_window_id = fields.Many2one(
         'ir.actions.act_window',
         'Email Sidebar action',
@@ -263,7 +247,7 @@ class CardTemplate(models.Model):
         "document model."
     )
     export_ref_ir_value_id = fields.Many2one(
-        'ir.values', 'Export Sidebar button',
+        'ir.values', 'Export Sidebar',
         readonly=True,
         help="Sidebar button to open "
         "the sidebar action."

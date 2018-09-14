@@ -14,10 +14,21 @@
                             <field name="template_id" widget="selection"/>
                         </group>
                     </group>
-                    <group>
+                    <group attrs="{
+                                    'invisible': [('enable_printer', '=', False)],
+                                }">
                         <group>
                             <field name="model" invisible="1" />
-                            <field name="position" widget="radio" options="{'horizontal': true}" />
+                            <field name="card_type" invisible="1" />
+                            <field name="label_front" widget="radio"
+                            options="{'horizontal': true}" attrs="{
+                                    'invisible': ['|',('enable_printer', '=', False), ('card_type', '=', 'card')],
+                                }" />
+                            <field name="position" widget="radio" options="{'horizontal': true}" 
+                                attrs="{
+                                    'invisible': ['|',('enable_printer', '=', False), ('card_type', '!=', 'card')],
+                                }"
+                            />
                             <field name="printer_id"
                                 options="{
                                     'no_create': True,
@@ -34,10 +45,10 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Front">
+                        <page string="Front" attrs="{'invisible': [('position', '=', 'b')]}">
                             <field name="body"/>
                         </page>
-                        <page string="Back" attrs="{'invisible': [('position', '=', 'f')]}">
+                        <page string="Back" attrs="{'invisible': ['|', ('position', '=', 'f'), ('card_type', '!=', 'card')]}">
                             <field name="back_body"/>
                         </page>
                     </notebook>
@@ -73,6 +84,46 @@
                     <button string="Close" class="btn-default" special="cancel" />
                 </footer>
             </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="card_design_action_export_wizard">
+        <field name="name">card_print_wizard</field>
+        <field name="model">card.print.wizard</field>
+        <field name="inherit_id" ref="card_design.card_design_action_export_wizard"/>
+        <field name="arch" type="xml">
+            <field name="position" position="replace">
+                <field name="card_type" invisible="1" />
+                <field name="label_front" widget="radio"
+                options="{'horizontal': true}" attrs="{
+                        'invisible': [('card_type', '=', 'card')],
+                    }" />
+                <field name="position" widget="radio" options="{'horizontal': true}" 
+                    attrs="{
+                        'invisible': [('card_type', '!=', 'card')],
+                    }"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="card_design_action_email_wizard">
+        <field name="name">card_print_wizard</field>
+        <field name="model">card.print.wizard</field>
+        <field name="inherit_id" ref="card_design.card_design_action_email_wizard"/>
+        <field name="arch" type="xml">
+            <field name="position" position="replace">
+                <field name="card_type" invisible="1" />
+                <field name="label_front" widget="radio"
+                options="{'horizontal': true}" attrs="{
+                        'invisible': [('card_type', '=', 'card')],
+                    }" />
+                <field name="position" widget="radio" options="{'horizontal': true}" 
+                    attrs="{
+                        'invisible': [('card_type', '!=', 'card')],
+                    }"
+                />
+            </field>
         </field>
     </record>
 

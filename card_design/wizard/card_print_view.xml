@@ -21,7 +21,7 @@
                             attrs="{'invisible': [('position', '!=', 'both')]}"/>
                     </group>
                     <notebook>
-                        <page string="Front">
+                        <page string="Front" attrs="{'invisible': [('position', '=', 'b')]}">
                             <field name="body"/>
                         </page>
                         <page string="Back" attrs="{'invisible': [('position', '=', 'f')]}">
@@ -74,8 +74,8 @@
                             attrs="{'invisible': [('position', '!=', 'both')]}"/>
                     </group>
                     <notebook>
-                        <page string="Front">
-                            <field name="body"/>
+                        <page string="Front" attrs="{'invisible': [('position', '=', 'b')]}">
+                            <field name="body" />
                         </page>
                         <page string="Back" attrs="{'invisible': [('position', '=', 'f')]}">
                             <field name="back_body"/>
