@@ -76,7 +76,7 @@ class CardPrintWizard(models.TransientModel):
                     back_path, back_data_file, back_base64_datas = rec.template_id.with_context(context).render_png(
                         svg_file_name, rec.template_id.back_body_html, '_back_side'
                     )
-                if rec.template_id.data_type == 'path':
+                if rec.template_id.print_data_type == 'path':
                     index, print_data = rec.template_id.create_json_duplex_data(front_path, back_path)
                 else:
                     index, print_data = rec.template_id.create_json_duplex_data(front_base64_datas, back_base64_datas)

@@ -46,6 +46,7 @@ class CardTemplate(models.Model):
     printer_id = fields.Many2one(
         "printer.lines",
         string=_("Printer"),
+        ondelete='set null',
     )
     printer_lang = fields.Selection([
         ("ZPL", "ZPL"),

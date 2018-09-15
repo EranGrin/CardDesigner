@@ -24,6 +24,7 @@ class PrinterLines(models.Model):
         "printer.printer",
         string=_("Printer"),
         required=True,
+        ondelete='cascade',
     )
     default_printer = fields.Boolean(
         string=_('Default Printer')
@@ -68,7 +69,8 @@ class Printer(models.Model):
         default="8181, 8282, 8383, 8484"
     )
     keypair_id = fields.Many2one(
-        "printer.keypair", string="keypair"
+        "printer.keypair", string="keypair",
+        ondelete='set null',
     )
     insecure_port = fields.Char(
         string=_("Insecure Port"),
@@ -101,7 +103,8 @@ class Printer(models.Model):
     line_ids = fields.One2many(
         "printer.lines",
         "printer_id",
-        string=_("Printer List")
+        string=_("Printer List"),
+        ondelete='cascade',
     )
     error = fields.Char(string=_("Error"))
     is_error = fields.Boolean(string=_("IS Error"))
