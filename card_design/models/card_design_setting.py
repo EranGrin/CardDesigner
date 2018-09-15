@@ -10,16 +10,19 @@ class BaseConfigSettings(models.TransientModel):
     download_path = fields.Char(string="PDF Download Path")
     file_name = fields.Char(string="File Name (with out extension)")
     allow_to_zip = fields.Integer("Maximum File Download Separately (ZIP Creation)")
+    export_file_path = fields.Char(string="File Path (Exported Path) ", required=True)
 
     @api.model
     def get_default_download_path(self, fields):
         path = self.env.ref('card_design.svg_to_pdf').value
         file_name = self.env.ref('card_design.svg_file_name').value
         allow_to_zip = self.env.ref('card_design.allow_to_zip').value
+        export_file_path = self.env.ref('card_design.export_file_path').value
         return {
             'download_path': path,
             'file_name': file_name,
-            'allow_to_zip': allow_to_zip and int(allow_to_zip) or 0
+            'allow_to_zip': allow_to_zip and int(allow_to_zip) or 0,
+            'export_file_path': export_file_path or ''
         }
 
     @api.multi
@@ -33,4 +36,7 @@ class BaseConfigSettings(models.TransientModel):
             })
             self.env.ref('card_design.allow_to_zip').write({
                 'value': record.allow_to_zip and int(record.allow_to_zip) or 0
+            })
+            self.env.ref('card_design.export_file_path').write({
+                'value': record.export_file_path
             })

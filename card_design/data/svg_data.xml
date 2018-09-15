@@ -10,6 +10,11 @@
         <field name="value">/tmp</field>
     </record>
 
+    <record id="export_file_path" model="ir.config_parameter">
+        <field name="key">card_design.export_file_path</field>
+        <field name="value">/tmp</field>
+    </record>
+
     <record id="svg_page_width" model="ir.config_parameter">
         <field name="key">svg_page_width</field>
         <field name="value">8.26in</field>

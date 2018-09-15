@@ -102,6 +102,7 @@ class Irttachment(models.Model):
 
     @api.multi
     def action_send_email(self):
+        export_file_path = self.env.ref('card_design.export_file_path').value
         attachment_list = []
         for rec in self:
             attachment_list.append(rec.id)
@@ -126,9 +127,7 @@ class Irttachment(models.Model):
         for tag in soup.findAll("table", {'id': 'attachment_link'}):
             tag.replaceWith('')
         body_html = str(soup)
-        current_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__))
-        ).replace('/models', '/static/src/export_files/')
+        current_path = export_file_path + '/export_files/'
         zip_file_name = 'card_design_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
         if not os.path.exists(current_path):
@@ -137,7 +136,7 @@ class Irttachment(models.Model):
         attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
         for attachment in attachment_list:
             attachment = self.env['ir.attachment'].browse(attachment)
-            temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+            temp_file_name = current_path + attachment.card_temp_path
             attachment_zipfile.write(temp_file_name, basename(temp_file_name))
         attachment_zipfile.close()
         base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
@@ -149,7 +148,7 @@ class Irttachment(models.Model):
             'res_model': 'card.template',
             'res_id': self.ids[0],
             'datas_fname': zip_file_name,
-            'card_temp_path': current_path.split('/card_design')[1] + zip_file_name,
+            'card_temp_path': current_path + zip_file_name,
             'public': True
         })
         render_html = """ <table id='attachment_link'>
@@ -344,6 +343,7 @@ class CardTemplate(models.Model):
 
     @api.multi
     def action_selected_card_send_email(self):
+        export_file_path = self.env.ref('card_design.export_file_path').value
         context = dict(self.env.context or {})
         if context.get('image', False):
             attachment_ids = self.image_attachment_ids
@@ -374,9 +374,7 @@ class CardTemplate(models.Model):
             for tag in soup.findAll("table", {'id': 'attachment_link'}):
                 tag.replaceWith('')
             body_html = str(soup)
-            current_path = os.path.join(os.path.dirname(
-                os.path.abspath(__file__))
-            ).replace('/models', '/static/src/export_files/')
+            current_path = export_file_path + '/export_files/'
             current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
             zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
             current_path = current_path + 'zip_files/'
@@ -386,7 +384,7 @@ class CardTemplate(models.Model):
             attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
             for attachment in attachment_list:
                 attachment = self.env['ir.attachment'].browse(attachment)
-                temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+                temp_file_name = current_path + attachment.card_temp_path
                 attachment_zipfile.write(temp_file_name, basename(temp_file_name))
             attachment_zipfile.close()
             base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
@@ -398,7 +396,7 @@ class CardTemplate(models.Model):
                 'res_model': 'card.template',
                 'res_id': self.ids[0],
                 'datas_fname': zip_file_name,
-                'card_temp_path': current_path.split('/card_design')[1] + zip_file_name,
+                'card_temp_path': current_path + zip_file_name,
                 'public': True
             })
             render_html = """ <table id='attachment_link'>
@@ -435,6 +433,7 @@ class CardTemplate(models.Model):
 
     @api.multi
     def action_send_email(self):
+        export_file_path = self.env.ref('card_design.export_file_path').value
         self.ensure_one()
         ir_model_data = self.env['ir.model.data']
         try:
@@ -463,9 +462,7 @@ class CardTemplate(models.Model):
         for tag in soup.findAll("table", {'id': 'attachment_link'}):
             tag.replaceWith('')
         body_html = str(soup)
-        current_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__))
-        ).replace('/models', '/static/src/export_files/')
+        current_path = export_file_path + 'export_files/'
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
         zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
@@ -475,7 +472,7 @@ class CardTemplate(models.Model):
         attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
         for attachment in attachment_list:
             attachment = self.env['ir.attachment'].browse(attachment)
-            temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+            temp_file_name = current_path + attachment.card_temp_path
             attachment_zipfile.write(temp_file_name, basename(temp_file_name))
         attachment_zipfile.close()
         base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
@@ -487,7 +484,7 @@ class CardTemplate(models.Model):
             'res_model': 'card.template',
             'res_id': self.ids[0],
             'datas_fname': zip_file_name,
-            'card_temp_path': '/card_design' + current_path.split('/card_design')[1] + zip_file_name,
+            'card_temp_path': current_path + zip_file_name,
             'public': True
         })
         render_html = """ <table id='attachment_link'>
@@ -586,7 +583,6 @@ class CardTemplate(models.Model):
         action_obj = self.env['ir.actions.act_window']
         src_obj = self.card_model
         select_name = dict(self._fields['card_model'].selection(self)).get(self.card_model)
-        # print_button_name = _('Print Card for %s') % select_name
         email_button_name = _('Send by Email Card for %s') % select_name
         export_button_name = _('Export Card for %s') % select_name
         action = action_obj.search([
@@ -595,23 +591,6 @@ class CardTemplate(models.Model):
         ], limit=1)
         if len(action):  # if action found than it will not create new action for model
             return True
-        # vals['print_ref_ir_act_window_id'] = action_obj.create({
-        #     'name': print_button_name,
-        #     'type': 'ir.actions.act_window',
-        #     'res_model': 'card.print.wizard',
-        #     'src_model': src_obj,
-        #     'view_type': 'form',
-        #     'view_mode': 'form',
-        #     'view_id': self.env.ref(""),
-        #     'target': 'new',
-        # }).id
-        # vals['print_ref_ir_value_id'] = self.env['ir.values'].sudo().create({
-        #     'name': print_button_name,
-        #     'model': src_obj,
-        #     'key2': 'client_action_multi',
-        #     'value': "ir.actions.act_window," +
-        #              str(vals['print_ref_ir_act_window_id']),
-        # }).id
         vals['email_ref_ir_act_window_id'] = action_obj.create({
             'name': email_button_name,
             'type': 'ir.actions.act_window',
@@ -763,6 +742,7 @@ class CardTemplate(models.Model):
         width = '0px'
         height = '0px'
         path = self.env.ref('card_design.svg_to_pdf').value
+        export_file_path = self.env.ref('card_design.export_file_path').value
         if not path:
             path = '/tmp'
         for div in soup.findAll("div", {'class': 'fixed_height'}):
@@ -829,7 +809,7 @@ class CardTemplate(models.Model):
         ''' % (width, height)
         css = CSS(string=style, font_config=font_config)
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
-        current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        current_path = export_file_path + '/export_files/'
         current_date = fields.date.today().strftime('%Y_%m_%d')
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
@@ -848,7 +828,7 @@ class CardTemplate(models.Model):
             output.write(f)
         data_file = open(current_path + svg_file_name, 'r')
         temp_file_name = current_path + svg_file_name
-        date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
+        date_file_name = temp_file_name
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
         return date_file_name, data_file, base64_datas
@@ -856,6 +836,7 @@ class CardTemplate(models.Model):
     def render_png(self, svg_file_name, data, side_name):
         resolution = self.template_size and self.template_size.dpi or 300
         path = self.env.ref('card_design.svg_to_pdf').value
+        export_file_path = self.env.ref('card_design.export_file_path').value
         soup = BeautifulSoup(data)
         count = 0
         width = '0px'
@@ -931,7 +912,7 @@ class CardTemplate(models.Model):
             div { overflow: hidden !important; margin-top:-2px;margin-left:-1px;}
         ''' % (width, height)
         css = CSS(string=style, font_config=font_config)
-        current_path = os.path.join(os.path.dirname(os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        current_path = export_file_path + '/export_files/'
         current_date = fields.date.today().strftime('%Y_%m_%d')
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         current_path = current_path + current_obj_name + '/' + current_date + '/'
@@ -947,7 +928,7 @@ class CardTemplate(models.Model):
         # im.save(current_path + svg_file_name, dpi=(resolution, resolution))
         data_file = open(current_path + svg_file_name, 'r')
         temp_file_name = current_path + svg_file_name
-        date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
+        date_file_name = temp_file_name
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
         return date_file_name, data_file, base64_datas
@@ -1053,6 +1034,7 @@ class CardTemplate(models.Model):
 
     def render_pdf_both_side(self, svg_file_name, side_name=''):
         path = self.env.ref('card_design.svg_to_pdf').value
+        export_file_path = self.env.ref('card_design.export_file_path').value
         if not path:
             path = '/tmp'
         pdf_datas = []
@@ -1065,14 +1047,13 @@ class CardTemplate(models.Model):
 
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         for inx, data in enumerate(pdf_datas):
-            pdf_name = path + '/' + current_obj_name + svg_file_name + str(inx) + '.pdf'
+            pdf_name = export_file_path + '/' + current_obj_name + svg_file_name + str(inx) + '.pdf'
             pdfs.append(pdf_name)
             with open(pdf_name, 'wb') as pdf:
                 pdf.write(base64.b64decode(data))
 
         merger = PdfFileMerger()
-        current_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__))).replace('/models', '/static/src/export_files/')
+        current_path = export_file_path + '/export_files/'
         current_date = fields.date.today().strftime('%Y_%m_%d')
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
@@ -1085,7 +1066,7 @@ class CardTemplate(models.Model):
 
         data_file = open(current_path + svg_file_name, 'r')
         temp_file_name = current_path + svg_file_name
-        date_file_name = '/card_design' + temp_file_name.split('/card_design')[1]
+        date_file_name = temp_file_name
         datas = data_file.read()
         base64_datas = base64.encodestring(datas)
         return date_file_name, data_file, base64_datas

@@ -104,6 +104,7 @@ class CardPrintWizard(models.TransientModel):
 
     @api.multi
     def print_pdf(self):
+        export_file_path = self.env.ref('card_design.export_file_path').value
         context = dict(self.env.context or {})
         allow_to_zip = self.env.ref('card_design.allow_to_zip').value
         if not self.template_id:
@@ -159,9 +160,7 @@ class CardPrintWizard(models.TransientModel):
         if allow_to_zip:
             maximum_file_downalod = int(allow_to_zip)
             if maximum_file_downalod <= len(attachment_list):
-                current_path = os.path.join(os.path.dirname(
-                    os.path.abspath(__file__))
-                ).replace('/wizard', '/static/src/export_files/')
+                current_path = export_file_path + '/export_files/'
                 current_obj_name = self.template_id.name.replace(' ', '_').replace('.', '_').lower() + '_'
                 zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
                 current_path = current_path + 'zip_files/'
@@ -171,7 +170,7 @@ class CardPrintWizard(models.TransientModel):
                 attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
                 for attachment in attachment_list:
                     attachment = self.env['ir.attachment'].browse(attachment)
-                    temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+                    temp_file_name = current_path + attachment.card_temp_path
                     attachment_zipfile.write(temp_file_name, basename(temp_file_name))
                 attachment_zipfile.close()
                 base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
@@ -183,7 +182,7 @@ class CardPrintWizard(models.TransientModel):
                     'res_model': 'card.template',
                     'res_id': self.template_id.id,
                     'datas_fname': zip_file_name,
-                    'card_temp_path': current_path.split('/card_design')[1] + zip_file_name,
+                    'card_temp_path': current_path + zip_file_name,
                     'public': True
                 })
                 attachment_list = []
@@ -205,6 +204,7 @@ class CardPrintWizard(models.TransientModel):
                 "Combine option will use only for pdf.")
             )
         context = dict(self.env.context or {})
+        export_file_path = self.env.ref('card_design.export_file_path').value
         allow_to_zip = self.env.ref('card_design.allow_to_zip').value
         if not self.template_id:
             return True
@@ -246,9 +246,7 @@ class CardPrintWizard(models.TransientModel):
         if allow_to_zip:
             maximum_file_downalod = int(allow_to_zip)
             if maximum_file_downalod <= len(attachment_list):
-                current_path = os.path.join(os.path.dirname(
-                    os.path.abspath(__file__))
-                ).replace('/wizard', '/static/src/export_files/')
+                current_path = export_file_path + '/export_files/'
                 current_obj_name = self.template_id.name.replace(' ', '_').replace('.', '_').lower() + '_'
                 zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
                 current_path = current_path + 'zip_files/'
@@ -288,6 +286,7 @@ class CardPrintWizard(models.TransientModel):
     @api.multi
     def action_send_email(self):
         ir_model_data = self.env['ir.model.data']
+        export_file_path = self.env.ref('card_design.export_file_path').value
         try:
             template_id = ir_model_data.get_object_reference(
                 'card_design', 'email_template_card_design'
@@ -361,9 +360,7 @@ class CardPrintWizard(models.TransientModel):
             tag.replaceWith('')
         body_html = str(soup)
 
-        current_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__))
-        ).replace('/card_design/wizard', '/card_design/static/src/export_files/')
+        current_path = export_file_path + '/export_files/'
         current_obj_name = self.template_id.name.replace(' ', '_').replace('.', '_').lower() + '_'
         zip_file_name = current_obj_name + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.zip'
         current_path = current_path + 'zip_files/'
@@ -373,7 +370,7 @@ class CardPrintWizard(models.TransientModel):
         attachment_zipfile = zipfile.ZipFile(zip_file, 'w')
         for attachment in attachment_list:
             attachment = self.env['ir.attachment'].browse(attachment)
-            temp_file_name = current_path.split('/card_design')[0] + attachment.card_temp_path
+            temp_file_name = current_path + attachment.card_temp_path
             attachment_zipfile.write(temp_file_name, basename(temp_file_name))
         attachment_zipfile.close()
         base64_datas = open(current_path + zip_file_name, 'rb').read().encode('base64')
@@ -385,7 +382,7 @@ class CardPrintWizard(models.TransientModel):
             'res_model': 'card.template',
             'res_id': self.template_id.id,
             'datas_fname': zip_file_name,
-            'card_temp_path': "/card_design" + current_path.split('/card_design')[1] + zip_file_name,
+            'card_temp_path': current_path + zip_file_name,
             'public': True
         })
 

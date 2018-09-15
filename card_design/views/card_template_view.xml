@@ -29,6 +29,14 @@
                         </div>
                     </div>
                 </group>
+                <group name="export_file_path" string="Export File Name">
+                    <label for="export_file_path" />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <field name="export_file_path" class="oe_inline" />
+                        </div>
+                    </div>
+                </group>
             </xpath>
         </field>
     </record>
