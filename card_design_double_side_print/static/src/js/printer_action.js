@@ -179,7 +179,7 @@ odoo.define('card_design_double_side_print.action', function(require) {
                             //setup this chain link
                             var link = function() {
                                 return qz.printers.find(action.printer_name).then(function(found) {
-                                    return qz.print(qz.configs.create(found, , action.printer_option), action.print_data[i_]);
+                                    return qz.print(qz.configs.create(found, action.printer_option), action.print_data[i_]);
                                 });
                             };
 

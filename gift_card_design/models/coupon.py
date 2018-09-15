@@ -12,10 +12,6 @@ class ProductCoupon(models.Model):
 class card_template(models.Model):
     _inherit = 'card.template'
 
-    is_exported = fields.Boolean('At export of files')
-    is_send_email = fields.Boolean('Send email with files')
-    is_qz_print = fields.Boolean('Direct qz print')
-
     def get_name(self, value, extension):
         context = dict(self.env.context or {})
         if context.get('product_coupon', False):
