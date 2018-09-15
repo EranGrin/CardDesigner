@@ -40,6 +40,30 @@
                     }" invisible="1"
                 />
             </field>
+            <xpath expr="//group[@name='overlay_type']" position="after">
+                <group name="feeder_type" attrs="{
+                        'invisible': ['|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('back_side', '=', False), ('duplex_type', 'in', ['normal'])],
+                    }">
+                    <group> 
+                        <field name="front_feeder" />
+                        <field name="front_feeder_type" attrs="{
+                                'invisible': ['|', '|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('back_side', '=', False), ('front_feeder', '=', False), ('duplex_type', 'in', ['normal'])],
+                            }"/>
+                        <field name="front_ejection_type" attrs="{
+                            'invisible': ['|', '|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('back_side', '=', False), ('front_feeder', '=', False), ('duplex_type', 'in', ['normal'])],
+                        }"/>
+                    </group>
+                    <group>
+                        <field name="back_feeder" />
+                        <field name="back_feeder_type" attrs="{
+                            'invisible': ['|', '|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('back_side', '=', False), ('back_feeder', '=', False), ('duplex_type', 'in', ['normal'])],
+                        }"/>
+                        <field name="back_ejection_type" attrs="{
+                            'invisible': ['|', '|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('back_side', '=', False), ('back_feeder', '=', False), ('duplex_type', 'in', ['normal'])],
+                        }"/>
+                    </group>
+                </group>
+            </xpath>
             <button name="print_both_side_png" position="after">
                 <button name="qz_double_nonduplex_front_print" type="object" string="Non-Duplex Print"
                     class="oe_highlight" icon="fa-print" style="background: teal;border-color: teal;"

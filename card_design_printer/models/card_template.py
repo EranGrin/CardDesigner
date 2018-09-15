@@ -22,7 +22,7 @@ class CardTemplate(models.Model):
         "document model."
     )
     print_ref_ir_value_id = fields.Many2one(
-        'ir.values', 'Print Sidebar button',
+        'ir.values', 'Print Sidebar',
         readonly=True,
         help="Sidebar button to open "
         "the sidebar action."

@@ -129,7 +129,7 @@
                                     />
                                 </group>
                             </group>
-                            <group attrs="{
+                            <group name="overlay_type" attrs="{
                                 'invisible': ['|', ('enable_printer', '=', False), ('type', '=', 'label')],
                             }">
                                 <group>

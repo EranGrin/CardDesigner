@@ -22,6 +22,40 @@ class CardTemplate(models.Model):
         string=_("Back Side Data"),
         default="Sv"
     )
+    front_feeder = fields.Boolean(string="Front Feeder")
+    back_feeder = fields.Boolean(string="Back Feeder")
+    front_feeder_type = fields.Selection([
+        ("F", "Feeder"),
+        ("N", "No feeder insertion"),
+        ("C", "Manual insertion, only by command Reverse insertion"),
+        ("R", "Reverse insertion"),
+        ("M", "Manual insertion"),
+        ("B", "Dual mode; both feeder and manual")],
+        string=_("Fornt Feeder"), default="F"
+    )
+    back_feeder_type = fields.Selection([
+        ("F", "Feeder"),
+        ("N", "No feeder insertion"),
+        ("C", "Manual insertion, only by command Reverse insertion"),
+        ("R", "Reverse insertion"),
+        ("M", "Manual insertion"),
+        ("B", "Dual mode; both feeder and manual")],
+        string=_("Back Feeder"), default="F"
+    )
+    front_ejection_type = fields.Selection([
+        ("D", "Output hopper"),
+        ("M", "Manual insertion"),
+        ("R", "Reverse insertion"),
+        ("N", "No feeder insertion")
+    ], string=_("Fornt Ejection"), default="D"
+    )
+    back_ejection_type = fields.Selection([
+        ("D", "Output hopper"),
+        ("M", "Manual insertion"),
+        ("R", "Reverse insertion"),
+        ("N", "No feeder insertion")
+    ], string=_("Back Ejection"), default="D"
+    )
 
     manually_body_data_duplex = fields.Text(string="Manually Syntax")
     check_manually_data_duplex = fields.Text(string="Check Syntax")
@@ -29,6 +63,12 @@ class CardTemplate(models.Model):
     def get_evolis_string_back(self):
         print_data = ''
         if self.duplex_type == 'noduplex' and self.type == 'card' and self.back_side:
+            if self.back_feeder:
+                if self.back_feeder_type:
+                    print_data += '#x1BPcim;' + self.back_feeder_type + '#x0D\n'
+                if self.back_ejection_type:
+                    print_data += '#x1BPcem;' + self.back_ejection_type + '#x0D\n'
+
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 if headerarray[hindex] == 'Pwr;0':
@@ -71,6 +111,12 @@ class CardTemplate(models.Model):
         if self.type != 'card':
             return super(CardTemplate, self).get_evolis_string()
         if self.duplex_type == 'duplex' and self.type == 'card':
+            if self.front_feeder:
+                if self.front_feeder_type:
+                    print_data += '#x1BPcim;' + self.front_feeder_type + '#x0D\n'
+                if self.front_ejection_type:
+                    print_data += '#x1BPcem;' + self.front_ejection_type + '#x0D\n'
+
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 if headerarray[hindex] == 'Pwr;0':
@@ -101,6 +147,12 @@ class CardTemplate(models.Model):
             })
             print_data += '%s\n' % print_data_dict
 
+            if self.back_feeder:
+                if self.back_feeder_type:
+                    print_data += '#x1BPcim;' + self.back_feeder_type + '#x0D\n'
+                if self.back_ejection_type:
+                    print_data += '#x1BPcem;' + self.back_ejection_type + '#x0D\n'
+
             backarray = self.double_print_back_data.split(',')
             for bindex, i in enumerate(backarray):
                 print_data += '#x1B' + backarray[bindex] + '#x0D\n'
@@ -123,6 +175,12 @@ class CardTemplate(models.Model):
             for findex, j in enumerate(footerarray):
                 print_data += '#x1B' + footerarray[findex] + "#x0D\n"
         else:
+            if self.front_feeder and self.duplex_type != 'normal':
+                if self.front_feeder_type:
+                    print_data += '#x1BPcim;' + self.front_feeder_type + '#x0D\n'
+                if self.front_ejection_type:
+                    print_data += '#x1BPcem;' + self.front_ejection_type + '#x0D\n'
+
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 if headerarray[hindex] == 'Pwr;0':
@@ -168,10 +226,15 @@ class CardTemplate(models.Model):
                 ])
                 print_data = print_data and print_data[0] or ''
             else:
+                if rec.front_feeder and rec.duplex_type != 'normal':
+                    if rec.front_feeder_type:
+                        print_data.append('\x1BPcim;' + rec.front_feeder_type + '\x0D')
+                    if rec.front_ejection_type:
+                        print_data.append('\x1BPcem;' + rec.front_ejection_type + '\x0D')
                 headerarray = rec.header_data.split(',')
                 for hindex, i in enumerate(headerarray):
                     if headerarray[hindex] == 'Pwr;0':
-                        print_data.append('\x1BPwr;' + self.front_rotation + "\x0D")
+                        print_data.append('\x1BPwr;' + rec.front_rotation + "\x0D")
                     else:
                         print_data.append('\x1B' + headerarray[hindex] + "\x0D")
 
@@ -208,6 +271,12 @@ class CardTemplate(models.Model):
                         back_overlay = [literal_eval(rec.back_custom_overlay)[0], literal_eval(rec.back_custom_overlay)[1]]
                     except:
                         raise UserError(_("overlay customer data is not proper. please enter like data [0],[0] "))
+
+                if rec.back_feeder and rec.duplex_type != 'normal':
+                    if rec.back_feeder_type:
+                        print_data += '#x1BPcim;' + rec.back_feeder_type + '#x0D\n'
+                    if rec.back_ejection_type:
+                        print_data += '#x1BPcem;' + rec.back_ejection_type + '#x0D\\n'
 
                 print_evl_back_data_dict = {
                     'type': rec.data_type,
@@ -329,6 +398,12 @@ class CardTemplate(models.Model):
             ])
             print_data = print_data and print_data[0] or ''
         else:
+            if self.back_feeder and self.duplex_type != 'normal':
+                if self.back_feeder_type:
+                    print_data.append('\x1BPcim;' + self.back_feeder_type + '\x0D')
+                if self.back_ejection_type:
+                    print_data.append('\x1BPcem;' + self.back_ejection_type + '\x0D')
+
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 if headerarray[hindex] == 'Pwr;0':
@@ -370,6 +445,12 @@ class CardTemplate(models.Model):
             ])
             print_data = print_data and print_data[0] or ''
         else:
+            if self.front_feeder and self.duplex_type != 'normal':
+                if self.front_feeder_type:
+                    print_data.append('\x1BPcim;' + self.front_feeder_type + '\x0D')
+                if self.front_ejection_type:
+                    print_data.append('\x1BPcem;' + self.front_ejection_type + '\x0D')
+
             headerarray = self.header_data.split(',')
             for hindex, i in enumerate(headerarray):
                 if headerarray[hindex] == 'Pwr;0':
