@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Inceptus ERP Solutions Pvt.ltd.
 # See LICENSE file for copyright and licensing details.
-from odoo import _, models
+from odoo import _, models, fields
 
 
 class ProductCoupon(models.Model):
@@ -11,6 +11,10 @@ class ProductCoupon(models.Model):
 
 class card_template(models.Model):
     _inherit = 'card.template'
+
+    is_exported = fields.Boolean('At export of files')
+    is_send_email = fields.Boolean('Send email with files')
+    is_qz_print = fields.Boolean('Direct qz print')
 
     def get_name(self, value, extension):
         context = dict(self.env.context or {})
