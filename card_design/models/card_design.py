@@ -268,6 +268,18 @@ class CardTemplate(models.Model):
         default=lambda self: self.env.user
     )
     template_size = fields.Many2one('template.size', 'Template Size')
+    front_rotation = fields.Selection([
+        ("0", "0"),
+        ("90", "90"),
+        ("180", "180"),
+        ("270", "270"),
+    ], string=_("Front Rotation"), default="0")
+    back_rotation = fields.Selection([
+        ("0", "0"),
+        ("90", "90"),
+        ("180", "180"),
+        ("270", "270"),
+    ], string=_("Back Rotation"), default="0")
 
     @api.multi
     def change_template_size(self):
@@ -803,10 +815,17 @@ class CardTemplate(models.Model):
         data = str(soup)
         html = HTML(string=data)
         font_config = FontConfiguration()
+        rotation = 0
+        if 'back_side' in svg_file_name:
+            rotation = self.back_rotation and int(self.back_rotation) or 0
+        else:
+            rotation = self.front_rotation and int(self.front_rotation) or 0
         style = '''
-            @page { size: %s %s ; margin: -6px; overflow: hidden !important;}
+            @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
+            size: %s %s ;
+            margin: -6px; overflow: hidden !important;}
             div { overflow: hidden !important; margin-top:-2px;margin-left:-1px;}
-        ''' % (width, height)
+        ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         current_path = export_file_path + '/export_files/'
@@ -907,10 +926,17 @@ class CardTemplate(models.Model):
                 height = str(round(((float(height.replace('px', '')) / 0.393700787) / self.template_size.dpi), 2)) + 'cm'
             except:
                 pass
+        rotation = 0
+        if 'back_side' in svg_file_name:
+            rotation = self.back_rotation and int(self.back_rotation) or 0
+        else:
+            rotation = self.front_rotation and int(self.front_rotation) or 0
         style = '''
-            @page { size: %s %s ; margin: -6px; overflow: hidden !important;}
+            @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
+            size: %s %s ;
+            margin: -6px; overflow: hidden !important;}
             div { overflow: hidden !important; margin-top:-2px;margin-left:-1px;}
-        ''' % (width, height)
+        ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
         current_path = export_file_path + '/export_files/'
         current_date = fields.date.today().strftime('%Y_%m_%d')

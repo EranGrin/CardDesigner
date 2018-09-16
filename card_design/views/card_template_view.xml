@@ -125,10 +125,12 @@
                                 options="{'no_create': True,'no_open': True}" 
                             />
                             <field name="user_id" invisible="1"/>
+                            <field name="front_rotation" />
                         </group>
                         <group>
                             <field name="back_side" />
                             <field name="front_side" invisible="1"/>
+                            <field name="back_rotation" />
                         </group>
                     </group>
                     <notebook>
