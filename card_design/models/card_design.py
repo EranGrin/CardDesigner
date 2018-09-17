@@ -268,8 +268,8 @@ class CardTemplate(models.Model):
         default=lambda self: self.env.user
     )
     template_size = fields.Many2one('template.size', 'Template Size')
-    front_color = fields.Char('Front Background Color')
-    back_color = fields.Char('Back Background Color')
+    # front_color = fields.Char('Front Background Color')
+    # back_color = fields.Char('Back Background Color')
     front_rotation = fields.Selection([
         ("0", "0"),
         ("90", "90"),

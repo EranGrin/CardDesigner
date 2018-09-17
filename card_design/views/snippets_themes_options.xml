@@ -198,6 +198,26 @@
                 </ul>
             </li>
         </div>
+
+        <div data-js='background'
+                data-selector="
+                [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='body_html'] .oe_structure > div">
+            <li class="dropdown-submenu">
+                <a tabindex="-1" href="#"><i class="fa fa-picture-o"/>Background Image</a>
+                <ul class="dropdown-menu">
+                    <li data-background=""><a href="#">None</a></li>
+                    <li class="divider"></li>
+                    <li data-choose_image="choose_image"><a href="#"><b>Set Custom Image...</b></a></li>
+                    <li class="divider"></li>
+                    <li data-background="/card_design/static/src/img/theme_imgs/backgrond_1.jpg"><a href="#">Peak</a></li>
+                    <li data-background="/card_design/static/src/img/theme_imgs/backgrond_2.jpg"><a href="#">Downtown</a></li>
+                    <li data-background="/card_design/static/src/img/theme_imgs/backgrond_3.jpg"><a href="#">Panama Sky</a></li>
+                    <li data-background="/card_design/static/src/img/theme_imgs/backgrond_4.jpg"><a href="#">Cubes</a></li>
+                </ul>
+            </li>
+        </div>
+
     </template>
 
 </odoo>
