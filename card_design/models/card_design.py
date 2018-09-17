@@ -268,6 +268,8 @@ class CardTemplate(models.Model):
         default=lambda self: self.env.user
     )
     template_size = fields.Many2one('template.size', 'Template Size')
+    front_color = fields.Char('Front Background Color')
+    back_color = fields.Char('Back Background Color')
     front_rotation = fields.Selection([
         ("0", "0"),
         ("90", "90"),
@@ -280,6 +282,48 @@ class CardTemplate(models.Model):
         ("180", "180"),
         ("270", "270"),
     ], string=_("Back Rotation"), default="0")
+
+    @api.multi
+    def change_template_background_color(self):
+        for rec in self:
+            if rec.body_html:
+                soup = BeautifulSoup(rec.body_html)
+                for div in soup.findAll("div", {'class': 'o_mail_no_resize o_designer_wrapper_td oe_structure fixed_heightx'}):
+                    if div.get('style', False):
+                        style = div.get('style').split(';')
+                        style_dict = {}
+                        for attr in style:
+                            if len(attr.split(":")) > 1:
+                                attr_list = attr.split(":")
+                                style_dict.update({
+                                    attr_list[0].strip(): attr_list[1].strip()
+                                })
+                            style_dict.update({
+                                'background': rec.front_color or 'white'
+                            })
+                        div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
+                    break
+                rec.body_html = str(soup)
+
+            if rec.back_body_html and rec.back_side:
+                soup = BeautifulSoup(rec.back_body_html)
+                for div in soup.findAll("div", {'class': 'o_mail_no_resize o_designer_wrapper_td oe_structure fixed_heightx'}):
+                    if div.get('style', False):
+                        style = div.get('style').split(';')
+                        style_dict = {}
+                        for attr in style:
+                            if len(attr.split(":")) > 1:
+                                attr_list = attr.split(":")
+                                style_dict.update({
+                                    attr_list[0].strip(): attr_list[1].strip()
+                                })
+                        style_dict.update({
+                            'background': rec.back_color + '!important' or 'white' + '!important'
+                        })
+                        div['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
+                    break
+                rec.back_body_html = str(soup)
+        return True
 
     @api.multi
     def change_template_size(self):
@@ -318,7 +362,7 @@ class CardTemplate(models.Model):
                     break
                 rec.body_html = str(soup)
 
-            if rec.back_body_html and rec.template_size:
+            if rec.back_body_html and rec.template_size and rec.back_side:
                 soup = BeautifulSoup(rec.back_body_html)
                 for div in soup.findAll("div", {'class': 'o_mail_no_resize o_designer_wrapper_td oe_structure fixed_heightx'}):
                     if div.get('style', False):

@@ -25,35 +25,35 @@ class CardTemplate(models.Model):
     front_feeder = fields.Boolean(string="Front Feeder")
     back_feeder = fields.Boolean(string="Back Feeder")
     front_feeder_type = fields.Selection([
-        ("F", "Feeder"),
-        ("N", "No feeder insertion"),
-        ("C", "Manual insertion, only by command Reverse insertion"),
-        ("R", "Reverse insertion"),
-        ("M", "Manual insertion"),
-        ("B", "Dual mode; both feeder and manual")],
-        string=_("Fornt Feeder"), default="F"
+        ("F", "(F) Feeder"),
+        ("N", "(N) No feeder insertion"),
+        ("C", "(C) Manual insertion, only by command Reverse insertion"),
+        ("R", "(R) Reverse insertion"),
+        ("M", "(M) Manual insertion"),
+        ("B", "(B) Dual mode; both feeder and manual")],
+        string=_("Front Feeder"), default="F"
     )
     back_feeder_type = fields.Selection([
-        ("F", "Feeder"),
-        ("N", "No feeder insertion"),
-        ("C", "Manual insertion, only by command Reverse insertion"),
-        ("R", "Reverse insertion"),
-        ("M", "Manual insertion"),
-        ("B", "Dual mode; both feeder and manual")],
+        ("F", "(F) Feeder"),
+        ("N", "(N) No feeder insertion"),
+        ("C", "(C) Manual insertion, only by command Reverse insertion"),
+        ("R", "(R) Reverse insertion"),
+        ("M", "(M) Manual insertion"),
+        ("B", "(B) Dual mode; both feeder and manual")],
         string=_("Back Feeder"), default="F"
     )
     front_ejection_type = fields.Selection([
-        ("D", "Output hopper"),
-        ("M", "Manual insertion"),
-        ("R", "Reverse insertion"),
-        ("N", "No feeder insertion")
-    ], string=_("Fornt Ejection"), default="D"
+        ("D", "(D) Output hopper"),
+        ("M", "(M) Manual insertion"),
+        ("R", "(R) Reverse insertion"),
+        ("N", "(N) No feeder insertion")
+    ], string=_("Front Ejection"), default="D"
     )
     back_ejection_type = fields.Selection([
-        ("D", "Output hopper"),
-        ("M", "Manual insertion"),
-        ("R", "Reverse insertion"),
-        ("N", "No feeder insertion")
+        ("D", "(D) Output hopper"),
+        ("M", "(M) Manual insertion"),
+        ("R", "(R) Reverse insertion"),
+        ("N", "(N) No feeder insertion")
     ], string=_("Back Ejection"), default="D"
     )
 
