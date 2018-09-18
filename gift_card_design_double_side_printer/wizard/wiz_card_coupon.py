@@ -77,7 +77,7 @@ class CardPrintWizard(models.TransientModel):
                         svg_file_name, rec.template_id.back_body_html, '_back_side'
                     )
                 if rec.template_id.print_data_type == 'path':
-                    index, print_data = rec.template_id.create_json_duplex_data('file://' + front_path, 'file://' + back_path)
+                    index, print_data = rec.template_id.create_json_duplex_data(front_path, back_path)
                 else:
                     index, print_data = rec.template_id.create_json_duplex_data(front_base64_datas, back_base64_datas)
                 print_data_dict.update({
@@ -146,7 +146,7 @@ class CardPrintWizard(models.TransientModel):
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )
                 if rec.template_id.print_data_type == 'path':
-                    index, print_data = rec.template_id.create_json_nonduplex_front_data('file://' + front_path)
+                    index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
                 else:
                     index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
                 print_data_dict.update({
@@ -281,7 +281,7 @@ class WizardnondupluexPrint(models.TransientModel):
                     svg_file_name, rec.template_id.body_html, '_front_side'
                 )
             if rec.template_id.print_data_type == 'path':
-                index, print_data = rec.template_id.create_json_nonduplex_front_data('file://' + front_path)
+                index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
             print_data_dict.update({
@@ -342,7 +342,7 @@ class WizardnondupluexPrint(models.TransientModel):
                     svg_file_name, rec.template_id.back_body_html, '_back_side'
                 )
             if rec.template_id.print_data_type == 'path':
-                index, print_data = rec.template_id.create_json_nonduplex_front_data('file://' + front_path)
+                index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
             print_data_dict.update({
