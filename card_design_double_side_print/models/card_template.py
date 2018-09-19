@@ -311,6 +311,7 @@ class CardTemplate(models.Model):
 
     @api.multi
     def qz_double_duplex_print(self):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for rec in self:
             printer = rec.printer_id.printer_id
             printer_config_dict = {
@@ -343,7 +344,7 @@ class CardTemplate(models.Model):
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 back_path, back_data_file, back_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
             if rec.print_data_type == 'path':
-                index, print_data = rec.create_json_duplex_data(front_path, back_path)
+                index, print_data = rec.create_json_duplex_data(URL + front_path, URL + back_path)
             else:
                 index, print_data = rec.create_json_duplex_data(front_base64_datas, back_base64_datas)
             printer_option = rec.get_printer_option()
@@ -363,6 +364,7 @@ class CardTemplate(models.Model):
 
     @api.one
     def get_back_manually_print_data(self, datas):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         print_data = []
         if not self.is_manually:
             raise UserError("Please select the manually print data.")
@@ -373,7 +375,7 @@ class CardTemplate(models.Model):
                         data_dict = literal_eval(data)
                         if self.print_data_type == 'path':
                             data_dict.update({
-                                'data': datas[0].encode("utf-8"),
+                                'data': URL + datas[0].encode("utf-8"),
                             })
                         else:
                             data_dict.update({
@@ -495,6 +497,7 @@ class CardTemplate(models.Model):
 
     @api.multi
     def qz_double_nonduplex_front_print(self):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for rec in self:
             printer = rec.printer_id.printer_id
             printer_config_dict = {
@@ -523,7 +526,7 @@ class CardTemplate(models.Model):
                 front_path, front_data_file, front_base64_datas = rec.render_png(svg_file_name, rec.body_html, '_front_side_')
 
             if rec.print_data_type == 'path':
-                index, print_data = self.create_json_nonduplex_front_data(front_path)
+                index, print_data = self.create_json_nonduplex_front_data(URL + front_path)
             else:
                 index, print_data = self.create_json_nonduplex_front_data(front_base64_datas)
             printer_option = self.get_printer_option()
@@ -543,6 +546,7 @@ class CardTemplate(models.Model):
 
     @api.multi
     def qz_double_nonduplex_back_print(self):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for rec in self:
             printer = rec.printer_id.printer_id
             printer_config_dict = {
@@ -574,7 +578,7 @@ class CardTemplate(models.Model):
                     svg_file_name, rec.back_body_html, '_back_side'
                 )
             if rec.print_data_type == 'path':
-                index, print_data = self.create_json_nonduplex_back_data(back_path)
+                index, print_data = self.create_json_nonduplex_back_data(URL + back_path)
             else:
                 index, print_data = self.create_json_nonduplex_back_data(back_base64_datas)
             printer_option = self.get_printer_option()

@@ -27,6 +27,7 @@ class CardPrintWizard(models.TransientModel):
 
     @api.multi
     def print_douplex(self):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for rec in self:
             if not rec.printer_id:
                 raise UserError(_("Please select the printer"))
@@ -77,7 +78,7 @@ class CardPrintWizard(models.TransientModel):
                         svg_file_name, rec.template_id.back_body_html, '_back_side'
                     )
                 if rec.template_id.print_data_type == 'path':
-                    index, print_data = rec.template_id.create_json_duplex_data(front_path, back_path)
+                    index, print_data = rec.template_id.create_json_duplex_data(URL + front_path, URL + back_path)
                 else:
                     index, print_data = rec.template_id.create_json_duplex_data(front_base64_datas, back_base64_datas)
                 print_data_dict.update({
@@ -104,6 +105,7 @@ class CardPrintWizard(models.TransientModel):
 
     @api.multi
     def print_nondouplex(self):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for rec in self:
             if not rec.printer_id:
                 raise UserError(_("Please select the printer"))
@@ -146,7 +148,7 @@ class CardPrintWizard(models.TransientModel):
                         svg_file_name, rec.template_id.body_html, '_front_side'
                     )
                 if rec.template_id.print_data_type == 'path':
-                    index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
+                    index, print_data = rec.template_id.create_json_nonduplex_front_data(URL + front_path)
                 else:
                     index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
                 print_data_dict.update({
@@ -245,6 +247,7 @@ class WizardnondupluexPrint(models.TransientModel):
 
     @api.multi
     def print_data_front(self):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for rec in self:
             printer = rec.printer_id.printer_id
             printer_config_dict = {
@@ -281,7 +284,7 @@ class WizardnondupluexPrint(models.TransientModel):
                     svg_file_name, rec.template_id.body_html, '_front_side'
                 )
             if rec.template_id.print_data_type == 'path':
-                index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
+                index, print_data = rec.template_id.create_json_nonduplex_front_data(URL + front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
             print_data_dict.update({
@@ -310,6 +313,7 @@ class WizardnondupluexPrint(models.TransientModel):
 
     @api.multi
     def print_data_back(self):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for rec in self:
             printer = rec.printer_id.printer_id
             printer_config_dict = {
@@ -342,7 +346,7 @@ class WizardnondupluexPrint(models.TransientModel):
                     svg_file_name, rec.template_id.back_body_html, '_back_side'
                 )
             if rec.template_id.print_data_type == 'path':
-                index, print_data = rec.template_id.create_json_nonduplex_front_data(front_path)
+                index, print_data = rec.template_id.create_json_nonduplex_front_data(URL + front_path)
             else:
                 index, print_data = rec.template_id.create_json_nonduplex_front_data(front_base64_datas)
             print_data_dict.update({

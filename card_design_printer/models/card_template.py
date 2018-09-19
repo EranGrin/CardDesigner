@@ -84,7 +84,7 @@ class CardTemplate(models.Model):
     data_format = fields.Selection([
         ("pdf", "PDF"),
         ("image", "IMAGE")],
-        string=_("Data Format"), default="pdf"
+        string=_("Data Format"), default="image"
     )
     epl_x = fields.Integer(
         string=_("X (EPL Option)"), default=0
@@ -297,7 +297,7 @@ class CardTemplate(models.Model):
                             data_dict = literal_eval(data)
                             if self.print_data_type == 'path':
                                 data_dict.update({
-                                    'data': datas[0].encode("utf-8"),
+                                    'data': URL + datas[0].encode("utf-8"),
                                 })
                             else:
                                 data_dict.update({
@@ -313,7 +313,7 @@ class CardTemplate(models.Model):
                             data_dict = literal_eval(data)
                             if self.print_data_type == 'path':
                                 data_dict.update({
-                                    'data': datas[0].encode("utf-8"),
+                                    'data': URL + datas[0].encode("utf-8"),
                                 })
                             else:
                                 data_dict.update({
@@ -345,6 +345,7 @@ class CardTemplate(models.Model):
         return print_data_dict
 
     def create_json_print_data(self, datas=[]):
+        URL = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         print_data_dict = {}
         index = 0
         for index, data in enumerate(datas):
@@ -370,7 +371,7 @@ class CardTemplate(models.Model):
                         }
                         if self.print_data_type == 'path':
                             print_epl_data_dict.update({
-                                'data': data[0]
+                                'data': URL + data[0]
                             })
                         else:
                             print_epl_data_dict.update({
@@ -403,7 +404,7 @@ class CardTemplate(models.Model):
                         }
                         if self.print_data_type == 'path':
                             print_zpl_data_dict.update({
-                                'data': data[0]
+                                'data': URL + data[0]
                             })
                         else:
                             print_zpl_data_dict.update({
@@ -467,7 +468,7 @@ class CardTemplate(models.Model):
                     }
                     if self.print_data_type == 'path':
                         print_evl_data_dict.update({
-                            'data': data[0]
+                            'data': URL + data[0]
                         })
                     else:
                         print_evl_data_dict.update({
