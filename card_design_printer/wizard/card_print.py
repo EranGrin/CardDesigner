@@ -131,6 +131,14 @@ class CardPrintWizard(models.TransientModel):
                 "context": self.env.context,
                 "printer_option": printer_option,
             }
+
+            context = dict(self.env.context or {})
+            for rec in self.env[context.get('active_model')].browse(context.get('active_ids')):
+                if self.template_id and self.template_id.is_printed:
+                    query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                        self.env[context.get('active_model')]._table, rec.id
+                    )
+                    self.env.cr.execute(query)
             return action
 
     def get_action_type(self):

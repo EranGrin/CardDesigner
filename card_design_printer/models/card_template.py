@@ -92,7 +92,7 @@ class CardTemplate(models.Model):
     epl_y = fields.Integer(
         string=_("Y (EPL Option)"), default=0
     )
-    is_mag_strip = fields.Boolean("Enable  Magnetic Stripe")
+    is_mag_strip = fields.Boolean("Enable Magnetic Stripe")
     mag_strip_track1 = fields.Char("Track1", size=79, index=True, help="Alpha (ASCII Range 20-95) len: 79)")
     mag_strip_track2 = fields.Char("Track2", size=40, help="Numeric Len 40")
     mag_strip_track3 = fields.Char("Track3", size=107, help="Numeric Len 107")
@@ -103,6 +103,7 @@ class CardTemplate(models.Model):
     is_manually = fields.Boolean(string="Manually Syntax")
     manually_body_data = fields.Text(string="Manually Syntax")
     check_manually_data = fields.Text(string="Check Syntax")
+    is_printed = fields.Boolean('Printed')
 
     @api.multi
     def create_action(self):

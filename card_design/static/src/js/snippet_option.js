@@ -582,6 +582,176 @@ odoo.define('card_design.snippets.options', function (require) {
         },
     });
 
+    registry.background_position_card = options.Class.extend({
+        start: function () {
+            this._super.apply(this, arguments);
+            this.on_focus();
+            var self = this;
+            this.$target.on("snippet-option-change", function () {
+                self.on_focus();
+            });
+        },
+        on_focus: function () {
+            this._super.apply(this, arguments);
+            this.$el.toggleClass('hidden', this.$target.css('background-image') === 'none');
+        },
+        background_position: function (type, value, $li) {
+            if (type != 'click') { return; }
+            var self = this;
+
+            this.previous_state = [this.$target.attr('class'), this.$target.css('background-size'), this.$target.css('background-position')];
+
+            this.bg_pos = self.$target.css('background-position').split(' ');
+            this.bg_siz = self.$target.css('background-size').split(' ');
+
+            this.modal = new Dialog(null, {
+                title: _t("Background Image Sizing"),
+                $content: $(qweb.render('web_editor.dialog.background_position')),
+                buttons: [
+                    {text: _t("Ok"), classes: "btn-primary", close: true, click: _.bind(this.save, this)},
+                    {text: _t("Discard"), close: true, click: _.bind(this.discard, this)},
+                ],
+            }).open();
+
+            this.modal.opened().then(function () {
+                // Fetch data form $target
+                var value = ((self.$target.hasClass('o_bg_img_opt_contain'))? 'contain' : ((self.$target.hasClass('o_bg_img_opt_custom'))? 'custom' : 'cover'));
+                self.modal.$("> label > input[value=" + value + "]").prop('checked', true);
+
+                if(self.$target.hasClass("o_bg_img_opt_repeat")) {
+                    self.modal.$("#o_bg_img_opt_contain_repeat").prop('checked', true);
+                    self.modal.$("#o_bg_img_opt_custom_repeat").val('o_bg_img_opt_repeat');
+                } else if (self.$target.hasClass("o_bg_img_opt_repeat_x")) {
+                    self.modal.$("#o_bg_img_opt_custom_repeat").val('o_bg_img_opt_repeat_x');
+                } else if (self.$target.hasClass("o_bg_img_opt_repeat_y")) {
+                    self.modal.$("#o_bg_img_opt_custom_repeat").val('o_bg_img_opt_repeat_y');
+                }
+
+                if(self.bg_pos.length > 1) {
+                    self.bg_pos = {
+                        x: self.bg_pos[0],
+                        y: self.bg_pos[1],
+                    };
+                    self.modal.$("#o_bg_img_opt_custom_pos_x").val(self.bg_pos.x.replace('%', ''));
+                    self.modal.$("#o_bg_img_opt_custom_pos_y").val(self.bg_pos.y.replace('%', ''));
+                }
+                if(self.bg_siz.length > 1) {
+                    self.modal.$("#o_bg_img_opt_custom_size_x").val(self.bg_siz[0].replace('%', ''));
+                    self.modal.$("#o_bg_img_opt_custom_size_y").val(self.bg_siz[1].replace('%', ''));
+                }
+
+                // Focus Point
+                self.$focus  = self.modal.$(".o_focus_point");
+                self.update_pos_information();
+
+                var img_url = /\(['"]?([^'"]+)['"]?\)/g.exec(self.$target.css('background-image'));
+                img_url = (img_url && img_url[1]) || '';
+                var $img = $('<img/>', {'class': 'img img-responsive', src: img_url});
+                $img.on('load', function () {
+                    self.bind_img_events($img);
+                });
+                $img.prependTo(self.modal.$(".o_bg_img_opt_object"));
+
+                // Bind events
+                self.modal.$el.on('change', '> label > input', function (e) {
+                    self.modal.$('> .o_bg_img_opt').addClass('o_hidden')
+                                                   .filter("[data-value=" + e.target.value + "]")
+                                                   .removeClass('o_hidden');
+                });
+                self.modal.$el.on('change', 'input, select', function (e) {
+                    self.save();
+                });
+                self.modal.$("> label > input:checked").trigger('change');
+            });
+        },
+        bind_img_events: function ($img) {
+            var self = this;
+
+            var mousedown = false;
+            $img.on('mousedown', function (e) {
+                mousedown = true;
+            });
+            $img.on('mousemove', function (e) {
+                if (mousedown) {
+                    _update(e);
+                }
+            });
+            $img.on('mouseup', function (e) {
+                self.$focus.addClass('o_with_transition');
+                _update(e);
+                setTimeout(function () {
+                    self.$focus.removeClass('o_with_transition');
+                }, 200);
+                mousedown = false;
+            });
+
+            function _update(e) {
+                var posX = e.pageX - $(e.target).offset().left;
+                var posY = e.pageY - $(e.target).offset().top;
+                self.bg_pos = {
+                    x: clip_value(posX/$img.width()*100).toFixed(2) + '%',
+                    y: clip_value(posY/$img.height()*100).toFixed(2) + '%',
+                };
+                self.update_pos_information();
+                self.save();
+            }
+
+            function clip_value(value) {
+                return Math.max(0, Math.min(value, 100));
+            }
+        },
+        update_pos_information: function () {
+            this.modal.$(".o_bg_img_opt_ui_info .o_x").text(this.bg_pos.x);
+            this.modal.$(".o_bg_img_opt_ui_info .o_y").text(this.bg_pos.y);
+            this.$focus.css({
+                left: this.bg_pos.x,
+                top: this.bg_pos.y,
+            });
+        },
+        save: function () {
+            this.clean();
+
+            var bg_img_size = this.modal.$('> :not(label):not(.o_hidden)').data('value') || 'cover';
+            switch (bg_img_size) {
+                case "cover":
+                    this.$target.css('background-position', this.bg_pos.x + ' ' + this.bg_pos.y);
+                    break;
+                case "contain":
+                    this.$target.addClass('o_bg_img_opt_contain');
+                    this.$target.toggleClass('o_bg_img_opt_repeat', this.modal.$("#o_bg_img_opt_contain_repeat").prop("checked"));
+                    break;
+                case "custom":
+                    this.$target.addClass('o_bg_img_opt_custom');
+                    var sizeX = this.modal.$("#o_bg_img_opt_custom_size_x").val();
+                    var sizeY = this.modal.$("#o_bg_img_opt_custom_size_y").val();
+                    var posX = this.modal.$("#o_bg_img_opt_custom_pos_x").val();
+                    var posY = this.modal.$("#o_bg_img_opt_custom_pos_y").val();
+                    this.$target.addClass(this.modal.$("#o_bg_img_opt_custom_repeat").val())
+                                .css({
+                                    'background-size': ((sizeX)? sizeX + '%' : 'auto') + " " + ((sizeY)? sizeY + '%' : 'auto'),
+                                    'background-position': ((posX)? posX + '%' : 'auto') + " " + ((posY)? posY + '%' : 'auto'),
+                                });
+                    break;
+            }
+        },
+        discard: function () {
+            this.clean();
+            if (this.previous_state) {
+                this.$target.addClass(this.previous_state[0]).css({
+                    'background-size': this.previous_state[1],
+                    'background-position': this.previous_state[2],
+                });
+            }
+        },
+        clean: function () {
+            this.$target.removeClass('o_bg_img_opt_contain o_bg_img_opt_custom o_bg_img_opt_repeat o_bg_img_opt_repeat_x o_bg_img_opt_repeat_y')
+                        .css({
+                            'background-size': '',
+                            'background-position': '',
+                        });
+        },
+    });
+
     return {
         registry: registry,
     };

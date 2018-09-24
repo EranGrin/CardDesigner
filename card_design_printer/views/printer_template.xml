@@ -18,6 +18,7 @@
             <field name="export_ref_ir_value_id" position="after">
                 <field name="print_ref_ir_act_window_id" readonly="1"/>
                 <field name="print_ref_ir_value_id" readonly="1"/>
+                <field name="is_printed" />
             </field>
             <xpath expr="//notebook" position="before">
                 <group>

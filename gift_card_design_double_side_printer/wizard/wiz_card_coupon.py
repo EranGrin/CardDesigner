@@ -101,6 +101,13 @@ class CardPrintWizard(models.TransientModel):
                 "printer_config_dict": printer_config_dict,
                 "context": self.env.context,
             }
+            context = dict(self.env.context or {})
+            for rec in self.env[context.get('active_model')].browse(context.get('active_ids')):
+                if self.template_id and self.template_id.is_printed:
+                    query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                        self.env[context.get('active_model')]._table, rec.id
+                    )
+                    self.env.cr.execute(query)
             return action
 
     @api.multi
@@ -175,6 +182,13 @@ class CardPrintWizard(models.TransientModel):
                 "context": dict_context,
                 "printer_option": printer_option,
             }
+            context = dict(self.env.context or {})
+            for rec in self.env[context.get('active_model')].browse(context.get('active_ids')):
+                if self.template_id and self.template_id.is_printed:
+                    query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                        self.env[context.get('active_model')]._table, rec.id
+                    )
+                    self.env.cr.execute(query)
             return action
 
     @api.multi
@@ -193,6 +207,13 @@ class CardPrintWizard(models.TransientModel):
                 'default_coupon_id': coupon.id,
                 'default_printer_id': self.printer_id.id,
             })
+            cxt = dict(self.env.context or {})
+            for rec in self.env[cxt.get('active_model')].browse(cxt.get('active_ids')):
+                if self.template_id and self.template_id.is_printed:
+                    query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                        self.env[cxt.get('active_model')]._table, rec.id
+                    )
+                    self.env.cr.execute(query)
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'wizard.non.duplex.print',

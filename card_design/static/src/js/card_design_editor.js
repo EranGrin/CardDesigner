@@ -374,7 +374,10 @@ snippets_editor.Editor.include({
         this.load_style_options();
 
         // Initialize move/clone/remove buttons
-        if (!this.$target.parent().is(':o_editable')) {
+        if (this.$target.hasClass('fixed_heightx')) {
+            this.$overlay.find('.oe_snippet_remove, .oe_snippet_more_style').remove();
+        }
+        else if (!this.$target.parent().is(':o_editable')) {
             this.$overlay.find('.oe_snippet_move, .oe_snippet_clone, .oe_snippet_remove, .oe_snippet_more_style').remove();
         } else {
             this.$overlay.on('click', '.oe_snippet_clone', _.bind(this.on_clone, this));
@@ -445,7 +448,7 @@ odoo_top[callback+"_updown"] = function (value, fields_values, field_name) {
 options.registry.background.include({
     start: function() {
         this._super();
-        var $table_target = this.$target.find('table:first');
+        var $table_target = this.$target;
         if ($table_target) {
             this.$target = $table_target;
         }

@@ -285,6 +285,9 @@ class CardTemplate(models.Model):
         ("180", "180"),
         ("270", "270"),
     ], string=_("Back Rotation"), default="0")
+    is_sent_email = fields.Boolean('Send BY Email')
+    is_exported = fields.Boolean('Exported')
+    printed = fields.Boolean('Exported')
 
     @api.multi
     def change_template_background_color(self):
@@ -1309,3 +1312,5 @@ class Card(models.Model):
 class respartner(models.Model):
     _inherit = 'res.partner'
     _card_designer = _('Partner')
+
+    printer = fields.Boolean('Printed')

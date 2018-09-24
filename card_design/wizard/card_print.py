@@ -190,6 +190,18 @@ class CardPrintWizard(models.TransientModel):
                 })
                 attachment_list = []
                 attachment_list.append(attachment.id)
+        context = dict(self.env.context or {})
+        for rec in self.env[context.get('active_model')].browse(context.get('active_ids')):
+            if self.template_id and self.template_id.is_exported:
+                query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                    self.env[context.get('active_model')]._table, rec.id
+                )
+                self.env.cr.execute(query)
+            if self.template_id and self.template_id.is_sent_email:
+                query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                    self._table, rec.id
+                )
+                self.env.cr.execute(query)
         for attachment in attachment_list:
             actions.append({
                 'type': 'ir.actions.act_url',
@@ -279,6 +291,18 @@ class CardPrintWizard(models.TransientModel):
                 })
                 attachment_list = []
                 attachment_list.append(attachment.id)
+        context = dict(self.env.context or {})
+        for rec in self.env[context.get('active_model')].browse(context.get('active_ids')):
+            if self.template_id and self.template_id.is_exported:
+                query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                    self.env[context.get('active_model')]._table, rec.id
+                )
+                self.env.cr.execute(query)
+            if self.template_id and self.template_id.is_sent_email:
+                query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                    self._table, rec.id
+                )
+                self.env.cr.execute(query)
         for attachment in attachment_list:
             actions.append({
                 'type': 'ir.actions.act_url',
@@ -434,6 +458,18 @@ class CardPrintWizard(models.TransientModel):
             'datas_fname': str(sequence) + '_card_template.csv',
         })
         template.attachment_ids = [(6, 0, [attachment.id, csv_attachment.id])]
+        context = dict(self.env.context or {})
+        for rec in self.env[context.get('active_model')].browse(context.get('active_ids')):
+            if self.template_id and self.template_id.is_exported:
+                query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                    self.env[context.get('active_model')]._table, rec.id
+                )
+                self.env.cr.execute(query)
+            if self.template_id and self.template_id.is_sent_email:
+                query = """UPDATE %s SET printed=true WHERE id = %s""" % (
+                    self._table, rec.id
+                )
+                self.env.cr.execute(query)
         ctx = dict()
         ctx.update({
             'default_model': 'card.template',

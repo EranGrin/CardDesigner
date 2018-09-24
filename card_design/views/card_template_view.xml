@@ -146,6 +146,9 @@
                                 <field name="email_ref_ir_value_id" readonly="1"/>
                                 <field name="export_ref_ir_act_window_id" readonly="1"/>
                                 <field name="export_ref_ir_value_id" readonly="1"/>
+                                <field name="is_sent_email" />
+                                <field name="is_exported" />
+                                <field name="printed" invisible="1"/>
                             </group>
                         </page>
                         <page string="Template Design">
@@ -259,8 +262,8 @@
         <field name="arch" type="xml">
             <tree string="Size" editable="top">
                 <field name="name" required="1"/>
-                <field name="width" required="1"/>
-                <field name="height" required="1"/>
+                <field name="width" required="1" />
+                <field name="height" required="1" />
                 <field name="size_unit" required="1"/>
                 <field name="dpi" required="1"/>
                 <field name="size_width_px" invisible="1"/>
