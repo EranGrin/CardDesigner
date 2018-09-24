@@ -215,7 +215,7 @@ class CardTemplate(models.Model):
                 print_data += '#x1B' + footerarray[findex] + "#x0D\n"
         return print_data
 
-    def create_json_duplex_data(self, front_side_data, back_side_data):
+    def create_json_duplex_data(self, front_side_data, back_side_data, mag_strip=False):
         print_data_dict = {}
         index = 0
         for index, rec in enumerate(self):
@@ -240,11 +240,20 @@ class CardTemplate(models.Model):
 
                 if rec.is_mag_strip:
                     if rec.mag_strip_track1:
-                        print_data += '#x1BDm;1;' + str(rec.mag_strip_track1) + '#x0D\n'
+                        if '{' in rec.mag_strip_track1 and mag_strip:
+                            print_data += '#x1BDm;1;' + str(mag_strip) + '#x0D\n'
+                        else:
+                            print_data += '#x1BDm;1;' + str(rec.mag_strip_track1) + '#x0D\n'
                     if rec.mag_strip_track2:
-                        print_data += '#x1BDm;2;' + str(rec.mag_strip_track2) + '#x0D\n'
+                        if '{' in rec.mag_strip_track2 and mag_strip:
+                            print_data += '#x1BDm;2;' + str(mag_strip) + '#x0D\n'
+                        else:
+                            print_data += '#x1BDm;2;' + str(rec.mag_strip_track2) + '#x0D\n'
                     if rec.mag_strip_track3:
-                        print_data += '#x1BDm;3;' + str(rec.mag_strip_track3) + '#x0D\n'
+                        if '{' in rec.mag_strip_track3 and mag_strip:
+                            print_data += '#x1BDm;3;' + str(mag_strip) + '#x0D\n'
+                        else:
+                            print_data += '#x1BDm;3;' + str(rec.mag_strip_track3) + '#x0D\n'
                     if rec.mag_strip_track1 or rec.mag_strip_track2 or rec.mag_strip_track3:
                         print_data += '#x1B' + 'smw' + '#x0D\n'
                 overlay = True
@@ -344,9 +353,9 @@ class CardTemplate(models.Model):
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 back_path, back_data_file, back_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
             if rec.print_data_type == 'path':
-                index, print_data = rec.create_json_duplex_data(URL + front_path, URL + back_path)
+                index, print_data = rec.create_json_duplex_data(URL + front_path, URL + back_path, '')
             else:
-                index, print_data = rec.create_json_duplex_data(front_base64_datas, back_base64_datas)
+                index, print_data = rec.create_json_duplex_data(front_base64_datas, back_base64_datas, '')
             printer_option = rec.get_printer_option()
             action = {
                 "type": "ir.actions.multi.printduplex",
@@ -438,7 +447,7 @@ class CardTemplate(models.Model):
 
         return index, print_data
 
-    def create_json_nonduplex_front_data(self, side_data):
+    def create_json_nonduplex_front_data(self, side_data, mag_strip=False):
         index = 0
         print_data = []
         if self.is_manually:
@@ -462,11 +471,21 @@ class CardTemplate(models.Model):
 
             if self.is_mag_strip:
                 if self.mag_strip_track1:
-                    print_data.append('\x1BDm;1;' + str(self.mag_strip_track1) + '\x0D')
+                    if mag_strip and '{' in self.mag_strip_track1:
+                        print_data.append('\x1BDm;1;' + str(mag_strip) + '\x0D')
+                    else:
+                        print_data.append('\x1BDm;1;' + str(self.mag_strip_track1) + '\x0D')
                 if self.mag_strip_track2:
-                    print_data.append('\x1BDm;2;' + str(self.mag_strip_track2) + '\x0D')
+                    if mag_strip and '{' in self.mag_strip_track2:
+                        print_data.append('\x1BDm;2;' + str(mag_strip) + '\x0D')
+                    else:
+                        print_data.append('\x1BDm;2;' + str(self.mag_strip_track2) + '\x0D')
                 if self.mag_strip_track3:
-                    print_data.append('\x1BDm;3;' + str(self.mag_strip_track3) + '\x0D')
+                    if mag_strip and '{' in self.mag_strip_track3:
+                        print_data.append('\x1BDm;3;' + str(mag_strip) + '\x0D')
+                    else:
+                        print_data.append('\x1BDm;3;' + str(self.mag_strip_track3) + '\x0D')
+
                 if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
                     print_data.append('\x1Bsmw\x0D')
 

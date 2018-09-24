@@ -106,6 +106,13 @@ class CardTemplate(models.Model):
     is_printed = fields.Boolean('Printed')
 
     @api.multi
+    def unlink_action(self):
+        res = super(CardTemplate, self).unlink_action()
+        self.mapped('print_ref_ir_act_window_id').sudo().unlink()
+        self.mapped('print_ref_ir_value_id').sudo().unlink()
+        return res
+
+    @api.multi
     def create_action(self):
         res = super(CardTemplate, self).create_action()
         vals = {}
@@ -324,6 +331,12 @@ class CardTemplate(models.Model):
                         else:
                             print_data.append(literal_eval(data))
                     except:
+                        if 'Dm;1;' in data and len(datas) == 3:
+                            data = '#x1BDm;1;' + str(datas[2]) + '#x0D'
+                        if 'Dm;2;' in data and len(datas) == 3:
+                            data = '#x1BDm;2;' + str(datas[2]) + '#x0D'
+                        if 'Dm;3;' in data and len(datas) == 3:
+                            data = '#x1BDm;3;' + str(datas[2]) + '#x0D'
                         if data:
                             print_data.append(data.replace("#x1B", "\x1B").replace("#x0D", "\x0D").encode("utf-8"))
         except:
@@ -436,11 +449,20 @@ class CardTemplate(models.Model):
                             print_data.append('\x1B' + headerarray[hindex] + "\x0D")
                     if self.is_mag_strip and context.get('front_side', False):
                         if self.mag_strip_track1:
-                            print_data.append('\x1BDm;1;' + str(self.mag_strip_track1) + '\x0D')
+                            if '{' in self.mag_strip_track1 and len(data) == 3:
+                                print_data.append('\x1BDm;1;' + str(data[2]) + '\x0D')
+                            else:
+                                print_data.append('\x1BDm;1;' + str(self.mag_strip_track1) + '\x0D')
                         if self.mag_strip_track2:
-                            print_data.append('\x1BDm;2;' + str(self.mag_strip_track2) + '\x0D')
+                            if '{' in self.mag_strip_track2 and len(data) == 3:
+                                print_data.append('\x1BDm;2;' + str(data[2]) + '\x0D')
+                            else:
+                                print_data.append('\x1BDm;2;' + str(self.mag_strip_track2) + '\x0D')
                         if self.mag_strip_track3:
-                            print_data.append('\x1BDm;3;' + str(self.mag_strip_track3) + '\x0D')
+                            if '{' in self.mag_strip_track3 and len(data) == 3:
+                                print_data.append('\x1BDm;3;' + str(data[2]) + '\x0D')
+                            else:
+                                print_data.append('\x1BDm;3;' + str(self.mag_strip_track3) + '\x0D')
                         if self.mag_strip_track1 or self.mag_strip_track2 or self.mag_strip_track3:
                             print_data.append('\x1B' + 'smw' + '\x0D')
 

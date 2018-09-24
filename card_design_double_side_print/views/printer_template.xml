@@ -14,14 +14,12 @@
         <field name="arch" type="xml">
             <button name="qz_print_front_side" position="attributes">
                 <attribute name="attrs">{
-                    'invisible': ['|', ('enable_printer', '=', False), ('type', '=', 
-                    'card'), ('duplex_type', '!=', 'normal')],
+                    'invisible': ['|', ('enable_printer', '=', False), ('duplex_type', '!=', 'normal')],
                 }</attribute>
             </button>
             <button name="qz_print_back_side" position="attributes">
                 <attribute name="attrs">{
-                    'invisible': ['|', ('enable_printer', '=', False), ('type', '=', 
-                    'card'), ('duplex_type', '!=', 'normal')],
+                    'invisible': ['|', ('enable_printer', '=', False), ('duplex_type', '!=', 'normal')],
                 }</attribute>
             </button>
              <field name="print_data_type" position="after">
