@@ -15,6 +15,7 @@ from os.path import basename
 import cssutils
 import logging
 import base64
+import tempfile
 from weasyprint import HTML, CSS
 from weasyprint.fonts import FontConfiguration
 from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
@@ -838,6 +839,65 @@ class CardTemplate(models.Model):
                 width = style_dict.get('width').strip()
             if style_dict.get('transform', False):
                 del style_dict['transform']
+            attchment_image = False
+            attchment_image_url = False
+            is_background = False
+            is_background_image = False
+            if style_dict.get('background', False):
+                if 'url' in style_dict.get('background', False):
+                    is_background = True
+                    if '/web/image/' in style_dict.get('background', False):
+                        attchment_image_url = style_dict.get('background', False)
+                    else:
+                        attchment_image = style_dict.get('background', False)
+            if style_dict.get('background-image', False):
+                if 'url' in style_dict.get('background-image', False):
+                    is_background_image = True
+                    if '/web/image/' in style_dict.get('background-image', False):
+                        attchment_image_url = style_dict.get('background-image', False)
+                    else:
+                        attchment_image = style_dict.get('background-image', False)
+            if attchment_image_url:
+                attach_id = attchment_image_url.split('(')[1].split(')')[0].split('/')[-1]
+                brow_obj = self.env['ir.attachment'].browse(int(attach_id))
+                img_datas = brow_obj.datas
+                tmp_dir = tempfile.mkdtemp()
+                name = tmp_dir + '/' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.' + brow_obj.mimetype.split('/')[1]
+                fh = open(name, "wb")
+                fh.write(img_datas.decode('base64'))
+                fh.close()
+                image_file = open(name, "rb")
+                encoded_string = base64.b64encode(image_file.read())
+                data_replace = 'url(' + attchment_image_url.split('(')[1].split(')')[0] + ')'
+                image_path = attchment_image_url.replace(
+                    data_replace, 'url(data:image/png;base64,' + encoded_string + ')'
+                )
+                if is_background:
+                    style_dict.update({
+                        'background': image_path
+                    })
+                elif is_background_image:
+                    style_dict.update({
+                        'background-image': image_path
+                    })
+            elif attchment_image:
+                current_path = os.path.dirname((os.path.abspath(__file__))).split('/card_design/')[0]
+                image_path = os.path.abspath(attchment_image.split('(')[1].split(')')[0])
+                full_path = current_path + image_path
+                image_file = open(full_path, "rb")
+                encoded_string = base64.b64encode(image_file.read())
+                data_replace = 'url(' + attchment_image.split('(')[1].split(')')[0] + ')'
+                image_path = attchment_image.replace(
+                    data_replace, 'url(data:image/png;base64,' + encoded_string + ')'
+                )
+                if is_background:
+                    style_dict.update({
+                        'background': image_path
+                    })
+                elif is_background_image:
+                    style_dict.update({
+                        'background-image': image_path
+                    })
             attr_div[0]['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
         for img in soup.findAll('img'):
@@ -862,6 +922,7 @@ class CardTemplate(models.Model):
                 image_file = open(full_path, "rb")
                 encoded_string = base64.b64encode(image_file.read())
                 img['src'] = 'data:image/png;base64,' + encoded_string
+                img['style'] = 'width:%spx' % img.get('width')
             if not is_svg:
                 image_data = re.sub('^data:image/.+;base64,', '', img['src']).decode('base64')
                 im = Image.open(cStringIO.StringIO(image_data))
@@ -880,8 +941,8 @@ class CardTemplate(models.Model):
         style = '''
             @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
             size: %s %s ;
-            margin: -6px; overflow: hidden !important;}
-            div { overflow: hidden !important; margin-top:-2px;margin-left:-1px;}
+            margin: -6px; }
+            div { margin-top:0px;margin-left:0px;}
         ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
@@ -946,6 +1007,65 @@ class CardTemplate(models.Model):
                 width = style_dict.get('width').strip()
             if style_dict.get('transform', False):
                 del style_dict['transform']
+            attchment_image = False
+            attchment_image_url = False
+            is_background = False
+            is_background_image = False
+            if style_dict.get('background', False):
+                if 'url' in style_dict.get('background', False):
+                    is_background = True
+                    if '/web/image/' in style_dict.get('background', False):
+                        attchment_image_url = style_dict.get('background', False)
+                    else:
+                        attchment_image = style_dict.get('background', False)
+            if style_dict.get('background-image', False):
+                if 'url' in style_dict.get('background-image', False):
+                    is_background_image = True
+                    if '/web/image/' in style_dict.get('background-image', False):
+                        attchment_image_url = style_dict.get('background-image', False)
+                    else:
+                        attchment_image = style_dict.get('background-image', False)
+            if attchment_image_url:
+                attach_id = attchment_image_url.split('(')[1].split(')')[0].split('/')[-1]
+                brow_obj = self.env['ir.attachment'].browse(int(attach_id))
+                img_datas = brow_obj.datas
+                tmp_dir = tempfile.mkdtemp()
+                name = tmp_dir + '/' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.' + brow_obj.mimetype.split('/')[1]
+                fh = open(name, "wb")
+                fh.write(img_datas.decode('base64'))
+                fh.close()
+                image_file = open(name, "rb")
+                encoded_string = base64.b64encode(image_file.read())
+                data_replace = 'url(' + attchment_image_url.split('(')[1].split(')')[0] + ')'
+                image_path = attchment_image_url.replace(
+                    data_replace, 'url(data:image/png;base64,' + encoded_string + ')'
+                )
+                if is_background:
+                    style_dict.update({
+                        'background': image_path
+                    })
+                elif is_background_image:
+                    style_dict.update({
+                        'background-image': image_path
+                    })
+            elif attchment_image:
+                current_path = os.path.dirname((os.path.abspath(__file__))).split('/card_design/')[0]
+                image_path = os.path.abspath(attchment_image.split('(')[1].split(')')[0])
+                full_path = current_path + image_path
+                image_file = open(full_path, "rb")
+                encoded_string = base64.b64encode(image_file.read())
+                data_replace = 'url(' + attchment_image.split('(')[1].split(')')[0] + ')'
+                image_path = attchment_image.replace(
+                    data_replace, 'url(data:image/png;base64,' + encoded_string + ')'
+                )
+                if is_background:
+                    style_dict.update({
+                        'background': image_path
+                    })
+                elif is_background_image:
+                    style_dict.update({
+                        'background-image': image_path
+                    })
             attr_div[0]['style'] = " ".join(("{}:{};".format(*i) for i in style_dict.items()))
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower() + '_'
         for img in soup.findAll('img'):
@@ -970,6 +1090,7 @@ class CardTemplate(models.Model):
                 image_file = open(full_path, "rb")
                 encoded_string = base64.b64encode(image_file.read())
                 img['src'] = 'data:image/png;base64,' + encoded_string
+                img['style'] = 'width:%spx' % img.get('width')
             if not is_svg:
                 image_data = re.sub('^data:image/.+;base64,', '', img['src']).decode('base64')
                 im = Image.open(cStringIO.StringIO(image_data))
@@ -994,8 +1115,8 @@ class CardTemplate(models.Model):
         style = '''
             @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
             size: %s %s ;
-            margin: -6px; overflow: hidden !important;}
-            div { overflow: hidden !important; margin-top:-2px;margin-left:-1px;}
+            margin: -6px; }
+            div { margin-top:0px;margin-left:0px;}
         ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
         current_path = os.path.join(os.path.dirname(
