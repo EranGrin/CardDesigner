@@ -1433,4 +1433,4 @@ class respartner(models.Model):
     _inherit = 'res.partner'
     _card_designer = _('Partner')
 
-    printer = fields.Boolean('Printed')
+    printed = fields.Boolean('Printed')
