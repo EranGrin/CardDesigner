@@ -6,18 +6,18 @@ from odoo.http import request
 from odoo.addons.web_editor.controllers.main import Web_Editor
 
 
-class AccessFileByURL(http.Controller):
+# class AccessFileByURL(http.Controller):
 
-    @http.route('/exported-files/<path:path>', type='http', auth='none', methods=['GET'])
-    def get_file_data(self, path):
-        """Get file from Server using given path"""
-        try:
-            if not path.startswith('/'):
-                path = '/' + path
-            response = http.send_file(path)
-            return response
-        except:
-            return request.not_found()
+#     @http.route('/exported-files/<path:path>', type='http', auth='none', methods=['GET'])
+#     def get_file_data(self, path):
+#         """Get file from Server using given path"""
+#         try:
+#             if not path.startswith('/'):
+#                 path = '/' + path
+#             response = http.send_file(path)
+#             return response
+#         except:
+#             return request.not_found()
 
 
 class Web_Editor(Web_Editor):

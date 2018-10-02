@@ -15,6 +15,7 @@
         'web_kanban_gauge',
         'base_setup',
         'report',
+        'exported_files',
     ],
     'external_dependencies': {
         'python': [

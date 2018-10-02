@@ -353,7 +353,7 @@ class CardTemplate(models.Model):
                 svg_file_name = current_obj_name + 'back_side_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + '.png'
                 back_path, back_data_file, back_base64_datas = rec.render_png(svg_file_name, rec.back_body_html, '_back_side')
             if rec.print_data_type == 'path':
-                index, print_data = rec.create_json_duplex_data(URL + '/exported-files' + front_path, URL + '/exported-files' + back_path, '')
+                index, print_data = rec.create_json_duplex_data(URL + front_path, URL + back_path, '')
             else:
                 index, print_data = rec.create_json_duplex_data(front_base64_datas, back_base64_datas, '')
             printer_option = rec.get_printer_option()
@@ -384,7 +384,7 @@ class CardTemplate(models.Model):
                         data_dict = literal_eval(data)
                         if self.print_data_type == 'path':
                             data_dict.update({
-                                'data': URL + '/exported-files' + datas[0].encode("utf-8"),
+                                'data': URL + datas[0].encode("utf-8"),
                             })
                         else:
                             data_dict.update({
@@ -597,7 +597,7 @@ class CardTemplate(models.Model):
                     svg_file_name, rec.back_body_html, '_back_side'
                 )
             if rec.print_data_type == 'path':
-                index, print_data = self.create_json_nonduplex_back_data(URL + '/exported-files' + back_path)
+                index, print_data = self.create_json_nonduplex_back_data(URL + back_path)
             else:
                 index, print_data = self.create_json_nonduplex_back_data(back_base64_datas)
             printer_option = self.get_printer_option()
