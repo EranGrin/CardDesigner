@@ -1130,7 +1130,7 @@ class CardTemplate(models.Model):
         if not os.path.exists(current_path):
             os.makedirs(current_path)
         tmp_dir = tempfile.mkdtemp()
-        tmp_dir_name = tmp_dir + '/'
+        tmp_dir_name = '/tmp/'
         html.write_pdf(tmp_dir_name + svg_file_name, stylesheets=[css], font_config=font_config)
         pages_to_keep = [0]
         infile = PdfFileReader(tmp_dir_name + svg_file_name, 'rb')
