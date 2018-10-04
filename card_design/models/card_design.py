@@ -29,6 +29,7 @@ from reportlab.lib import units
 from reportlab.graphics import renderPM
 from reportlab.graphics.barcode import createBarcodeDrawing
 from reportlab.graphics.shapes import Drawing
+from .pdf2image import convert_from_path
 
 
 def format_date(env, date, pattern=False):
@@ -978,13 +979,15 @@ class CardTemplate(models.Model):
         return date_file_name, data_file, base64_datas
 
     def render_png(self, svg_file_name, data, side_name):
+        if svg_file_name:
+            svg_file_name = svg_file_name.replace('png', 'pdf')
         resolution = self.template_size and self.template_size.dpi or 300
-        path = self.env.ref('card_design.svg_to_pdf').value
-        # export_file_path = self.env.ref('card_design.export_file_path').value
         soup = BeautifulSoup(data)
         count = 0
         width = '0px'
         height = '0px'
+        path = self.env.ref('card_design.svg_to_pdf').value
+        # export_file_path = self.env.ref('card_design.export_file_path').value
         if not path:
             path = '/tmp'
         for div in soup.findAll("div", {'class': 'fixed_height'}):
@@ -1105,12 +1108,6 @@ class CardTemplate(models.Model):
         data = str(soup)
         html = HTML(string=data)
         font_config = FontConfiguration()
-        if self.template_size and self.template_size.size_unit == 'px':
-            try:
-                width = str(round(((float(width.replace('px', '')) / 0.393700787) / self.template_size.dpi), 2)) + 'cm'
-                height = str(round(((float(height.replace('px', '')) / 0.393700787) / self.template_size.dpi), 2)) + 'cm'
-            except:
-                pass
         rotation = 0
         if 'back_side' in svg_file_name:
             rotation = self.back_rotation and int(self.back_rotation) or 0
@@ -1123,23 +1120,31 @@ class CardTemplate(models.Model):
             div { margin-top:0px;margin-left:0px;}
         ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
+        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         current_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__))
         ).replace('/card_design/models', '/exported_files/static/src/export_files/')
         # current_path = export_file_path + '/export_files/'
         current_date = fields.date.today().strftime('%Y_%m_%d')
-        current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
-        html.write_png(
-            current_path + svg_file_name,
-            stylesheets=[css],
-            font_config=font_config,
-            resolution=resolution,
-        )
-        # im = Image.open(current_path + svg_file_name)
-        # im.save(current_path + svg_file_name, dpi=(resolution, resolution))
+        html.write_pdf(current_path + svg_file_name, stylesheets=[css], font_config=font_config)
+        pages_to_keep = [0]
+        infile = PdfFileReader(current_path + svg_file_name, 'rb')
+        output = PdfFileWriter()
+
+        for i in range(infile.getNumPages()):
+            if i in pages_to_keep:
+                p = infile.getPage(i)
+                output.addPage(p)
+
+        with open(current_path + svg_file_name, 'wb') as f:
+            output.write(f)
+
+        tmp_image = convert_from_path(current_path + svg_file_name, dpi=resolution, output_folder=current_path, fmt='png')
+        svg_file_name = svg_file_name.replace('pdf', 'png')
+        tmp_image[0].save(current_path + svg_file_name, dpi=(resolution, resolution))
         data_file = open(current_path + svg_file_name, 'r')
         temp_file_name = current_path + svg_file_name
         date_file_name = '/exported_files' + temp_file_name.split('/exported_files')[1]
