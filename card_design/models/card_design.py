@@ -1129,9 +1129,11 @@ class CardTemplate(models.Model):
         current_path = current_path + current_obj_name + '/' + current_date + '/'
         if not os.path.exists(current_path):
             os.makedirs(current_path)
-        html.write_pdf(current_path + svg_file_name, stylesheets=[css], font_config=font_config)
+        tmp_dir = tempfile.mkdtemp()
+        tmp_dir_name = tmp_dir + '/' + svg_file_name
+        html.write_pdf(tmp_dir_name, stylesheets=[css], font_config=font_config)
         pages_to_keep = [0]
-        infile = PdfFileReader(current_path + svg_file_name, 'rb')
+        infile = PdfFileReader(tmp_dir_name, 'rb')
         output = PdfFileWriter()
 
         for i in range(infile.getNumPages()):
@@ -1139,10 +1141,9 @@ class CardTemplate(models.Model):
                 p = infile.getPage(i)
                 output.addPage(p)
 
-        with open(current_path + svg_file_name, 'wb') as f:
+        with open(tmp_dir_name, 'wb') as f:
             output.write(f)
-
-        tmp_image = convert_from_path(current_path + svg_file_name, dpi=resolution, output_folder=current_path, fmt='png')
+        tmp_image = convert_from_path(tmp_dir_name, dpi=resolution, output_folder=current_path, fmt='png')
         svg_file_name = svg_file_name.replace('pdf', 'png')
         tmp_image[0].save(current_path + svg_file_name, dpi=(resolution, resolution))
         data_file = open(current_path + svg_file_name, 'r')
