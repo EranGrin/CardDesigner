@@ -946,7 +946,7 @@ class CardTemplate(models.Model):
         style = '''
             @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
             size: %s %s ;
-            margin-top: -6px;margin-right: -6px;margin-bottom: -6px;margin-left: -7.5px; }
+            margin-top: -6px;margin-right: -6px;margin-bottom: -6px;margin-left: -8px; }
             div {margin-top:-6px;margin-left:-0.3px;}
         ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
@@ -1116,7 +1116,7 @@ class CardTemplate(models.Model):
         style = '''
             @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
             size: %s %s ;
-            margin-top: -6px;margin-right: -6px;margin-bottom: -6px;margin-left: -7.5px; }
+            margin-top: -6px;margin-right: -6px;margin-bottom: -6px;margin-left: -8px; }
             div {margin-top:-6px;margin-left:0px;}
         ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
