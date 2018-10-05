@@ -116,23 +116,35 @@
         </div>
 
         <div data-js="content"
-            data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div, .oe_snippet_body"
-            data-drop-near="[data-oe-field='body_html']:not(:has(.o_layout)) > *, .oe_structure > *"
-            data-drop-in="[data-oe-field='body_html']:not(:has(.o_layout)), .oe_structure">
+            data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='back_body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div, [data-oe-field='back_body_html'] .oe_structure > div, .oe_snippet_body"
+            data-drop-near="[data-oe-field='body_html']:not(:has(.o_layout)) > *, [data-oe-field='back_body_html']:not(:has(.o_layout)) > *, .oe_structure > *"
+            data-drop-in="[data-oe-field='body_html']:not(:has(.o_layout)), [data-oe-field='back_body_html']:not(:has(.o_layout)), .oe_structure">
         </div>
 
         <div data-js="resize"
-            data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div">
+            data-selector="
+                [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='back_body_html'] > div:not(.o_layout),
+                [data-oe-field='body_html'] .oe_structure > div,
+                [data-oe-field='back_body_html'] .oe_structure > div"
+            >
         </div>
 
         <div data-js="margin-y"
-            data-selector="[data-oe-field='body_html'] > div:not(.o_layout), [data-oe-field='body_html'] .oe_structure > div, td:not(.o_mail_no_resize), th, td">
+            data-selector="
+            [data-oe-field='body_html'] > div:not(.o_layout),
+            [data-oe-field='back_body_html'] > div:not(.o_layout),
+            [data-oe-field='body_html'] .oe_structure > div,
+            [data-oe-field='back_body_html'] .oe_structure > div,
+            td:not(.o_mail_no_resize), th, td">
         </div>
 
         <div data-js="colorpicker"
             data-selector="
                 [data-oe-field='body_html'] > div:not(.o_layout):not(.o_mail_no_colorpicker),
+                [data-oe-field='back_body_html'] > div:not(.o_layout):not(.o_mail_no_colorpicker),
                 [data-oe-field='body_html'] .oe_structure > div:not(.o_mail_no_colorpicker),
+                [data-oe-field='back_body_html'] .oe_structure > div:not(.o_mail_no_colorpicker),
                 td, th, td
             ">
             <li class="dropdown-submenu">
@@ -146,7 +158,9 @@
         <div data-js="borderpicker"
             data-selector="
                 [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='back_body_html'] > div:not(.o_layout),
                 [data-oe-field='body_html'] .oe_structure > div,
+                [data-oe-field='back_body_html'] .oe_structure > div,
                 td, th, td
             ">
             <li class="dropdown-submenu">
@@ -160,7 +174,9 @@
         <div data-js="bordersizepicker"
             data-selector="
                 [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='back_body_html'] > div:not(.o_layout),
                 [data-oe-field='body_html'] .oe_structure > div,
+                [data-oe-field='back_body_html'] .oe_structure > div,
                 td, th, td
             ">
             <li class="dropdown-submenu">
@@ -174,7 +190,9 @@
         <div data-js="borderradiuspicker"
             data-selector="
                 [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='back_body_html'] > div:not(.o_layout),
                 [data-oe-field='body_html'] .oe_structure > div,
+                [data-oe-field='back_body_html'] .oe_structure > div,
                 td, th, td
             ">
             <li class="dropdown-submenu">
@@ -188,7 +206,9 @@
         <div data-js="bordercolorpicker"
             data-selector="
                 [data-oe-field='body_html'] > div:not(.o_layout),
+                [data-oe-field='back_body_html'] > div:not(.o_layout),
                 [data-oe-field='body_html'] .oe_structure > div,
+                [data-oe-field='back_body_html'] .oe_structure > div,
                 td, th, td
             ">
             <li class="dropdown-submenu">
@@ -201,7 +221,7 @@
 
         <div data-js='background'
                 data-selector="
-                [data-oe-field='body_html'] .fixed_heightx">
+                [data-oe-field='body_html'] .fixed_heightx, [data-oe-field='back_body_html'] .fixed_heightx">
             <li class="dropdown-submenu">
                 <a tabindex="-1" href="#"><i class="fa fa-picture-o"/>Background Image</a>
                 <ul class="dropdown-menu">
@@ -219,7 +239,7 @@
 
         <div data-js='background_position'
             data-selector="
-                [data-oe-field='body_html'] .fixed_heightx">
+                [data-oe-field='body_html'] .fixed_heightx, [data-oe-field='back_body_html'] .fixed_heightx">
             <li class="background_position_li" data-background_position="background_position">
                 <a tabindex="-1" href="#"><i class="fa fa-arrows"/>Background Image Sizing</a>
             </li>
