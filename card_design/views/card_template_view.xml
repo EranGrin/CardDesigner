@@ -33,7 +33,7 @@
                     <label for="export_file_path" />
                     <div class="row">
                         <div class="col-xs-6">
-                            <field name="export_file_path" class="oe_inline" />
+                            <field name="export_file_path" class="oe_inline" invisible="1"/>
                         </div>
                     </div>
                 </group>
@@ -78,10 +78,6 @@
                         string="Template Size Change"
                         class="btn-primary"
                     />
-                    <!-- <button name="change_template_background_color" type="object"
-                        string="Template Color Change"
-                        class="btn-primary"
-                    /> -->
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
