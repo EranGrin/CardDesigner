@@ -28,8 +28,6 @@ def convert_from_path(pdf_path, dpi=200, output_folder=None, first_page=None, la
             thread_count -> How many threads we are allowed to spawn for processing
             userpw -> PDF's password
     """
-    _logger.info("Path ..............%s", pdf_path)
-    _logger.info("userpw ..............%s", pdf_path)
     page_count = __page_count(pdf_path, userpw)
 
     if thread_count < 1:

@@ -7,3 +7,7 @@ sudo pip install BeautifulSoup
 sudo pip install cssutils
 sudo apt-get remove python-html5lib
 sudo pip install --upgrade html5lib
+sudo apt install poppler-utils python3 python3-pip
+sudo pip install pdf2image
+sudo pip3 install pdf2image
+sudo pip install subprocess.run
