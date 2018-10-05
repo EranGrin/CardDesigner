@@ -1,13 +1,3 @@
-import os
-import re
-import tempfile
-import uuid
-
-from io import BytesIO
-from subprocess import Popen, PIPE
-from PIL import Image
-
-
 """
     pdf2image is a light wrapper for the poppler-utils tools that can convert your
     PDFs into Pillow images.
@@ -21,6 +11,9 @@ import uuid
 from io import BytesIO
 from subprocess import Popen, PIPE
 from PIL import Image
+import logging
+_logger = logging.getLogger(__name__)
+
 
 def convert_from_path(pdf_path, dpi=200, output_folder=None, first_page=None, last_page=None, fmt='ppm', thread_count=1, userpw=None):
     """
@@ -35,7 +28,8 @@ def convert_from_path(pdf_path, dpi=200, output_folder=None, first_page=None, la
             thread_count -> How many threads we are allowed to spawn for processing
             userpw -> PDF's password
     """
-
+    _logger.info("Path ..............%s", pdf_path)
+    _logger.info("userpw ..............%s", pdf_path)
     page_count = __page_count(pdf_path, userpw)
 
     if thread_count < 1:
@@ -80,6 +74,7 @@ def convert_from_path(pdf_path, dpi=200, output_folder=None, first_page=None, la
 
     return images
 
+
 def convert_from_bytes(pdf_file, dpi=200, output_folder=None, first_page=None, last_page=None, fmt='ppm', thread_count=1, userpw=None):
     """
         Description: Convert PDF to Image will throw whenever one of the condition is reached
@@ -98,6 +93,7 @@ def convert_from_bytes(pdf_file, dpi=200, output_folder=None, first_page=None, l
         f.write(pdf_file)
         f.flush()
         return convert_from_path(f.name, dpi=dpi, output_folder=output_folder, first_page=first_page, last_page=last_page, fmt=fmt, thread_count=thread_count, userpw=userpw)
+
 
 def __build_command(args, output_folder, first_page, last_page, fmt, uid, userpw):
     if first_page is not None:
@@ -119,6 +115,7 @@ def __build_command(args, output_folder, first_page, last_page, fmt, uid, userpw
 
     return args, parse_buffer_func
 
+
 def __parse_format(fmt):
     if fmt[0] == '.':
         fmt = fmt[1:]
@@ -128,6 +125,7 @@ def __parse_format(fmt):
         return 'png', __parse_buffer_to_png
     # Unable to parse the format so we'll use the default
     return 'ppm', __parse_buffer_to_ppm
+
 
 def __parse_buffer_to_ppm(data):
     images = []
@@ -143,11 +141,13 @@ def __parse_buffer_to_ppm(data):
 
     return images
 
+
 def __parse_buffer_to_jpeg(data):
     return [
         Image.open(BytesIO(image_data + b'\xff\xd9'))
-        for image_data in data.split(b'\xff\xd9')[:-1] # Last element is obviously empty
+        for image_data in data.split(b'\xff\xd9')[:-1]  # Last element is obviously empty
     ]
+
 
 def __parse_buffer_to_png(data):
     images = []
@@ -155,11 +155,12 @@ def __parse_buffer_to_png(data):
     index = 0
 
     while index < len(data):
-        file_size = data[index:].index(b'IEND') + 8 # 4 bytes for IEND + 4 bytes for CRC
+        file_size = data[index:].index(b'IEND') + 8  # 4 bytes for IEND + 4 bytes for CRC
         images.append(Image.open(BytesIO(data[index:index+file_size])))
         index += file_size
 
     return images
+
 
 def __page_count(pdf_path, userpw=None):
     try:
@@ -172,12 +173,12 @@ def __page_count(pdf_path, userpw=None):
     except:
         raise Exception('Unable to get page count. Is poppler installed and in PATH?')
 
-
     try:
         # This will throw if we are unable to get page count
         return int(re.search(r'Pages:\s+(\d+)', out.decode("utf8", "ignore")).group(1))
     except:
         raise Exception('Unable to get page count. %s' % err.decode("utf8", "ignore"))
+
 
 def __load_from_output_folder(output_folder, uid):
     return [Image.open(os.path.join(output_folder, f)) for f in sorted(os.listdir(output_folder)) if uid in f]
