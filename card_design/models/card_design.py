@@ -947,7 +947,7 @@ class CardTemplate(models.Model):
             @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
             size: %s %s ;
             margin: -6px; }
-            div {margin-top:-2px;margin-left:-1px;}
+            div {margin-top:-3px;margin-left:0px;}
         ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
@@ -1117,7 +1117,7 @@ class CardTemplate(models.Model):
             @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
             size: %s %s ;
             margin: -6px; }
-            div {margin-top:-2px;margin-left:-1px;}
+            div {margin-top:-3px;margin-left:0px;}
         ''' % (rotation, rotation, rotation, width, height)
         css = CSS(string=style, font_config=font_config)
         current_obj_name = self.name.replace(' ', '_').replace('.', '_').lower()
