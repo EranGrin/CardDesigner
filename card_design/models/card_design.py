@@ -1144,7 +1144,6 @@ class CardTemplate(models.Model):
         with open(tmp_dir_name + svg_file_name, 'wb') as f:
             output.write(f)
         tmp_dir_pdf_file = tmp_dir_name + svg_file_name
-        _logger.infoe
         tmp_image = convert_from_path(tmp_dir_pdf_file, dpi=resolution, output_folder=tmp_dir_name, fmt='png')
         svg_file_name = svg_file_name.replace('pdf', 'png')
         tmp_image[0].save(current_path + svg_file_name, dpi=(resolution, resolution))
