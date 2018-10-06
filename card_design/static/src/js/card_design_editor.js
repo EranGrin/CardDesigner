@@ -359,6 +359,40 @@ snippets_editor.Class.include({
             self.show_blocks();
         }
     },
+    cover_target: function ($el, $target) {
+        if ($el.data('not-cover_target')) {
+            return;
+        }
+        var pos = $target.offset();
+        var mt = parseInt($target.css("margin-top") || 0);
+        var main_div = $('.fixed_heightx')
+        var transform = 0;
+        if (typeof main_div === 'object') {
+            if (typeof main_div.css('transform') !== 'undefined') {
+                transform = main_div.css('transform');
+            }
+        }
+        if (transform === 'none'){
+            $el.css({
+                width: $target.outerWidth(),
+                left: pos.left,
+                top: pos.top - mt,
+            });
+        }
+        else {
+            $el.css({
+                width: $target.outerWidth(),
+                left: event.target.x,
+                top: pos.top - mt,
+                transform: transform,
+            });
+        }
+        $el.find('.oe_handles').css({
+            height: $target.outerHeight(true),
+        });
+
+        $el.toggleClass('o_top_cover', pos.top <= (this.$('#o_scroll').position().top + 15));
+    },
 });
 
 snippets_editor.Editor.include({
