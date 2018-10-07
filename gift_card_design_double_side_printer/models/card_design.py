@@ -51,7 +51,7 @@ class CardTemplate(models.Model):
                         svg_file_name, rec.back_body_html, '_back_side'
                     )
                 if rec.print_data_type == 'path':
-                    index, print_data = rec.create_json_nonduplex_back_data(URL + back_path)
+                    index, print_data = rec.create_json_nonduplex_back_data(back_path)
                 else:
                     index, print_data = rec.create_json_nonduplex_back_data(back_base64_datas)
                 print_data_dict.update({

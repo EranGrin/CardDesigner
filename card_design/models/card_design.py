@@ -294,6 +294,22 @@ class CardTemplate(models.Model):
     printed = fields.Boolean('Exported')
 
     @api.multi
+    def export_front_design(self):
+        pass
+
+    @api.multi
+    def export_back_design(self):
+        pass
+
+    @api.multi
+    def import_front_design(self):
+        pass
+
+    @api.multi
+    def import_back_design(self):
+        pass
+
+    @api.multi
     def change_template_background_color(self):
         for rec in self:
             if rec.body_html:

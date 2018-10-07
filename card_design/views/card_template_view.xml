@@ -150,24 +150,39 @@
                         <page string="Template Design">
                             <notebook>
                                 <page string="Front Side" name="body"
-                                    attrs="{'invisible': [('front_side', '=', False)]}"
-                                    >
+                                    attrs="{'invisible': [('front_side', '=', False)]}">
                                     <br/>
+                                    <button name="export_front_design" type="object"
+                                        string="Export Design"
+                                        class="btn-primary mb8" style="margin-left:15px;" invisible="1"
+                                    />
+                                    <button name="import_front_design" type="object"
+                                        string="Import Design"
+                                        invisible="1" class="btn-primary mb8" style="margin-left:15px;"
+                                    />
                                     <button name="print_front_side" type="object" string="Export PDF"
-                                        class="oe_highlight" icon="fa-file-pdf-o"/>
+                                        class="oe_highlight mb8" icon="fa-file-pdf-o" style="margin-left:15px;"/>
                                     <button name="print_front_side_png" type="object" string="Export Image"
-                                        class="oe_highlight" icon="fa-image" style="margin-left:15px;"/>
+                                        class="oe_highlight mb8" icon="fa-image" style="margin-left:15px;"/>
                                     <field name="body_html" widget="html_frame" context="{'code': code}"
                                            options="{'editor_url': '/card_design/field/card_template'}"/>
                                 </page>
                                 <page string="Back Side" name="back_body"
                                     attrs="{'invisible': [('back_side', '=', False)]}">
                                     <br/>
-                                    <button name="print_back_side" type="object" string="Export PDF" class="oe_highlight" icon="fa-file-pdf-o"/>
+                                    <button name="export_back_design" type="object"
+                                        string="Export Design"
+                                        class="btn-primary mb8" style="margin-left:15px;" invisible="1"
+                                    />
+                                    <button name="import_back_design" type="object"
+                                        string="Import Design"
+                                        class="btn-primary mb8" style="margin-left:15px;" invisible="1"
+                                    />
+                                    <button name="print_back_side" type="object" string="Export PDF" class="oe_highlight mb8" icon="fa-file-pdf-o" style="margin-left:15px;"/>
                                     <button name="print_back_side_png" type="object" string="Export Image"
-                                        class="oe_highlight" icon="fa-image"  style="margin-left:15px;"/>
+                                        class="oe_highlight mb8" icon="fa-image" style="margin-left:15px;"/>
                                     <field name="back_body_html" widget="html_frame" context="{'code': code}"
-                                        options="{'editor_url': '/card_design/field/card_template_back'}"
+                                        options="{'editor_url': '/card_design/field/card_template_back'}" invisible="1"
                                     />
                                 </page>
                             </notebook>
@@ -178,7 +193,7 @@
                                     <br/>
                                     <button name="action_selected_card_send_email"
                                         type="object" string="Send by Email"
-                                        class="btn-primary" icon="fa-envelope-o"
+                                        class="btn-primary mb8" icon="fa-envelope-o"
                                     />
                                     <field name="attachment_ids" >
                                         <tree create="false" editable="bottom">
@@ -193,7 +208,7 @@
                                     <br/>
                                     <button name="action_selected_card_send_email"
                                         type="object" string="Send by Email"
-                                        class="btn-primary" icon="fa-envelope-o"
+                                        class="btn-primary mb8" icon="fa-envelope-o"
                                         context="{'image': True}"
                                     />
                                     <field name="image_attachment_ids" >
