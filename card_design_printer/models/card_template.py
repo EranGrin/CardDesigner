@@ -247,6 +247,7 @@ class CardTemplate(models.Model):
             'language': 'EVOLIS',
         })
         print_data += '%s\n' % print_data_dict
+        print_data += '#x1BWt;50;60;0;10;.                                                   #x0D\n'
         footerarray = self.footer_data.split(',')
         for findex, j in enumerate(footerarray):
             print_data += '#x1B' + footerarray[findex] + "#x0D\n"
@@ -498,6 +499,7 @@ class CardTemplate(models.Model):
                             'data': data[1],
                         })
                     print_data.append(print_evl_data_dict)
+                    print_data.append('\x1BWt;50;60;0;10;.                                                   \x0D')
                     footerarray = self.footer_data.split(',')
                     for findex, j in enumerate(footerarray):
                         print_data.append('\x1B' + footerarray[findex] + "\x0D")

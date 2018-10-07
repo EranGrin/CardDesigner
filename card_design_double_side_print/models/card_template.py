@@ -89,6 +89,7 @@ class CardTemplate(models.Model):
                 'overlay': overlay,
             })
             print_data += '%s\n' % print_data_dict
+            print_data += '#x1BWt;50;60;0;10;.                                                   #x0D\n'
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
                 print_data += '#x1B' + footerarray[findex] + "#x0D\n"
@@ -171,6 +172,7 @@ class CardTemplate(models.Model):
                 'overlay': back_overlay,
             })
             print_data += '%s\n' % print_data_dict
+            print_data += '#x1BWt;50;60;0;10;.                                                   #x0D\n'
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
                 print_data += '#x1B' + footerarray[findex] + "#x0D\n"
@@ -210,6 +212,7 @@ class CardTemplate(models.Model):
                 'language': 'EVOLIS',
             })
             print_data += '%s\n' % print_data_dict
+            print_data += '#x1BWt;50;60;0;10;.                                                   #x0D\n'
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
                 print_data += '#x1B' + footerarray[findex] + "#x0D\n"
@@ -241,21 +244,21 @@ class CardTemplate(models.Model):
                 if rec.is_mag_strip:
                     if rec.mag_strip_track1:
                         if '{' in rec.mag_strip_track1 and mag_strip:
-                            print_data += '#x1BDm;1;' + str(mag_strip) + '#x0D\n'
+                            print_data.append('\x1BDm;1;' + str(mag_strip) + '\x0D')
                         else:
-                            print_data += '#x1BDm;1;' + str(rec.mag_strip_track1) + '#x0D\n'
+                            print_data.append('\x1BDm;1;' + str(rec.mag_strip_track1) + '\x0D')
                     if rec.mag_strip_track2:
                         if '{' in rec.mag_strip_track2 and mag_strip:
-                            print_data += '#x1BDm;2;' + str(mag_strip) + '#x0D\n'
+                            print_data.append('\x1BDm;2;' + str(mag_strip) + '\x0D')
                         else:
-                            print_data += '#x1BDm;2;' + str(rec.mag_strip_track2) + '#x0D\n'
+                            print_data.append('\x1BDm;2;' + str(rec.mag_strip_track2) + '\x0D')
                     if rec.mag_strip_track3:
                         if '{' in rec.mag_strip_track3 and mag_strip:
-                            print_data += '#x1BDm;3;' + str(mag_strip) + '#x0D\n'
+                            print_data.append('\x1BDm;3;' + str(mag_strip) + '\x0D')
                         else:
-                            print_data += '#x1BDm;3;' + str(rec.mag_strip_track3) + '#x0D\n'
+                            print_data.append('\x1BDm;3;' + str(rec.mag_strip_track3) + '\x0D')
                     if rec.mag_strip_track1 or rec.mag_strip_track2 or rec.mag_strip_track3:
-                        print_data += '#x1B' + 'smw' + '#x0D\n'
+                        print_data.append('\x1B' + 'smw' + '\x0D')
                 overlay = True
                 if rec.front_overlay_type == 'custom':
                     try:
@@ -283,9 +286,9 @@ class CardTemplate(models.Model):
 
                 if rec.back_feeder and rec.duplex_type != 'normal':
                     if rec.back_feeder_type:
-                        print_data += '#x1BPcim;' + rec.back_feeder_type + '#x0D\n'
+                        print_data.append('\x1BPcim;' + rec.back_feeder_type + '\x0D')
                     if rec.back_ejection_type:
-                        print_data += '#x1BPcem;' + rec.back_ejection_type + '#x0D\\n'
+                        print_data.append('\x1BPcem;' + rec.back_ejection_type + '\x0D')
 
                 print_evl_back_data_dict = {
                     'type': rec.data_type,
@@ -308,7 +311,7 @@ class CardTemplate(models.Model):
                     'data': back_side_data,
                 })
                 print_data.append(print_evl_back_data_dict)
-
+                print_data.append('\x1BWt;50;60;0;10;.                                                   \x0D')
                 footerarray = rec.footer_data.split(',')
                 for findex, j in enumerate(footerarray):
                     print_data.append('\x1B' + footerarray[findex] + '\x0D')
@@ -440,7 +443,7 @@ class CardTemplate(models.Model):
                 'index': index
             }
             print_data.append(print_evl_back_data_dict)
-
+            print_data.append('\x1BWt;50;60;0;10;.                                                   \x0D')
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
                 print_data.append('\x1B' + footerarray[findex] + '\x0D')
@@ -507,7 +510,7 @@ class CardTemplate(models.Model):
                 'index': index
             }
             print_data.append(print_evl_front_data_dict)
-
+            print_data.append('\x1BWt;50;60;0;10;.                                                   \x0D')
             footerarray = self.footer_data.split(',')
             for findex, j in enumerate(footerarray):
                 print_data.append('\x1B' + footerarray[findex] + '\x0D')
