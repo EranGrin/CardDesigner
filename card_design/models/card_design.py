@@ -1129,6 +1129,11 @@ class CardTemplate(models.Model):
             rotation = self.back_rotation and int(self.back_rotation) or 0
         else:
             rotation = self.front_rotation and int(self.front_rotation) or 0
+        if self.template_size and self.template_size.size_unit == 'px':
+            width = width.split('cm')
+            height = height.split('cm')
+            width = str(float(width[0]) + 0.01) + 'cm'
+            height = str(float(height[0]) + 0.01) + 'cm'
         style = '''
             @page {-ms-transform: rotate(%sdeg);-webkit-transform: rotate(%sdeg);transform: rotate(%sdeg);
             size: %s %s ;
