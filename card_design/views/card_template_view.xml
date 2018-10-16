@@ -182,7 +182,7 @@
                                     <button name="print_back_side_png" type="object" string="Export Image"
                                         class="oe_highlight mb8" icon="fa-image" style="margin-left:15px;"/>
                                     <field name="back_body_html" widget="html_frame" context="{'code': code}"
-                                        options="{'editor_url': '/card_design/field/card_template_back'}" invisible="1"
+                                        options="{'editor_url': '/card_design/field/card_template_back'}"
                                     />
                                 </page>
                             </notebook>

@@ -381,10 +381,10 @@ snippets_editor.Class.include({
         }
         else {
             $el.css({
-                width: $target.outerWidth(),
-                left: event.target.x,
+                width: $target.width() * parseFloat(transform.split(",")[0].replace("matrix(", "")),
+                left: pos.left,
                 top: pos.top - mt,
-                transform: transform,
+                transform: 'scale(1,' + transform.split(",")[0].replace("matrix(", "") + ' )',
             });
         }
         $el.find('.oe_handles').css({
@@ -475,7 +475,7 @@ odoo_top[callback+"_updown"] = function (value, fields_values, field_name) {
 };
 
 // if ($editable_area.html().indexOf('on_change_model_and_list') !== -1) {
-//     $editable_area.empty();
+    // $editable_area.empty();
 // }
 // Adding compatibility for the outlook compliance of mailings.
 // Commit of such compatibility : a14f89c8663c9cafecb1cc26918055e023ecbe42
