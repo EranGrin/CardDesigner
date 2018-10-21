@@ -37,7 +37,7 @@
                 <div class="gjs-fields" style="margin: 0px 10px 10px 10px;">
                     <div class="gjs-field gjs-field-color">
                         <div class="gjs-input-holder" style="    border-style: inset;border-width: 3px;padding-left: 10px;padding-right: 10px;border-color: white;">
-                            <input type="range" min="1" max="99"  id="zoom" class='slider_range' style="width:95%!important;padding-right: 0px!important;box-sizing: border-box;padding-left: 0px;margin-left: 5px;"/>
+                            <input type="range" min="50" max="99"  id="zoom" class='slider_range' style="width:95%!important;padding-right: 0px!important;box-sizing: border-box;padding-left: 0px;margin-left: 5px;"/>
                         </div>
                     </div>
                 </div>

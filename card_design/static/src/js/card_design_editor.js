@@ -57,7 +57,7 @@ options.registry["width-x"] = options.Class.extend({
                     self.change_width(event, self.$target.prev(), sib_width, sib_offset, true);
                 }
                 if (compass === 'image') {
-                    self.change_width(event, self.$target, target_width, offset, true);
+                    self.change_image_width(event, self.$target, target_width, offset, true);
                 }
             });
             $body.on("mouseup.card_desgin_width_x", function () {
@@ -70,6 +70,11 @@ options.registry["width-x"] = options.Class.extend({
     change_width: function (event, target, target_width, offset, grow) {
         target.css("width", grow ? (event.pageX - offset) : (offset + target_width - event.pageX));
         this.buildingBlock.cover_target(this.$overlay, this.$target);
+    },
+    change_image_width: function (event, target, target_width, offset, grow) {
+        target.css("width", grow ? (event.pageX - offset) : (offset + target_width - event.pageX));
+        target_width = grow ? (event.pageX - offset) : (offset + target_width - event.pageX)
+        this.buildingBlock.cover_image_target(event, this.$overlay, this.$target, target, target_width, offset, grow);
     },
     get_int_width: function (el) {
         return parseInt($(el).css("width"), 10);
@@ -359,6 +364,43 @@ snippets_editor.Class.include({
             self.show_blocks();
         }
     },
+    cover_image_target: function (event, $el, $target, target, target_width, offset, grow) {
+        if ($el.data('not-cover_target')) {
+            return;
+        }
+        var pos = $target.offset();
+        var mt = parseInt($target.css("margin-top") || 0);
+        var main_div = $('.fixed_heightx')
+        var transform = 0;
+        if (typeof main_div === 'object') {
+            if (typeof main_div.css('transform') !== 'undefined') {
+                transform = main_div.css('transform');
+            }
+        }
+        if (transform === 'none'){
+            $el.css({
+                width: $target.outerWidth(),
+                left: pos.left,
+                top: pos.top - mt,
+            });
+        }
+        else {
+            var elHeight = $el.outerHeight();
+            var elWidth = $el.outerWidth();
+            var transform_width = (transform.split(",")[0].replace("matrix(", "") * 100)
+            $el.css({
+                width: $target.width() * parseFloat(transform.split(",")[0].replace("matrix(", "")),
+                left: pos.left,
+                top: pos.top - mt,
+                transform: 'scale(1,' + transform.split(",")[0].replace("matrix(", "") + ' )',
+            });
+        }
+        $el.find('.oe_handles').css({
+            height: $target.outerHeight(true),
+        });
+
+        $el.toggleClass('o_top_cover', pos.top <= (this.$('#o_scroll').position().top + 15));
+    },
     cover_target: function ($el, $target) {
         if ($el.data('not-cover_target')) {
             return;
@@ -380,6 +422,9 @@ snippets_editor.Class.include({
             });
         }
         else {
+            var elHeight = $el.outerHeight();
+            var elWidth = $el.outerWidth();
+            var transform_width = (transform.split(",")[0].replace("matrix(", "") * 100)
             $el.css({
                 width: $target.width() * parseFloat(transform.split(",")[0].replace("matrix(", "")),
                 left: pos.left,
