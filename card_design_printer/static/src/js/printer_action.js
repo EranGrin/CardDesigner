@@ -39,10 +39,12 @@ odoo.define('card_design_printer.action', function(require) {
                         "state": "done"
                     }
                 ]);
-                self.inner_widget.active_view.controller.reload();
-                return $.when();
+                var res_action = {
+                    type: 'ir.actions.client',
+                    tag: 'reload',
+                }
+                return  self.do_action(res_action);
             }
-            
             var connected = qz.websocket.connect({
                 host: action.printer_config_dict.hostname,
                 port: action.printer_config_dict.port,
@@ -59,6 +61,11 @@ odoo.define('card_design_printer.action', function(require) {
                         "state": "done"
                     }
                 ]);
+                var res_action = {
+                    type: 'ir.actions.client',
+                    tag: 'reload',
+                }
+                return  self.do_action(res_action);
             }).catch(function(error) {
                 var res_action = {
                     type: 'ir.actions.act_window',
