@@ -119,7 +119,13 @@ odoo.define('card_design_printer.action', function(require) {
                             }
                         ]);
                     });
-                });
+                 }).then(function() {
+                    var res_action = {
+                        type: 'ir.actions.client',
+                        tag: 'reload',
+                    }
+                    return  self.do_action(res_action);
+                 });
                 self.inner_widget.active_view.controller.reload();
                 return $.when();
             }
@@ -142,7 +148,13 @@ odoo.define('card_design_printer.action', function(require) {
                             'printer_names': printer_names
                         }
                     ]);
-                });
+                }).then(function() {
+                    var res_action = {
+                        type: 'ir.actions.client',
+                        tag: 'reload',
+                    }
+                    return  self.do_action(res_action);
+                 });
             }).catch(function(error) {
                 var res_action = {
                     type: 'ir.actions.act_window',

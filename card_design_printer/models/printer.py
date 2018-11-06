@@ -39,6 +39,10 @@ class PrinterLines(models.Model):
             if get_default_printer_id:
                 get_default_printer_id.default_printer = False
             rec.default_printer = True
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
 
 class Printer(models.Model):
@@ -126,7 +130,10 @@ class Printer(models.Model):
             'active_msg': '',
             'is_active': ''
         })
-        return True
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
     @api.multi
     def check_connection(self):
